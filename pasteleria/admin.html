@@ -428,7 +428,7 @@
 
   <!-- BARRA SUPERIOR DEL ADMINISTRADOR -->
   <header class="admin-header-bar">
-    <a href="index.html" class="admin-brand">
+    <a href="./" class="admin-brand" onclick="window.location.href = window.location.pathname.includes('/pasteleria/') ? (window.location.origin + '/pasteleria/') : './'; return false;">
       <span class="admin-logo-text">Barriguitas</span>
       <span class="admin-badge-role">Panel de Administración</span>
     </a>
@@ -437,7 +437,7 @@
       <div id="supabase-status-badge" class="admin-badge-role" style="background: #f0fdf4; color: #166534; border: 1.5px solid #86efac; display: none;">
         🟢 Supabase Conectado
       </div>
-      <a href="index.html" class="btn-outline-action">← Volver a la Tienda</a>
+      <a href="./" class="btn-outline-action" onclick="window.location.href = window.location.pathname.includes('/pasteleria/') ? (window.location.origin + '/pasteleria/') : './'; return false;">← Volver a la Tienda</a>
       <button id="btn-admin-logout" class="btn-outline-action btn-logout" style="display: none;">
         Cerrar Sesión 🔒
       </button>

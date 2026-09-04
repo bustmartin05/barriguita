@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="refresh" content="0; url=pasteleria/">
   <script>
     var target = "pasteleria/" + (window.location.hash || "") + (window.location.search || "");
@@ -9,8 +10,51 @@
   </script>
   <link rel="icon" type="image/png" href="pasteleria/assets/images/nene-volando-globos.png">
   <title>Pastelería Barriguitas 🎂</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 0;
+      background: #fff5f8;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      font-family: system-ui, -apple-system, sans-serif;
+      color: #d81b60;
+      text-align: center;
+    }
+    .mascot-img {
+      width: 110px;
+      height: auto;
+      margin-bottom: 16px;
+      animation: floatMascot 2s ease-in-out infinite alternate;
+    }
+    @keyframes floatMascot {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-14px); }
+    }
+    .title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin: 0 0 8px 0;
+    }
+    .subtitle {
+      font-size: 0.95rem;
+      color: #888;
+      margin: 0;
+    }
+    a {
+      color: #d81b60;
+      font-weight: bold;
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
-  <p>Redirigiendo a <a href="pasteleria/">Pastelería Barriguitas</a>...</p>
+  <img src="pasteleria/assets/images/nene-volando-globos.png" alt="Pastelería Barriguitas" class="mascot-img">
+  <div class="title">Pastelería Barriguitas</div>
+  <p class="subtitle">Cargando el taller... Si no redirige automáticamente, <a href="pasteleria/">haz clic aquí</a></p>
 </body>
 </html>
