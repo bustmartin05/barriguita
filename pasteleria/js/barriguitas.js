@@ -2,6 +2,54 @@
    PASTELERÍA BARRIGUITAS - MOTOR DEL JUEGO, CARRUSELES, SUPABASE & ADMIN
    ========================================================================== */
 
+// Mapeo bidireccional entre Escenas y URLs amigables / Hash
+const SCENE_TO_HASH = {
+  'scene-01': '#inicio',
+  'scene-02': '#cocina',
+  'scene-sub-cakes': '#pasteles',
+  'scene-sub-decor': '#decoracion',
+  'scene-sub-tartas': '#tartas',
+  'scene-sub-cookies': '#dulces',
+  'scene-sub-box': '#box',
+  'scene-sub-delivery': '#pedido',
+  'scene-05-gallery': '#galeria',
+  'scene-06-reviews': '#opiniones',
+  'scene-07-promos': '#promociones'
+};
+
+const HASH_TO_SCENE = {
+  '#inicio': 'scene-01',
+  '#home': 'scene-01',
+  '#cocina': 'scene-02',
+  '#taller': 'scene-02',
+  '#armar': 'scene-02',
+  '#pasteles': 'scene-sub-cakes',
+  '#pastel': 'scene-sub-cakes',
+  '#decoracion': 'scene-sub-decor',
+  '#tartas': 'scene-sub-tartas',
+  '#tarta': 'scene-sub-tartas',
+  '#dulces': 'scene-sub-cookies',
+  '#cookies': 'scene-sub-cookies',
+  '#galletas': 'scene-sub-cookies',
+  '#box': 'scene-sub-box',
+  '#boxes': 'scene-sub-box',
+  '#pedido': 'scene-sub-delivery',
+  '#checkout': 'scene-sub-delivery',
+  '#entrega': 'scene-sub-delivery',
+  '#galeria': 'scene-05-gallery',
+  '#galería': 'scene-05-gallery',
+  '#fotos': 'scene-05-gallery',
+  '#opiniones': 'scene-06-reviews',
+  '#comentarios': 'scene-06-reviews',
+  '#reseñas': 'scene-06-reviews',
+  '#resenas': 'scene-06-reviews',
+  '#reviews': 'scene-06-reviews',
+  '#promociones': 'scene-07-promos',
+  '#promos': 'scene-07-promos',
+  '#ofertas': 'scene-07-promos',
+  '#combos': 'scene-07-promos'
+};
+
 class BarriguitasApp {
   constructor() {
     this.phoneWhatsApp = '5492612571131'; // Número de WhatsApp Oficial de Barriguitas (+54 9 2612 57-1131)
@@ -13,7 +61,7 @@ class BarriguitasApp {
       decorStyle: 'Estilo 1 (Infantil con Personaje)',
       decorImg: 'assets/images/JUEGO INICIO/Tipo de pasteles/Tipo de decoracion/deco1_transparent.png',
       tartName: 'Lemon Pie',
-      cookieName: 'Galletas Decoradas Granja',
+      cookieName: 'Galletas Animadas (x12)',
       boxName: 'Box Degustación x12 Mini Tartas',
       comments: '',
       referencePhoto: null,
@@ -21,7 +69,9 @@ class BarriguitasApp {
       deliveryZone: 'centro',
       deliveryAddress: '',
       eventDate: '',
-      clientName: ''
+      clientName: '',
+      upsellAdded: false,
+      upsellOffer: null
     };
 
     // Precios Iniciales (Sincronizados con admin.html y Supabase)
@@ -43,8 +93,11 @@ class BarriguitasApp {
       cookies: {
         'Mini Donuts': 11000,
         'Cake Pops': 12000,
+        'Galletas Animadas (x12)': 13500,
         'Galletas Decoradas Granja': 13500,
+        'Cupcakes (x6)': 12500,
         'Cupcakes Decorados': 12500,
+        'Paletas Dulces (x10)': 14000,
         'Paletas Decoradas': 14000
       },
       box: 18500,
@@ -69,6 +122,25 @@ class BarriguitasApp {
         '4_0kg': Math.round(kg * 4.0)
       };
     }
+
+    // Zonas de Envío
+    this.defaultShippingZones = [
+      { id: 'centro', name: 'Zona Centro / Cercanías', price: 1500 },
+      { id: 'norte', name: 'Zona Norte / Gran Mendoza', price: 2200 },
+      { id: 'sur', name: 'Zona Sur', price: 2500 }
+    ];
+    const savedZones = localStorage.getItem('barriguitas_shipping_zones');
+    this.shippingZones = savedZones ? JSON.parse(savedZones) : this.defaultShippingZones;
+
+    // Ofertas Sugeridas (Upsell Estilo McDonald's)
+    this.defaultUpsell = [
+      { id: 'upsell_box', triggerCategory: 'box', message: '¿Deseas sumar unas galletitas animadas temáticas a tu Box con $2.000 de descuento?', productName: 'Galletas Animadas Temáticas (x6)', discountPrice: 4800, originalPrice: 6800, active: true },
+      { id: 'upsell_pastel', triggerCategory: 'pastel', message: '¿Te gustaría sumar unas deliciosas Mini Donuts para acompañar tu pastel?', productName: 'Mini Donuts Glaseadas (x6)', discountPrice: 5000, originalPrice: 7500, active: true },
+      { id: 'upsell_tarta', triggerCategory: 'tarta', message: '¿Te gustaría probar además unas ricas paletas dulces de chocolate?', productName: 'Paletas Dulces de Chocolate (x5)', discountPrice: 4500, originalPrice: 6500, active: true },
+      { id: 'upsell_cookies', triggerCategory: 'cookies', message: '¿Te gustaría acompañar tus bocaditos con unos ricos Cupcakes rellenos?', productName: 'Cupcakes Rellenos (x4)', discountPrice: 5200, originalPrice: 7800, active: true }
+    ];
+    const savedUpsell = localStorage.getItem('barriguitas_upsell_offers');
+    this.upsellOffers = savedUpsell ? JSON.parse(savedUpsell) : this.defaultUpsell;
 
     // Promociones Iniciales (Página 7)
     this.defaultPromos = [
@@ -132,12 +204,14 @@ class BarriguitasApp {
     this.initGameFlow();
     this.initDelivery();
     this.renderProductPrices();
+    this.renderShippingZoneOptions();
     this.initGalleryCarousel();
     this.initReviewsCarousel();
     this.renderPromos();
     this.initPublicReviewDialog();
     this.initSupabaseConnector();
     this.initStorageListener();
+    this.resolveInitialRoute();
     this.updateCheckoutCalculation();
   }
 
@@ -151,13 +225,19 @@ class BarriguitasApp {
     }
   }
 
-  // 2. Navegación entre Escenas
-  goToScene(sceneId) {
+  // 2. Navegación entre Escenas & URLs Únicas / Hash
+  goToScene(sceneId, updateHash = true) {
     document.querySelectorAll('.scene-frame').forEach(f => f.classList.remove('active'));
     const target = document.getElementById(sceneId);
     if (target) {
       target.classList.add('active');
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Si entramos al paso final de entrega/checkout, preparar upsell y cálculo
+    if (sceneId === 'scene-sub-delivery') {
+      this.renderCheckoutUpsell();
+      this.updateCheckoutCalculation();
     }
 
     // Sincronizar estado activo de pestañas en desktop y drawer móvil
@@ -167,9 +247,35 @@ class BarriguitasApp {
     document.querySelectorAll('.drawer-nav-btn[data-scene]').forEach(b => {
       b.classList.toggle('active', b.dataset.scene === sceneId);
     });
+
+    // Actualizar URL en la barra de direcciones sin recargar para poder compartir links
+    if (updateHash && SCENE_TO_HASH[sceneId]) {
+      const hash = SCENE_TO_HASH[sceneId];
+      if (window.location.hash !== hash) {
+        history.pushState(null, '', hash);
+      }
+    }
+  }
+
+  resolveInitialRoute() {
+    const rawHash = (window.location.hash || '').toLowerCase();
+    if (rawHash && HASH_TO_SCENE[rawHash]) {
+      this.goToScene(HASH_TO_SCENE[rawHash], false);
+    }
+  }
+
+  resolveRouteFromHash() {
+    const rawHash = (window.location.hash || '').toLowerCase();
+    if (rawHash && HASH_TO_SCENE[rawHash]) {
+      this.goToScene(HASH_TO_SCENE[rawHash], false);
+    }
   }
 
   initNavigation() {
+    // Escuchar navegación del historial (Botones atrás / adelante del navegador)
+    window.addEventListener('hashchange', () => this.resolveRouteFromHash());
+    window.addEventListener('popstate', () => this.resolveRouteFromHash());
+
     // Navegación Desktop
     document.querySelectorAll('.nav-btn-link[data-scene]').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -286,6 +392,16 @@ class BarriguitasApp {
       if (e.key === 'barriguitas_prices') {
         this.prices = JSON.parse(e.newValue);
         this.renderProductPrices();
+        this.updateCheckoutCalculation();
+      }
+      if (e.key === 'barriguitas_shipping_zones') {
+        this.shippingZones = JSON.parse(e.newValue);
+        this.renderShippingZoneOptions();
+        this.updateCheckoutCalculation();
+      }
+      if (e.key === 'barriguitas_upsell_offers') {
+        this.upsellOffers = JSON.parse(e.newValue);
+        this.renderCheckoutUpsell();
         this.updateCheckoutCalculation();
       }
       if (e.key === 'barriguitas_promos') {
@@ -407,6 +523,96 @@ class BarriguitasApp {
     }
   }
 
+  // Renderizar Zonas de Envío Dinámicas
+  renderShippingZoneOptions() {
+    const dropdown = document.getElementById('delivery-zone-dropdown');
+    if (!dropdown) return;
+
+    dropdown.innerHTML = this.shippingZones.map(z => `
+      <option value="${z.id}" ${this.order.deliveryZone === z.id ? 'selected' : ''}>
+        ${z.name} (+$${Number(z.price).toLocaleString('es-AR')})
+      </option>
+    `).join('');
+
+    if (!this.shippingZones.some(z => z.id === this.order.deliveryZone) && this.shippingZones.length > 0) {
+      this.order.deliveryZone = this.shippingZones[0].id;
+    }
+  }
+
+  // Renderizar Oferta Sugerida al Finalizar (Upsell Estilo McDonald's)
+  renderCheckoutUpsell() {
+    const container = document.getElementById('checkout-upsell-container');
+    if (!container) return;
+
+    // Buscar una oferta activa para la categoría actual (o general para 'all')
+    const currentCategory = this.order.category || 'pastel';
+    const matchingOffer = this.upsellOffers.find(o => o.active && (o.triggerCategory === currentCategory || o.triggerCategory === 'all'));
+
+    if (!matchingOffer) {
+      container.style.display = 'none';
+      container.innerHTML = '';
+      this.order.upsellAdded = false;
+      this.order.upsellOffer = null;
+      return;
+    }
+
+    container.style.display = 'block';
+
+    const isAdded = Boolean(this.order.upsellAdded && this.order.upsellOffer && (this.order.upsellOffer.id === matchingOffer.id || this.order.upsellOffer.productName === matchingOffer.productName));
+    const savings = (matchingOffer.originalPrice && matchingOffer.originalPrice > matchingOffer.discountPrice)
+      ? (matchingOffer.originalPrice - matchingOffer.discountPrice)
+      : 0;
+
+    container.innerHTML = `
+      <div class="checkout-upsell-banner ${isAdded ? 'selected' : ''}">
+        <div class="upsell-header-badge">
+          <span class="upsell-badge-pill">
+            <span>🎁</span>
+            <span>¡OFERTA ESPECIAL AL FINALIZAR!</span>
+          </span>
+          ${savings > 0 ? `<span class="upsell-save-badge">¡Ahorrás $${savings.toLocaleString('es-AR')}!</span>` : ''}
+        </div>
+
+        <div class="upsell-body-content">
+          <div class="upsell-question-text">${matchingOffer.message}</div>
+          <div class="upsell-product-row">
+            <div class="upsell-product-name">${matchingOffer.productName}</div>
+            <div class="upsell-pricing-box">
+              <span class="upsell-deal-price">$${Number(matchingOffer.discountPrice).toLocaleString('es-AR')}</span>
+              ${matchingOffer.originalPrice ? `<span class="upsell-old-price">$${Number(matchingOffer.originalPrice).toLocaleString('es-AR')}</span>` : ''}
+            </div>
+          </div>
+        </div>
+
+        <button type="button" id="btn-toggle-checkout-upsell" class="btn-toggle-upsell ${isAdded ? 'active' : ''}">
+          ${isAdded
+            ? `✅ ¡Agregado a tu pedido! (Toca para quitar)`
+            : `+ Sumar a mi Pedido 🎁 (+$${Number(matchingOffer.discountPrice).toLocaleString('es-AR')})`}
+        </button>
+      </div>
+    `;
+
+    const btnToggle = document.getElementById('btn-toggle-checkout-upsell');
+    if (btnToggle) {
+      btnToggle.onclick = () => {
+        this.toggleUpsellOffer(matchingOffer);
+      };
+    }
+  }
+
+  toggleUpsellOffer(offer) {
+    if (this.order.upsellAdded && this.order.upsellOffer && (this.order.upsellOffer.id === offer.id || this.order.upsellOffer.productName === offer.productName)) {
+      this.order.upsellAdded = false;
+      this.order.upsellOffer = null;
+    } else {
+      this.order.upsellAdded = true;
+      this.order.upsellOffer = offer;
+    }
+
+    this.renderCheckoutUpsell();
+    this.updateCheckoutCalculation();
+  }
+
   // 4. Entrega (Panel Izquierdo) y Checkout
   initDelivery() {
     const cardMoto = document.getElementById('card-choice-moto');
@@ -488,14 +694,14 @@ class BarriguitasApp {
     let description = '';
 
     if (this.order.category === 'pastel') {
-      basePrice = this.prices.cakes[this.order.cakeSize] || 28000;
+      basePrice = this.prices.cakes[this.order.cakeSize] || 27000;
       const sizeNames = {
         '1_5kg': 'Pastel 1.5 kg (1 Piso)',
         '2_5kg': 'Pastel 2.5 kg (1 Piso Alto)',
         '3_5kg': 'Pastel 3.5 kg (2 Pisos)',
         '4_0kg': 'Pastel 4.0 kg (3 Pisos)'
       };
-      description = `${sizeNames[this.order.cakeSize]} - ${this.order.decorStyle}`;
+      description = `${sizeNames[this.order.cakeSize] || 'Pastel'} - ${this.order.decorStyle}`;
     } else if (this.order.category === 'tarta') {
       basePrice = this.prices.tarts[this.order.tartName] || 15000;
       description = `Tarta Artesanal: ${this.order.tartName}`;
@@ -509,28 +715,55 @@ class BarriguitasApp {
 
     let deliveryFee = 0;
     if (this.order.deliveryMethod === 'moto') {
-      deliveryFee = this.prices.delivery[this.order.deliveryZone] || 1500;
+      const selectedZone = this.shippingZones.find(z => z.id === this.order.deliveryZone);
+      if (selectedZone) {
+        deliveryFee = Number(selectedZone.price) || 0;
+      } else if (this.prices.delivery && this.prices.delivery[this.order.deliveryZone]) {
+        deliveryFee = this.prices.delivery[this.order.deliveryZone];
+      } else {
+        deliveryFee = 1500;
+      }
     }
 
-    const total = basePrice + deliveryFee;
+    let upsellPrice = 0;
+    if (this.order.upsellAdded && this.order.upsellOffer) {
+      upsellPrice = Number(this.order.upsellOffer.discountPrice) || 0;
+    }
+
+    const total = basePrice + deliveryFee + upsellPrice;
     const deposit = Math.round(total * 0.5); // 50% de Seña
     const balance = total - deposit;
 
     this.calculated = {
       description,
+      basePrice,
+      deliveryFee,
+      upsellPrice,
       total,
       deposit,
-      balance,
-      deliveryFee
+      balance
     };
 
     const descEl = document.getElementById('delivery-summary-desc');
     const totalEl = document.getElementById('delivery-summary-total');
     const depositEl = document.getElementById('delivery-summary-deposit');
+    const upsellRow = document.getElementById('summary-upsell-row');
+    const upsellLabel = document.getElementById('summary-upsell-label');
+    const upsellPriceEl = document.getElementById('summary-upsell-price');
 
     if (descEl) descEl.textContent = description;
     if (totalEl) totalEl.textContent = `$${total.toLocaleString('es-AR')}`;
     if (depositEl) depositEl.textContent = `$${deposit.toLocaleString('es-AR')}`;
+
+    if (upsellRow) {
+      if (this.order.upsellAdded && this.order.upsellOffer) {
+        upsellRow.style.display = 'flex';
+        if (upsellLabel) upsellLabel.textContent = `🎁 Oferta: ${this.order.upsellOffer.productName}`;
+        if (upsellPriceEl) upsellPriceEl.textContent = `+$${upsellPrice.toLocaleString('es-AR')}`;
+      } else {
+        upsellRow.style.display = 'none';
+      }
+    }
   }
 
   sendWhatsAppOrder() {
@@ -563,11 +796,20 @@ class BarriguitasApp {
     let msg = `✨🎂 *¡HOLA PASTELERÍA BARRIGUITAS! QUIERO CONFIRMAR MI PEDIDO* 🎂✨\n\n`;
     msg += `🧁 *Producto:* ${this.calculated.description}\n`;
 
+    if (this.order.upsellAdded && this.order.upsellOffer) {
+      const u = this.order.upsellOffer;
+      const savings = (u.originalPrice && u.originalPrice > u.discountPrice) ? ` (Ahorro $${(u.originalPrice - u.discountPrice).toLocaleString('es-AR')})` : '';
+      msg += `🎁 *Oferta Sugerida Agregada:* ${u.productName} por $${Number(u.discountPrice).toLocaleString('es-AR')}${savings}\n`;
+    }
+
     if (this.order.category === 'pastel' && this.order.comments) {
       msg += `📝 *Dedicatoria/Notas:* "${this.order.comments}"\n`;
     }
 
-    msg += `🚚 *Entrega:* ${this.order.deliveryMethod === 'moto' ? `Envío en Moto a ${addr} (${this.order.deliveryZone.toUpperCase()})` : 'Retiro por el taller'}\n`;
+    const selectedZone = this.shippingZones.find(z => z.id === this.order.deliveryZone);
+    const zoneName = selectedZone ? selectedZone.name : (this.order.deliveryZone || 'CENTRO').toUpperCase();
+
+    msg += `🚚 *Entrega:* ${this.order.deliveryMethod === 'moto' ? `Envío en Moto a ${addr} (${zoneName})` : 'Retiro por el taller'}\n`;
     msg += `📅 *Fecha del evento:* ${date}\n`;
     msg += `👤 *Cliente:* ${name}\n\n`;
 
@@ -594,6 +836,7 @@ class BarriguitasApp {
       event_date: details.date || document.getElementById('delivery-input-date')?.value || '',
       total_price: this.calculated.total,
       deposit_50: this.calculated.deposit,
+      upsell_item: (this.order.upsellAdded && this.order.upsellOffer) ? `${this.order.upsellOffer.productName} ($${this.order.upsellOffer.discountPrice})` : null,
       payment_status: status
     };
 
@@ -988,7 +1231,37 @@ class BarriguitasApp {
         this.updateCheckoutCalculation();
       }
 
-      // 2. Promociones
+      // 2. Zonas de Envío
+      const { data: shippingData } = await this.supabase.from('barriguitas_shipping_zones').select('*');
+      if (shippingData && shippingData.length > 0) {
+        this.shippingZones = shippingData.map(z => ({
+          id: z.id,
+          name: z.name,
+          price: Number(z.price),
+          active: z.active ?? true
+        }));
+        localStorage.setItem('barriguitas_shipping_zones', JSON.stringify(this.shippingZones));
+        this.renderShippingZoneOptions();
+        this.updateCheckoutCalculation();
+      }
+
+      // 3. Ofertas Sugeridas (Upsell McDonald's)
+      const { data: upsellData } = await this.supabase.from('barriguitas_upsell_offers').select('*');
+      if (upsellData && upsellData.length > 0) {
+        this.upsellOffers = upsellData.map(u => ({
+          id: u.id,
+          triggerCategory: u.trigger_category || 'all',
+          message: u.message,
+          productName: u.product_name,
+          discountPrice: Number(u.discount_price),
+          originalPrice: Number(u.original_price || 0),
+          active: u.active ?? true
+        }));
+        localStorage.setItem('barriguitas_upsell_offers', JSON.stringify(this.upsellOffers));
+        this.renderCheckoutUpsell();
+      }
+
+      // 4. Promociones
       const { data: promosData } = await this.supabase.from('barriguitas_promos').select('*').order('id', { ascending: false });
       if (promosData && promosData.length > 0) {
         this.promos = promosData.map(p => ({
@@ -1002,7 +1275,7 @@ class BarriguitasApp {
         this.renderPromos();
       }
 
-      // 3. Reseñas
+      // 5. Reseñas
       const { data: reviewsData } = await this.supabase.from('barriguitas_reviews').select('*').order('id', { ascending: false });
       if (reviewsData && reviewsData.length > 0) {
         this.reviews = reviewsData.map(r => ({
@@ -1016,7 +1289,7 @@ class BarriguitasApp {
         this.renderReviewsCarousel();
       }
 
-      // 4. Galería
+      // 6. Galería
       const { data: galleryData } = await this.supabase.from('barriguitas_gallery').select('*').order('id', { ascending: false });
       if (galleryData && galleryData.length > 0) {
         this.gallery = galleryData.map(g => ({
@@ -1051,6 +1324,29 @@ class BarriguitasApp {
         { id: 'cake_4_0kg', category: 'cakes', item_key: '4_0kg', price: this.prices.cakes['4_0kg'] },
         { id: 'box_degustacion', category: 'box', item_key: 'box', price: this.prices.box }
       ]);
+
+      // Subir Zonas de Envío
+      for (const z of this.shippingZones) {
+        await this.supabase.from('barriguitas_shipping_zones').upsert([{
+          id: z.id,
+          name: z.name,
+          price: z.price,
+          active: z.active ?? true
+        }]);
+      }
+
+      // Subir Ofertas de Upsell
+      for (const u of this.upsellOffers) {
+        await this.supabase.from('barriguitas_upsell_offers').upsert([{
+          id: u.id,
+          trigger_category: u.triggerCategory,
+          message: u.message,
+          product_name: u.productName,
+          discount_price: u.discountPrice,
+          original_price: u.originalPrice,
+          active: u.active ?? true
+        }]);
+      }
 
       // Subir Promos
       for (const p of this.promos) {

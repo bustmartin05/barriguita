@@ -1,9 +1,12 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="refresh" content="0; url=pasteleria/">
-  <script>window.location.replace("pasteleria/");</script>
+  <script>
+    var target = "pasteleria/" + (window.location.hash || "") + (window.location.search || "");
+    window.location.replace(target);
+  </script>
   <link rel="icon" type="image/png" href="pasteleria/assets/images/nene-volando-globos.png">
   <title>Pastelería Barriguitas 🎂</title>
 </head>

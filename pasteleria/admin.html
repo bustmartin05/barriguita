@@ -9,6 +9,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Lilita+One&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
   
+  <!-- Supabase JS Client v2 -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
   <!-- Favicon: Nene de carga con globos -->
   <link rel="icon" type="image/png" href="assets/images/nene-volando-globos.png">
   
@@ -431,6 +434,9 @@
     </a>
 
     <div class="admin-header-actions">
+      <div id="supabase-status-badge" class="admin-badge-role" style="background: #f0fdf4; color: #166534; border: 1.5px solid #86efac; display: none;">
+        🟢 Supabase Conectado
+      </div>
       <a href="index.html" class="btn-outline-action">← Volver a la Tienda</a>
       <button id="btn-admin-logout" class="btn-outline-action btn-logout" style="display: none;">
         Cerrar Sesión 🔒
@@ -1007,8 +1013,129 @@
 
       initDashboard() {
         this.initTabs();
+        this.initSupabase();
         this.loadData();
         this.bindEvents();
+      }
+
+      initSupabase() {
+        this.sbUrl = localStorage.getItem('barriguitas_sb_url') || 'https://kutoqygjgsorzpwcjotp.supabase.co';
+        this.sbKey = localStorage.getItem('barriguitas_sb_key') || '';
+        this.supabase = null;
+        this.isSupabaseConnected = false;
+
+        if (window.supabase && this.sbUrl && this.sbKey) {
+          try {
+            this.supabase = window.supabase.createClient(this.sbUrl, this.sbKey);
+            this.isSupabaseConnected = true;
+            this.updateSupabaseBadge(true);
+            this.fetchRemoteData();
+          } catch (err) {
+            console.warn('Error al conectar Supabase en Admin:', err);
+            this.updateSupabaseBadge(false);
+          }
+        } else {
+          this.updateSupabaseBadge(false);
+        }
+      }
+
+      updateSupabaseBadge(connected) {
+        const badge = document.getElementById('supabase-status-badge');
+        if (badge) {
+          badge.style.display = 'inline-flex';
+          if (connected) {
+            badge.innerHTML = '🟢 Supabase Conectado (En vivo)';
+            badge.style.background = '#f0fdf4';
+            badge.style.color = '#166534';
+            badge.style.borderColor = '#86efac';
+          } else {
+            badge.innerHTML = '🟠 Almacenamiento Local';
+            badge.style.background = '#fffbeb';
+            badge.style.color = '#b45309';
+            badge.style.borderColor = '#fde68a';
+          }
+        }
+      }
+
+      async fetchRemoteData() {
+        if (!this.supabase || !this.isSupabaseConnected) return;
+
+        try {
+          // 1. Precios
+          const { data: pricesData } = await this.supabase.from('barriguitas_prices').select('*');
+          if (pricesData && pricesData.length > 0) {
+            pricesData.forEach(p => {
+              if (p.category === 'cakes') this.prices.cakes[p.item_key] = Number(p.price);
+              if (p.category === 'cake_kg') this.prices.cakePricePerKg = Number(p.price);
+              if (p.category === 'tarts') this.prices.tarts[p.item_key] = Number(p.price);
+              if (p.category === 'cookies') this.prices.cookies[p.item_key] = Number(p.price);
+              if (p.category === 'box') {
+                this.prices.box = Number(p.price);
+                if (p.metadata) this.prices.boxDescription = p.metadata;
+              }
+            });
+            localStorage.setItem('barriguitas_prices', JSON.stringify(this.prices));
+            this.populatePricesForm();
+          }
+
+          // 2. Envíos
+          const { data: shippingData } = await this.supabase.from('barriguitas_shipping_zones').select('*');
+          if (shippingData && shippingData.length > 0) {
+            this.shippingZones = shippingData.map(z => ({
+              id: z.id,
+              name: z.name,
+              price: Number(z.price),
+              active: z.active ?? true
+            }));
+            localStorage.setItem('barriguitas_shipping_zones', JSON.stringify(this.shippingZones));
+            this.renderShippingZones();
+          }
+
+          // 3. Upsell
+          const { data: upsellData } = await this.supabase.from('barriguitas_upsell_offers').select('*');
+          if (upsellData && upsellData.length > 0) {
+            this.upsellOffers = upsellData.map(u => ({
+              id: u.id,
+              triggerCategory: u.trigger_category || 'all',
+              message: u.message,
+              productName: u.product_name,
+              discountPrice: Number(u.discount_price),
+              originalPrice: Number(u.original_price || 0),
+              active: u.active ?? true
+            }));
+            localStorage.setItem('barriguitas_upsell_offers', JSON.stringify(this.upsellOffers));
+            this.renderUpsellOffers();
+          }
+
+          // 4. Promociones
+          const { data: promosData } = await this.supabase.from('barriguitas_promos').select('*').order('id', { ascending: false });
+          if (promosData && promosData.length > 0) {
+            this.promos = promosData.map(p => ({
+              id: p.id,
+              badge: p.badge,
+              title: p.title,
+              desc: p.description,
+              price: Number(p.price)
+            }));
+            localStorage.setItem('barriguitas_promos', JSON.stringify(this.promos));
+            this.renderPromosList();
+          }
+
+          // 5. Galería
+          const { data: galleryData } = await this.supabase.from('barriguitas_gallery').select('*').order('id', { ascending: false });
+          if (galleryData && galleryData.length > 0) {
+            this.gallery = galleryData.map(g => ({
+              id: g.id,
+              title: g.title,
+              cat: g.category,
+              img: g.image_url
+            }));
+            localStorage.setItem('barriguitas_gallery_v2', JSON.stringify(this.gallery));
+            this.renderGalleryList();
+          }
+        } catch (err) {
+          console.warn('Error al descargar de Supabase en Admin:', err);
+        }
       }
 
       initTabs() {
@@ -1038,8 +1165,11 @@
           cookies: {
             'Mini Donuts': 11000,
             'Cake Pops': 12000,
+            'Galletas Animadas (x12)': 13500,
             'Galletas Decoradas Granja': 13500,
+            'Cupcakes (x6)': 12500,
             'Cupcakes Decorados': 12500,
+            'Paletas Dulces (x10)': 14000,
             'Paletas Decoradas': 14000
           },
           box: 18500,
@@ -1054,29 +1184,7 @@
           this.prices.cakePricePerKg = 18000;
         }
 
-        const kgInput = document.getElementById('input-cake-price-kg');
-        if (kgInput) {
-          kgInput.value = this.prices.cakePricePerKg;
-          this.updateCakePreviews(this.prices.cakePricePerKg);
-        }
-
-        // Tartas
-        document.getElementById('price-tart-lemon').value = this.prices.tarts['Lemon Pie'] || 15000;
-        document.getElementById('price-tart-coco').value = this.prices.tarts['Coco con Dulce de Leche'] || 14500;
-        document.getElementById('price-tart-cheese').value = this.prices.tarts['Cheesecake'] || 16500;
-        document.getElementById('price-tart-brownie').value = this.prices.tarts['Brownie con Dulce de Leche'] || 15500;
-        document.getElementById('price-tart-rogel').value = this.prices.tarts['Rogel'] || 16000;
-
-        // Dulces
-        document.getElementById('price-cookie-donuts').value = this.prices.cookies['Mini Donuts'] || 11000;
-        document.getElementById('price-cookie-cakepops').value = this.prices.cookies['Cake Pops'] || 12000;
-        document.getElementById('price-cookie-granja').value = this.prices.cookies['Galletas Animadas (x12)'] || this.prices.cookies['Galletas Decoradas Granja'] || 13500;
-        document.getElementById('price-cookie-cupcakes').value = this.prices.cookies['Cupcakes (x6)'] || this.prices.cookies['Cupcakes Decorados'] || 12500;
-        document.getElementById('price-cookie-paletas').value = this.prices.cookies['Paletas Dulces (x10)'] || this.prices.cookies['Paletas Decoradas'] || 14000;
-
-        // Box
-        document.getElementById('price-box-item').value = this.prices.box || 18500;
-        document.getElementById('desc-box-item').value = this.prices.boxDescription || defaultPrices.boxDescription;
+        this.populatePricesForm();
 
         // 2. Cargar Promos
         const defaultPromos = [
@@ -1112,22 +1220,57 @@
 
         // 5. Cargar Ofertas de Upsell (Estilo McDonald's)
         const defaultUpsell = [
-          { id: 'upsell_tarta', triggerCategory: 'tarta', message: '¿Te gustaría probar además unas ricas paletas de chocolate?', productName: 'Paletas Dulces de Chocolate (x5)', discountPrice: 4500, originalPrice: 6500, active: true },
+          { id: 'upsell_box', triggerCategory: 'box', message: '¿Deseas sumar unas galletitas animadas temáticas a tu Box con $2.000 de descuento?', productName: 'Galletas Animadas Temáticas (x6)', discountPrice: 4800, originalPrice: 6800, active: true },
           { id: 'upsell_pastel', triggerCategory: 'pastel', message: '¿Te gustaría sumar unas deliciosas Mini Donuts para acompañar tu pastel?', productName: 'Mini Donuts Glaseadas (x6)', discountPrice: 5000, originalPrice: 7500, active: true },
-          { id: 'upsell_cookies', triggerCategory: 'cookies', message: '¿Te gustaría acompañar con unos ricos Cupcakes rellenos?', productName: 'Cupcakes Rellenos (x4)', discountPrice: 5200, originalPrice: 7800, active: true },
-          { id: 'upsell_box', triggerCategory: 'box', message: '¿Deseas sumar unas galletitas animadas temáticas a tu Box?', productName: 'Galletas Animadas Temáticas (x6)', discountPrice: 4800, originalPrice: 7000, active: true }
+          { id: 'upsell_tarta', triggerCategory: 'tarta', message: '¿Te gustaría probar además unas ricas paletas dulces de chocolate?', productName: 'Paletas Dulces de Chocolate (x5)', discountPrice: 4500, originalPrice: 6500, active: true },
+          { id: 'upsell_cookies', triggerCategory: 'cookies', message: '¿Te gustaría acompañar tus bocaditos con unos ricos Cupcakes rellenos?', productName: 'Cupcakes Rellenos (x4)', discountPrice: 5200, originalPrice: 7800, active: true }
         ];
         const savedUpsell = localStorage.getItem('barriguitas_upsell_offers');
         this.upsellOffers = savedUpsell ? JSON.parse(savedUpsell) : defaultUpsell;
         this.renderUpsellOffers();
       }
 
+      populatePricesForm() {
+        const kgInput = document.getElementById('input-cake-price-kg');
+        if (kgInput) {
+          kgInput.value = this.prices.cakePricePerKg;
+          this.updateCakePreviews(this.prices.cakePricePerKg);
+        }
+
+        // Tartas
+        if (this.prices.tarts) {
+          if (document.getElementById('price-tart-lemon')) document.getElementById('price-tart-lemon').value = this.prices.tarts['Lemon Pie'] || 15000;
+          if (document.getElementById('price-tart-coco')) document.getElementById('price-tart-coco').value = this.prices.tarts['Coco con Dulce de Leche'] || 14500;
+          if (document.getElementById('price-tart-cheese')) document.getElementById('price-tart-cheese').value = this.prices.tarts['Cheesecake'] || 16500;
+          if (document.getElementById('price-tart-brownie')) document.getElementById('price-tart-brownie').value = this.prices.tarts['Brownie con Dulce de Leche'] || 15500;
+          if (document.getElementById('price-tart-rogel')) document.getElementById('price-tart-rogel').value = this.prices.tarts['Rogel'] || 16000;
+        }
+
+        // Dulces
+        if (this.prices.cookies) {
+          if (document.getElementById('price-cookie-donuts')) document.getElementById('price-cookie-donuts').value = this.prices.cookies['Mini Donuts'] || 11000;
+          if (document.getElementById('price-cookie-cakepops')) document.getElementById('price-cookie-cakepops').value = this.prices.cookies['Cake Pops'] || 12000;
+          if (document.getElementById('price-cookie-granja')) document.getElementById('price-cookie-granja').value = this.prices.cookies['Galletas Animadas (x12)'] || this.prices.cookies['Galletas Decoradas Granja'] || 13500;
+          if (document.getElementById('price-cookie-cupcakes')) document.getElementById('price-cookie-cupcakes').value = this.prices.cookies['Cupcakes (x6)'] || this.prices.cookies['Cupcakes Decorados'] || 12500;
+          if (document.getElementById('price-cookie-paletas')) document.getElementById('price-cookie-paletas').value = this.prices.cookies['Paletas Dulces (x10)'] || this.prices.cookies['Paletas Decoradas'] || 14000;
+        }
+
+        // Box
+        if (document.getElementById('price-box-item')) document.getElementById('price-box-item').value = this.prices.box || 18500;
+        if (document.getElementById('desc-box-item')) document.getElementById('desc-box-item').value = this.prices.boxDescription || 'Incluye degustación de 12 mini tartas artesanales variadas';
+      }
+
       updateCakePreviews(pricePerKg) {
         const kg = Number(pricePerKg) || 0;
-        document.getElementById('preview-calc-1_5').textContent = '$' + Math.round(kg * 1.5).toLocaleString('es-AR');
-        document.getElementById('preview-calc-2_5').textContent = '$' + Math.round(kg * 2.5).toLocaleString('es-AR');
-        document.getElementById('preview-calc-3_5').textContent = '$' + Math.round(kg * 3.5).toLocaleString('es-AR');
-        document.getElementById('preview-calc-4_0').textContent = '$' + Math.round(kg * 4.0).toLocaleString('es-AR');
+        const p1 = document.getElementById('preview-calc-1_5');
+        const p2 = document.getElementById('preview-calc-2_5');
+        const p3 = document.getElementById('preview-calc-3_5');
+        const p4 = document.getElementById('preview-calc-4_0');
+
+        if (p1) p1.textContent = '$' + Math.round(kg * 1.5).toLocaleString('es-AR');
+        if (p2) p2.textContent = '$' + Math.round(kg * 2.5).toLocaleString('es-AR');
+        if (p3) p3.textContent = '$' + Math.round(kg * 3.5).toLocaleString('es-AR');
+        if (p4) p4.textContent = '$' + Math.round(kg * 4.0).toLocaleString('es-AR');
       }
 
       bindEvents() {
@@ -1142,7 +1285,7 @@
         // Formulario Guardar Precios
         const formPrices = document.getElementById('form-save-all-prices');
         if (formPrices) {
-          formPrices.addEventListener('submit', (e) => {
+          formPrices.addEventListener('submit', async (e) => {
             e.preventDefault();
             const kgPrice = Number(document.getElementById('input-cake-price-kg').value) || 18000;
 
@@ -1177,25 +1320,43 @@
             this.prices.boxDescription = document.getElementById('desc-box-item').value.trim();
 
             localStorage.setItem('barriguitas_prices', JSON.stringify(this.prices));
-            alert('✅ ¡Todos los precios y descripciones se han actualizado con éxito en la tienda web!');
+
+            // Sincronizar en Supabase
+            await this.syncPricesToSupabase();
+
+            alert('✅ ¡Todos los precios y descripciones se han actualizado con éxito en la tienda web y la base de datos!');
           });
         }
 
         // Formulario Crear Promo
         const formPromo = document.getElementById('form-create-promo');
         if (formPromo) {
-          formPromo.addEventListener('submit', (e) => {
+          formPromo.addEventListener('submit', async (e) => {
             e.preventDefault();
             const title = document.getElementById('promo-new-title').value.trim();
             const price = Number(document.getElementById('promo-new-price').value) || 25000;
             const badge = document.getElementById('promo-new-badge').value.trim() || 'Promo Especial';
             const desc = document.getElementById('promo-new-desc').value.trim();
+            const newId = Date.now();
 
-            this.promos.unshift({ id: Date.now(), title, price, badge, desc });
+            const promoObj = { id: newId, title, price, badge, desc };
+            this.promos.unshift(promoObj);
             localStorage.setItem('barriguitas_promos', JSON.stringify(this.promos));
             this.renderPromosList();
             formPromo.reset();
-            alert('✅ ¡Promoción publicada en la página 7 de la tienda!');
+
+            // Sincronizar en Supabase
+            if (this.supabase && this.isSupabaseConnected) {
+              try {
+                await this.supabase.from('barriguitas_promos').insert([{
+                  badge, title, description: desc, price
+                }]);
+              } catch (err) {
+                console.warn('Error al insertar promo en Supabase:', err);
+              }
+            }
+
+            alert('✅ ¡Promoción publicada en la tienda y sincronizada!');
           });
         }
 
@@ -1210,12 +1371,26 @@
 
             if (file) {
               const r = new FileReader();
-              r.onload = (ev) => {
-                this.gallery.unshift({ id: Date.now(), title, cat, img: ev.target.result });
+              r.onload = async (ev) => {
+                const imgData = ev.target.result;
+                const newId = Date.now();
+                this.gallery.unshift({ id: newId, title, cat, img: imgData });
                 localStorage.setItem('barriguitas_gallery_v2', JSON.stringify(this.gallery));
                 this.renderGalleryList();
                 formPhoto.reset();
-                alert('✅ ¡Foto agregada con éxito a la galería de la página 5!');
+
+                // Sincronizar en Supabase si es URL o data
+                if (this.supabase && this.isSupabaseConnected) {
+                  try {
+                    await this.supabase.from('barriguitas_gallery').insert([{
+                      title, category: cat, image_url: imgData
+                    }]);
+                  } catch (err) {
+                    console.warn('Error al insertar foto en Supabase:', err);
+                  }
+                }
+
+                alert('✅ ¡Foto agregada con éxito a la galería de la tienda!');
               };
               r.readAsDataURL(file);
             }
@@ -1239,7 +1414,7 @@
         // Guardar Zonas y Tarifas de Envío
         const formShipping = document.getElementById('form-save-shipping-zones');
         if (formShipping) {
-          formShipping.addEventListener('submit', (e) => {
+          formShipping.addEventListener('submit', async (e) => {
             e.preventDefault();
             const nameInputs = document.querySelectorAll('.zone-input-name');
             const priceInputs = document.querySelectorAll('.zone-input-price');
@@ -1261,7 +1436,10 @@
             });
             localStorage.setItem('barriguitas_prices', JSON.stringify(this.prices));
 
-            alert('✅ ¡Zonas y tarifas de envío actualizadas con éxito!');
+            // Sincronizar en Supabase
+            await this.syncShippingToSupabase();
+
+            alert('✅ ¡Zonas y tarifas de envío guardadas y sincronizadas en vivo!');
           });
         }
 
@@ -1285,7 +1463,7 @@
         // Guardar Ofertas de Upsell
         const formUpsell = document.getElementById('form-save-upsell');
         if (formUpsell) {
-          formUpsell.addEventListener('submit', (e) => {
+          formUpsell.addEventListener('submit', async (e) => {
             e.preventDefault();
             const cards = document.querySelectorAll('.upsell-admin-card');
             this.upsellOffers = Array.from(cards).map((card, idx) => {
@@ -1302,7 +1480,11 @@
             });
 
             localStorage.setItem('barriguitas_upsell_offers', JSON.stringify(this.upsellOffers));
-            alert('✅ ¡Ofertas sugeridas (Upsell) actualizadas con éxito!');
+
+            // Sincronizar en Supabase
+            await this.syncUpsellToSupabase();
+
+            alert('✅ ¡Ofertas sugeridas estilo McDonald\'s (Upsell) actualizadas y sincronizadas en la base de datos!');
           });
         }
 
@@ -1337,6 +1519,69 @@
         }
       }
 
+      async syncPricesToSupabase() {
+        if (!this.supabase || !this.isSupabaseConnected) return;
+        try {
+          const records = [
+            { id: 'cake_price_kg', category: 'cake_kg', item_key: 'kg', price: this.prices.cakePricePerKg, metadata: 'Precio base por kg' },
+            { id: 'cake_1_5kg', category: 'cakes', item_key: '1_5kg', price: this.prices.cakes['1_5kg'] },
+            { id: 'cake_2_5kg', category: 'cakes', item_key: '2_5kg', price: this.prices.cakes['2_5kg'] },
+            { id: 'cake_3_5kg', category: 'cakes', item_key: '3_5kg', price: this.prices.cakes['3_5kg'] },
+            { id: 'cake_4_0kg', category: 'cakes', item_key: '4_0kg', price: this.prices.cakes['4_0kg'] },
+            { id: 'box_degustacion', category: 'box', item_key: 'box', price: this.prices.box, metadata: this.prices.boxDescription }
+          ];
+
+          Object.entries(this.prices.tarts || {}).forEach(([name, price]) => {
+            const idKey = 'tart_' + name.toLowerCase().replace(/[^a-z0-9]/g, '_');
+            records.push({ id: idKey, category: 'tarts', item_key: name, price });
+          });
+
+          Object.entries(this.prices.cookies || {}).forEach(([name, price]) => {
+            const idKey = 'cookie_' + name.toLowerCase().replace(/[^a-z0-9]/g, '_');
+            records.push({ id: idKey, category: 'cookies', item_key: name, price });
+          });
+
+          await this.supabase.from('barriguitas_prices').upsert(records);
+        } catch (err) {
+          console.warn('Error al sincronizar precios con Supabase:', err);
+        }
+      }
+
+      async syncShippingToSupabase() {
+        if (!this.supabase || !this.isSupabaseConnected) return;
+        try {
+          for (const z of this.shippingZones) {
+            await this.supabase.from('barriguitas_shipping_zones').upsert([{
+              id: z.id,
+              name: z.name,
+              price: z.price,
+              active: z.active ?? true
+            }]);
+          }
+        } catch (err) {
+          console.warn('Error al sincronizar envíos con Supabase:', err);
+        }
+      }
+
+      async syncUpsellToSupabase() {
+        if (!this.supabase || !this.isSupabaseConnected) return;
+        try {
+          for (const u of this.upsellOffers) {
+            await this.supabase.from('barriguitas_upsell_offers').upsert([{
+              id: u.id,
+              trigger_category: u.triggerCategory,
+              message: u.message,
+              product_name: u.productName,
+              discount_price: u.discountPrice,
+              original_price: u.originalPrice,
+              active: u.active ?? true
+            }]);
+          }
+        } catch (err) {
+          console.warn('Error al sincronizar ofertas upsell con Supabase:', err);
+        }
+      }
+
       renderShippingZones() {
         const container = document.getElementById('shipping-zones-list');
         if (!container) return;
@@ -1358,14 +1603,23 @@
         `).join('');
       }
 
-      deleteShippingZone(idx) {
+      async deleteShippingZone(idx) {
         if (this.shippingZones.length <= 1) {
           alert('Debes mantener al menos una zona de envío.');
           return;
         }
         if (confirm('¿Deseas eliminar esta zona de envío?')) {
-          this.shippingZones.splice(idx, 1);
+          const removed = this.shippingZones.splice(idx, 1)[0];
+          localStorage.setItem('barriguitas_shipping_zones', JSON.stringify(this.shippingZones));
           this.renderShippingZones();
+
+          if (this.supabase && this.isSupabaseConnected && removed?.id) {
+            try {
+              await this.supabase.from('barriguitas_shipping_zones').delete().eq('id', removed.id);
+            } catch (err) {
+              console.warn('Error al borrar zona de Supabase:', err);
+            }
+          }
         }
       }
 
@@ -1403,21 +1657,21 @@
                   <label class="form-label">¿A qué pedidos se ofrece? (Condición):</label>
                   <select class="form-input upsell-input-category">
                     <option value="all" ${offer.triggerCategory === 'all' ? 'selected' : ''}>Cualquier producto (General)</option>
-                    <option value="tarta" ${offer.triggerCategory === 'tarta' ? 'selected' : ''}>Si el cliente pide: Tartas</option>
-                    <option value="pastel" ${offer.triggerCategory === 'pastel' ? 'selected' : ''}>Si el cliente pide: Pasteles</option>
-                    <option value="cookies" ${offer.triggerCategory === 'cookies' ? 'selected' : ''}>Si el cliente pide: Galletas y Bocaditos</option>
                     <option value="box" ${offer.triggerCategory === 'box' ? 'selected' : ''}>Si el cliente pide: Boxes Dulces</option>
+                    <option value="pastel" ${offer.triggerCategory === 'pastel' ? 'selected' : ''}>Si el cliente pide: Pasteles</option>
+                    <option value="tarta" ${offer.triggerCategory === 'tarta' ? 'selected' : ''}>Si el cliente pide: Tartas</option>
+                    <option value="cookies" ${offer.triggerCategory === 'cookies' ? 'selected' : ''}>Si el cliente pide: Galletas y Bocaditos</option>
                   </select>
                 </div>
                 <div>
                   <label class="form-label">Producto Adicional Ofrecido:</label>
-                  <input type="text" class="form-input upsell-input-name" value="${offer.productName}" placeholder="Ej: Paletas Dulces de Chocolate (x5)" required>
+                  <input type="text" class="form-input upsell-input-name" value="${offer.productName}" placeholder="Ej: Galletas Animadas Temáticas (x6)" required>
                 </div>
               </div>
 
               <div style="margin-bottom: 10px;">
                 <label class="form-label">Pregunta / Mensaje Sugerente (Estilo McDonald's):</label>
-                <input type="text" class="form-input upsell-input-message" value="${offer.message}" placeholder="Ej: ¿Te gustaría probar además unas ricas paletas de chocolate?" required>
+                <input type="text" class="form-input upsell-input-message" value="${offer.message}" placeholder="Ej: ¿Deseas sumar unas galletitas animadas temáticas a tu Box con $2.000 de descuento?" required>
               </div>
 
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
@@ -1427,7 +1681,7 @@
                 </div>
                 <div>
                   <label class="form-label">Precio de Lista Habitual ($ tachado opcional):</label>
-                  <input type="number" class="form-input upsell-input-orig" value="${offer.originalPrice || ''}" min="0" step="100" placeholder="Ej: 6500">
+                  <input type="number" class="form-input upsell-input-orig" value="${offer.originalPrice || ''}" min="0" step="100" placeholder="Ej: 6800">
                 </div>
               </div>
             </div>
@@ -1435,10 +1689,19 @@
         `).join('');
       }
 
-      deleteUpsellOffer(idx) {
+      async deleteUpsellOffer(idx) {
         if (confirm('¿Deseas eliminar esta oferta sugerida?')) {
-          this.upsellOffers.splice(idx, 1);
+          const removed = this.upsellOffers.splice(idx, 1)[0];
+          localStorage.setItem('barriguitas_upsell_offers', JSON.stringify(this.upsellOffers));
           this.renderUpsellOffers();
+
+          if (this.supabase && this.isSupabaseConnected && removed?.id) {
+            try {
+              await this.supabase.from('barriguitas_upsell_offers').delete().eq('id', removed.id);
+            } catch (err) {
+              console.warn('Error al borrar upsell de Supabase:', err);
+            }
+          }
         }
       }
 
@@ -1459,11 +1722,19 @@
         `).join('');
       }
 
-      deletePromo(id) {
+      async deletePromo(id) {
         if (confirm('¿Deseas eliminar esta promoción?')) {
           this.promos = this.promos.filter(p => p.id !== id);
           localStorage.setItem('barriguitas_promos', JSON.stringify(this.promos));
           this.renderPromosList();
+
+          if (this.supabase && this.isSupabaseConnected) {
+            try {
+              await this.supabase.from('barriguitas_promos').delete().eq('id', id);
+            } catch (err) {
+              console.warn('Error al borrar promo de Supabase:', err);
+            }
+          }
         }
       }
 
@@ -1485,11 +1756,19 @@
         `).join('');
       }
 
-      deletePhoto(id) {
+      async deletePhoto(id) {
         if (confirm('¿Deseas eliminar esta foto de la galería?')) {
           this.gallery = this.gallery.filter(g => g.id !== id);
           localStorage.setItem('barriguitas_gallery_v2', JSON.stringify(this.gallery));
           this.renderGalleryList();
+
+          if (this.supabase && this.isSupabaseConnected) {
+            try {
+              await this.supabase.from('barriguitas_gallery').delete().eq('id', id);
+            } catch (err) {
+              console.warn('Error al borrar foto de Supabase:', err);
+            }
+          }
         }
       }
     }

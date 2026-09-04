@@ -493,12 +493,23 @@
           </div>
         </div>
 
+        <!-- OFERTA SUGERIDA ESTILO MCDONALD'S (UPSELL AL FINALIZAR) -->
+        <div id="checkout-upsell-container" class="checkout-upsell-wrapper" style="display: none;">
+          <!-- Inyectado dinámicamente según la categoría y ofertas activas -->
+        </div>
+
         <!-- Resumen de Costos y Seña 50% -->
         <div class="delivery-summary-card">
           <div class="summary-top-row">
             <div id="delivery-summary-desc" class="summary-product-label">Pastel 2.5 kg</div>
             <span class="summary-deposit-pill">Seña 50%</span>
           </div>
+          
+          <div id="summary-upsell-row" class="summary-calc-row upsell-row-item" style="display: none;">
+            <span class="summary-calc-label" id="summary-upsell-label">🎁 Oferta sugerida:</span>
+            <span id="summary-upsell-price" class="summary-calc-val">+$4.800</span>
+          </div>
+
           <div class="summary-calc-row">
             <span class="summary-calc-label">Total Presupuestado:</span>
             <span id="delivery-summary-total" class="summary-calc-val">$29.500</span>
