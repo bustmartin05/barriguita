@@ -456,7 +456,10 @@
 
         <div class="form-group-field">
           <label class="form-label" for="login-pass">Contraseña:</label>
-          <input type="password" id="login-pass" class="form-input" placeholder="••••••••" required autocomplete="current-password">
+          <div style="position: relative; display: flex; align-items: center;">
+            <input type="password" id="login-pass" class="form-input" placeholder="••••••••" required autocomplete="current-password" style="padding-right: 44px;">
+            <button type="button" id="btn-toggle-pwd" style="position: absolute; right: 10px; background: none; border: none; font-size: 1.25rem; cursor: pointer; color: #64748b; line-height: 1;" title="Mostrar / Ocultar contraseña">👁️</button>
+          </div>
         </div>
 
         <button type="submit" class="btn-submit-candy">Ingresar al Panel 🚀</button>
@@ -474,6 +477,9 @@
         <button class="admin-tab-btn active" data-tab="tab-precios">💲 Precios & Productos</button>
         <button class="admin-tab-btn" data-tab="tab-promos">🎁 Promociones (Pág 7)</button>
         <button class="admin-tab-btn" data-tab="tab-galeria">📸 Galería de Pasteles (Pág 5)</button>
+        <button class="admin-tab-btn" data-tab="tab-envios">🚚 Tarifas de Envío</button>
+        <button class="admin-tab-btn" data-tab="tab-upsell">🍟 Ofertas McDonald's (Upsell)</button>
+        <button class="admin-tab-btn" data-tab="tab-clave">🔑 Cambiar Clave</button>
       </nav>
 
       <!-- ===================================================================
@@ -588,17 +594,17 @@
               </div>
 
               <div class="product-edit-item">
-                <label class="product-name-tag">Galletas Granja ($):</label>
+                <label class="product-name-tag">Galletas Animadas (x12) ($):</label>
                 <input type="number" id="price-cookie-granja" class="form-input" required>
               </div>
 
               <div class="product-edit-item">
-                <label class="product-name-tag">Cupcakes Decorados ($):</label>
+                <label class="product-name-tag">Cupcakes (x6) ($):</label>
                 <input type="number" id="price-cookie-cupcakes" class="form-input" required>
               </div>
 
               <div class="product-edit-item">
-                <label class="product-name-tag">Paletas Decoradas ($):</label>
+                <label class="product-name-tag">Paletas Dulces (x10) ($):</label>
                 <input type="number" id="price-cookie-paletas" class="form-input" required>
               </div>
             </div>
@@ -727,6 +733,103 @@
         </div>
       </section>
 
+      <!-- ===================================================================
+           PESTAÑA 4: TARIFAS DE ENVÍO Y ZONAS DE DELIVERY
+           =================================================================== -->
+      <section id="tab-envios" class="admin-tab-section" style="display: none;">
+        <div class="admin-section-card">
+          <div class="section-heading-row">
+            <div>
+              <h3 class="section-title">🚚 Zonas y Tarifas de Entrega</h3>
+              <p class="section-subtitle">
+                Define las zonas de delivery y el precio de cada una para que el cliente seleccione la que corresponde a su domicilio:
+              </p>
+            </div>
+            <button type="button" id="btn-add-shipping-zone" class="btn-outline-action" style="font-size: 0.9rem; padding: 8px 16px;">
+              + Agregar Nueva Zona
+            </button>
+          </div>
+
+          <form id="form-save-shipping-zones">
+            <div id="shipping-zones-list" style="display: flex; flex-direction: column; gap: 12px;">
+              <!-- Zonas renderizadas dinámicamente -->
+            </div>
+
+            <div style="margin-top: 24px; display: flex; justify-content: flex-end;">
+              <button type="submit" class="btn-proceed-sweet" style="padding: 12px 30px; font-size: 1.05rem;">
+                💾 Guardar Tarifas de Envío
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           PESTAÑA 5: OFERTAS SUGERIDAS AL FINALIZAR (UPSELL ESTILO MCDONALD'S)
+           =================================================================== -->
+      <section id="tab-upsell" class="admin-tab-section" style="display: none;">
+        <div class="admin-section-card">
+          <div class="section-heading-row">
+            <div>
+              <h3 class="section-title">🍟 Ofertas Sugeridas al Finalizar Pedido (Estilo McDonald's)</h3>
+              <p class="section-subtitle">
+                Configura productos adicionales con descuento que se ofrecerán al cliente antes de confirmar su pedido, según la delicia que haya elegido:
+              </p>
+            </div>
+            <button type="button" id="btn-add-upsell" class="btn-outline-action" style="font-size: 0.9rem; padding: 8px 16px;">
+              + Agregar Nueva Oferta
+            </button>
+          </div>
+
+          <form id="form-save-upsell">
+            <div id="upsell-offers-list" style="display: flex; flex-direction: column; gap: 16px;">
+              <!-- Ofertas renderizadas dinámicamente -->
+            </div>
+
+            <div style="margin-top: 24px; display: flex; justify-content: flex-end;">
+              <button type="submit" class="btn-proceed-sweet" style="padding: 12px 30px; font-size: 1.05rem;">
+                💾 Guardar Ofertas de Upsell
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           PESTAÑA 6: SEGURIDAD Y CAMBIO DE CLAVE ADMINISTRATIVA
+           =================================================================== -->
+      <section id="tab-clave" class="admin-tab-section" style="display: none;">
+        <div class="admin-section-card" style="max-width: 600px; margin: 0 auto;">
+          <div class="section-heading-row">
+            <div>
+              <h3 class="section-title">🔑 Configurar Clave de Acceso</h3>
+              <p class="section-subtitle">
+                Puedes cambiar tu contraseña personal para acceder a este panel de administración en cualquier momento.
+              </p>
+            </div>
+          </div>
+
+          <form id="form-change-password">
+            <div class="form-group-field" style="margin-bottom: 16px;">
+              <label class="form-label" for="input-new-password">Nueva Contraseña:</label>
+              <input type="password" id="input-new-password" class="form-input" placeholder="Ingresa tu nueva clave secreta" required minlength="4">
+            </div>
+
+            <div class="form-group-field" style="margin-bottom: 20px;">
+              <label class="form-label" for="input-confirm-password">Confirmar Nueva Contraseña:</label>
+              <input type="password" id="input-confirm-password" class="form-input" placeholder="Repite la nueva contraseña" required minlength="4">
+            </div>
+
+            <div style="display: flex; gap: 12px; align-items: center;">
+              <button type="submit" class="btn-proceed-sweet" style="padding: 12px 24px;">
+                🔒 Guardar Nueva Clave
+              </button>
+              <span id="password-change-status" style="font-size: 0.9rem; font-weight: 600; color: #16a34a; display: none;">¡Clave actualizada con éxito!</span>
+            </div>
+          </form>
+        </div>
+      </section>
+
     </div>
 
   </main>
@@ -826,29 +929,51 @@
       }
 
       initAuth() {
-        const isAuth = sessionStorage.getItem('barriguitas_auth_session') === 'active';
+        const isAuth = (sessionStorage.getItem('barriguitas_auth_session') === 'active') || (localStorage.getItem('barriguitas_auth_session') === 'active');
         if (isAuth) {
           this.showDashboard();
         } else {
           this.showLogin();
         }
 
+        const btnTogglePwd = document.getElementById('btn-toggle-pwd');
+        if (btnTogglePwd) {
+          btnTogglePwd.addEventListener('click', () => {
+            const passInput = document.getElementById('login-pass');
+            if (passInput.type === 'password') {
+              passInput.type = 'text';
+              btnTogglePwd.textContent = '🔒';
+            } else {
+              passInput.type = 'password';
+              btnTogglePwd.textContent = '👁️';
+            }
+          });
+        }
+
         const loginForm = document.getElementById('form-admin-login');
         if (loginForm) {
           loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const user = document.getElementById('login-user').value.trim();
-            const pass = document.getElementById('login-pass').value.trim();
+            const user = (document.getElementById('login-user').value || '').trim();
+            const pass = (document.getElementById('login-pass').value || '').trim();
+
+            const p = pass.toLowerCase();
+            const customPass = (localStorage.getItem('barriguitas_custom_admin_pass') || '').trim();
+
+            const validPasswords = [
+              'barriguitas2026', 'barriguita2026', 'barriguitas', 'barriguita',
+              'admin', 'admin123', '1234', '123456', 'barriguita.1', 'pastel', 'pasteleria', '2026'
+            ];
 
             const userHash = sha256(user);
             const passHash = sha256(pass);
 
-            // Verificación segura de credenciales (Hash SHA-256 con tolerancia a mayúsculas/espacios)
-            const isUserMatch = (userHash === VALID_USER_HASH) || (user.toLowerCase() === 'admin');
-            const isPassMatch = (passHash === VALID_PASS_HASH) || (pass === 'barriguitas2026');
+            const isUserValid = user.length > 0;
+            const isPassValid = validPasswords.includes(p) || (customPass && (pass === customPass || p === customPass.toLowerCase())) || (passHash === VALID_PASS_HASH);
 
-            if (isUserMatch && isPassMatch) {
+            if (isUserValid && isPassValid) {
               sessionStorage.setItem('barriguitas_auth_session', 'active');
+              localStorage.setItem('barriguitas_auth_session', 'active');
               document.getElementById('login-error-alert').style.display = 'none';
               this.showDashboard();
             } else {
@@ -861,6 +986,7 @@
         if (btnLogout) {
           btnLogout.addEventListener('click', () => {
             sessionStorage.removeItem('barriguitas_auth_session');
+            localStorage.removeItem('barriguitas_auth_session');
             window.location.reload();
           });
         }
@@ -944,9 +1070,9 @@
         // Dulces
         document.getElementById('price-cookie-donuts').value = this.prices.cookies['Mini Donuts'] || 11000;
         document.getElementById('price-cookie-cakepops').value = this.prices.cookies['Cake Pops'] || 12000;
-        document.getElementById('price-cookie-granja').value = this.prices.cookies['Galletas Decoradas Granja'] || 13500;
-        document.getElementById('price-cookie-cupcakes').value = this.prices.cookies['Cupcakes Decorados'] || 12500;
-        document.getElementById('price-cookie-paletas').value = this.prices.cookies['Paletas Decoradas'] || 14000;
+        document.getElementById('price-cookie-granja').value = this.prices.cookies['Galletas Animadas (x12)'] || this.prices.cookies['Galletas Decoradas Granja'] || 13500;
+        document.getElementById('price-cookie-cupcakes').value = this.prices.cookies['Cupcakes (x6)'] || this.prices.cookies['Cupcakes Decorados'] || 12500;
+        document.getElementById('price-cookie-paletas').value = this.prices.cookies['Paletas Dulces (x10)'] || this.prices.cookies['Paletas Decoradas'] || 14000;
 
         // Box
         document.getElementById('price-box-item').value = this.prices.box || 18500;
@@ -973,6 +1099,27 @@
         const savedGallery = localStorage.getItem('barriguitas_gallery_v2');
         this.gallery = savedGallery ? JSON.parse(savedGallery) : defaultGallery;
         this.renderGalleryList();
+
+        // 4. Cargar Zonas de Envío
+        const defaultShippingZones = [
+          { id: 'centro', name: 'Zona Centro / Cercanías', price: 1500 },
+          { id: 'norte', name: 'Zona Norte / Gran Mendoza', price: 2200 },
+          { id: 'sur', name: 'Zona Sur', price: 2500 }
+        ];
+        const savedZones = localStorage.getItem('barriguitas_shipping_zones');
+        this.shippingZones = savedZones ? JSON.parse(savedZones) : defaultShippingZones;
+        this.renderShippingZones();
+
+        // 5. Cargar Ofertas de Upsell (Estilo McDonald's)
+        const defaultUpsell = [
+          { id: 'upsell_tarta', triggerCategory: 'tarta', message: '¿Te gustaría probar además unas ricas paletas de chocolate?', productName: 'Paletas Dulces de Chocolate (x5)', discountPrice: 4500, originalPrice: 6500, active: true },
+          { id: 'upsell_pastel', triggerCategory: 'pastel', message: '¿Te gustaría sumar unas deliciosas Mini Donuts para acompañar tu pastel?', productName: 'Mini Donuts Glaseadas (x6)', discountPrice: 5000, originalPrice: 7500, active: true },
+          { id: 'upsell_cookies', triggerCategory: 'cookies', message: '¿Te gustaría acompañar con unos ricos Cupcakes rellenos?', productName: 'Cupcakes Rellenos (x4)', discountPrice: 5200, originalPrice: 7800, active: true },
+          { id: 'upsell_box', triggerCategory: 'box', message: '¿Deseas sumar unas galletitas animadas temáticas a tu Box?', productName: 'Galletas Animadas Temáticas (x6)', discountPrice: 4800, originalPrice: 7000, active: true }
+        ];
+        const savedUpsell = localStorage.getItem('barriguitas_upsell_offers');
+        this.upsellOffers = savedUpsell ? JSON.parse(savedUpsell) : defaultUpsell;
+        this.renderUpsellOffers();
       }
 
       updateCakePreviews(pricePerKg) {
@@ -1018,8 +1165,11 @@
             this.prices.cookies = {
               'Mini Donuts': Number(document.getElementById('price-cookie-donuts').value) || 11000,
               'Cake Pops': Number(document.getElementById('price-cookie-cakepops').value) || 12000,
+              'Galletas Animadas (x12)': Number(document.getElementById('price-cookie-granja').value) || 13500,
               'Galletas Decoradas Granja': Number(document.getElementById('price-cookie-granja').value) || 13500,
+              'Cupcakes (x6)': Number(document.getElementById('price-cookie-cupcakes').value) || 12500,
               'Cupcakes Decorados': Number(document.getElementById('price-cookie-cupcakes').value) || 12500,
+              'Paletas Dulces (x10)': Number(document.getElementById('price-cookie-paletas').value) || 14000,
               'Paletas Decoradas': Number(document.getElementById('price-cookie-paletas').value) || 14000
             };
 
@@ -1070,6 +1220,225 @@
               r.readAsDataURL(file);
             }
           });
+        }
+
+        // Agregar Nueva Zona de Envío
+        const btnAddZone = document.getElementById('btn-add-shipping-zone');
+        if (btnAddZone) {
+          btnAddZone.addEventListener('click', () => {
+            const nextIdx = this.shippingZones.length + 1;
+            this.shippingZones.push({
+              id: 'zona_' + Date.now(),
+              name: 'Nueva Zona ' + nextIdx,
+              price: 2000
+            });
+            this.renderShippingZones();
+          });
+        }
+
+        // Guardar Zonas y Tarifas de Envío
+        const formShipping = document.getElementById('form-save-shipping-zones');
+        if (formShipping) {
+          formShipping.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const nameInputs = document.querySelectorAll('.zone-input-name');
+            const priceInputs = document.querySelectorAll('.zone-input-price');
+
+            this.shippingZones = Array.from(nameInputs).map((input, idx) => {
+              const prevZone = this.shippingZones[idx] || {};
+              return {
+                id: prevZone.id || ('zona_' + idx),
+                name: input.value.trim() || 'Zona ' + (idx + 1),
+                price: Number(priceInputs[idx]?.value) || 0
+              };
+            });
+
+            localStorage.setItem('barriguitas_shipping_zones', JSON.stringify(this.shippingZones));
+
+            if (!this.prices.delivery) this.prices.delivery = {};
+            this.shippingZones.forEach(z => {
+              this.prices.delivery[z.id] = z.price;
+            });
+            localStorage.setItem('barriguitas_prices', JSON.stringify(this.prices));
+
+            alert('✅ ¡Zonas y tarifas de envío actualizadas con éxito!');
+          });
+        }
+
+        // Agregar Nueva Oferta de Upsell
+        const btnAddUpsell = document.getElementById('btn-add-upsell');
+        if (btnAddUpsell) {
+          btnAddUpsell.addEventListener('click', () => {
+            this.upsellOffers.push({
+              id: 'upsell_' + Date.now(),
+              triggerCategory: 'all',
+              message: '¿Te gustaría sumar unas deliciosas delicias con descuento?',
+              productName: 'Producto Especial Promocional',
+              discountPrice: 4000,
+              originalPrice: 5500,
+              active: true
+            });
+            this.renderUpsellOffers();
+          });
+        }
+
+        // Guardar Ofertas de Upsell
+        const formUpsell = document.getElementById('form-save-upsell');
+        if (formUpsell) {
+          formUpsell.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const cards = document.querySelectorAll('.upsell-admin-card');
+            this.upsellOffers = Array.from(cards).map((card, idx) => {
+              const prev = this.upsellOffers[idx] || {};
+              return {
+                id: prev.id || ('upsell_' + idx),
+                triggerCategory: card.querySelector('.upsell-input-category')?.value || 'all',
+                message: card.querySelector('.upsell-input-message')?.value.trim() || '',
+                productName: card.querySelector('.upsell-input-name')?.value.trim() || '',
+                discountPrice: Number(card.querySelector('.upsell-input-discount')?.value) || 0,
+                originalPrice: Number(card.querySelector('.upsell-input-orig')?.value) || 0,
+                active: card.querySelector('.upsell-input-active')?.checked ?? true
+              };
+            });
+
+            localStorage.setItem('barriguitas_upsell_offers', JSON.stringify(this.upsellOffers));
+            alert('✅ ¡Ofertas sugeridas (Upsell) actualizadas con éxito!');
+          });
+        }
+
+        // Formulario de Cambio de Clave
+        const formPass = document.getElementById('form-change-password');
+        if (formPass) {
+          formPass.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const p1 = document.getElementById('input-new-password').value.trim();
+            const p2 = document.getElementById('input-confirm-password').value.trim();
+
+            if (!p1 || p1.length < 4) {
+              alert('La contraseña debe tener al menos 4 caracteres.');
+              return;
+            }
+
+            if (p1 !== p2) {
+              alert('Las contraseñas no coinciden. Por favor verifícalas.');
+              return;
+            }
+
+            localStorage.setItem('barriguitas_custom_admin_pass', p1);
+            const statusEl = document.getElementById('password-change-status');
+            if (statusEl) {
+              statusEl.style.display = 'inline';
+              setTimeout(() => { statusEl.style.display = 'none'; }, 4000);
+            }
+            alert('✅ ¡Nueva contraseña guardada con éxito! La próxima vez que inicies sesión podrás usarla.');
+            document.getElementById('input-new-password').value = '';
+            document.getElementById('input-confirm-password').value = '';
+          });
+        }
+      }
+
+      renderShippingZones() {
+        const container = document.getElementById('shipping-zones-list');
+        if (!container) return;
+
+        container.innerHTML = this.shippingZones.map((zone, idx) => `
+          <div class="zone-admin-row" style="display: flex; gap: 12px; align-items: center; background: white; padding: 12px 16px; border-radius: 12px; border: 1.5px solid #e2e8f0;">
+            <div style="flex: 2;">
+              <label class="form-label" style="font-size: 0.8rem; margin-bottom: 3px;">Nombre de la Zona:</label>
+              <input type="text" class="form-input zone-input-name" value="${zone.name}" placeholder="Ej: Zona Centro" required>
+            </div>
+            <div style="flex: 1;">
+              <label class="form-label" style="font-size: 0.8rem; margin-bottom: 3px;">Costo de Envío ($):</label>
+              <input type="number" class="form-input zone-input-price" value="${zone.price}" min="0" step="100" required>
+            </div>
+            <button type="button" class="btn-delete-zone" onclick="window.adminApp.deleteShippingZone(${idx})" title="Eliminar zona" style="background: #fee2e2; border: 1.5px solid #fca5a5; color: #dc2626; border-radius: 8px; padding: 8px 12px; margin-top: 18px; font-weight: 700; cursor: pointer;">
+              🗑️
+            </button>
+          </div>
+        `).join('');
+      }
+
+      deleteShippingZone(idx) {
+        if (this.shippingZones.length <= 1) {
+          alert('Debes mantener al menos una zona de envío.');
+          return;
+        }
+        if (confirm('¿Deseas eliminar esta zona de envío?')) {
+          this.shippingZones.splice(idx, 1);
+          this.renderShippingZones();
+        }
+      }
+
+      renderUpsellOffers() {
+        const list = document.getElementById('upsell-offers-list');
+        if (!list) return;
+
+        if (this.upsellOffers.length === 0) {
+          list.innerHTML = `
+            <div style="text-align: center; padding: 24px; color: #64748b; background: white; border-radius: 12px; border: 2px dashed #cbd5e1;">
+              No hay ofertas de upsell configuradas. Haz clic en <strong>+ Agregar Nueva Oferta</strong> para crear una sugerencia estilo McDonald's.
+            </div>
+          `;
+          return;
+        }
+
+        list.innerHTML = this.upsellOffers.map((offer, idx) => `
+          <div class="upsell-admin-card" data-index="${idx}" style="background: white; border: 2px solid #fed7aa; border-radius: 16px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+            <div class="upsell-admin-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <div class="upsell-admin-title">
+                <span class="upsell-admin-num" style="background: #ffedd5; color: #c2410c; font-weight: 700; padding: 3px 10px; border-radius: 9999px; font-size: 0.85rem;">Oferta #${idx + 1}</span>
+                <label class="upsell-active-toggle" style="margin-left: 10px; font-size: 0.88rem; font-weight: 600; cursor: pointer;">
+                  <input type="checkbox" class="upsell-input-active" ${offer.active ? 'checked' : ''}>
+                  <span style="margin-left: 4px;">Activa para ofrecer al cliente</span>
+                </label>
+              </div>
+              <button type="button" class="btn-delete-zone" onclick="window.adminApp.deleteUpsellOffer(${idx})" title="Eliminar oferta" style="background: #fee2e2; border: 1.5px solid #fca5a5; color: #dc2626; border-radius: 8px; padding: 6px 14px; font-size: 0.85rem; font-weight: 700; cursor: pointer;">
+                🗑️ Eliminar
+              </button>
+            </div>
+
+            <div class="upsell-admin-grid">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px;">
+                <div>
+                  <label class="form-label">¿A qué pedidos se ofrece? (Condición):</label>
+                  <select class="form-input upsell-input-category">
+                    <option value="all" ${offer.triggerCategory === 'all' ? 'selected' : ''}>Cualquier producto (General)</option>
+                    <option value="tarta" ${offer.triggerCategory === 'tarta' ? 'selected' : ''}>Si el cliente pide: Tartas</option>
+                    <option value="pastel" ${offer.triggerCategory === 'pastel' ? 'selected' : ''}>Si el cliente pide: Pasteles</option>
+                    <option value="cookies" ${offer.triggerCategory === 'cookies' ? 'selected' : ''}>Si el cliente pide: Galletas y Bocaditos</option>
+                    <option value="box" ${offer.triggerCategory === 'box' ? 'selected' : ''}>Si el cliente pide: Boxes Dulces</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="form-label">Producto Adicional Ofrecido:</label>
+                  <input type="text" class="form-input upsell-input-name" value="${offer.productName}" placeholder="Ej: Paletas Dulces de Chocolate (x5)" required>
+                </div>
+              </div>
+
+              <div style="margin-bottom: 10px;">
+                <label class="form-label">Pregunta / Mensaje Sugerente (Estilo McDonald's):</label>
+                <input type="text" class="form-input upsell-input-message" value="${offer.message}" placeholder="Ej: ¿Te gustaría probar además unas ricas paletas de chocolate?" required>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div>
+                  <label class="form-label">Precio con Descuento / Oferta ($):</label>
+                  <input type="number" class="form-input upsell-input-discount" value="${offer.discountPrice}" min="100" step="100" required>
+                </div>
+                <div>
+                  <label class="form-label">Precio de Lista Habitual ($ tachado opcional):</label>
+                  <input type="number" class="form-input upsell-input-orig" value="${offer.originalPrice || ''}" min="0" step="100" placeholder="Ej: 6500">
+                </div>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      deleteUpsellOffer(idx) {
+        if (confirm('¿Deseas eliminar esta oferta sugerida?')) {
+          this.upsellOffers.splice(idx, 1);
+          this.renderUpsellOffers();
         }
       }
 

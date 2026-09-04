@@ -1205,6 +1205,61 @@ html, body {
   gap: 8px;
 }
 
+.summary-action-buttons.single-btn {
+  grid-template-columns: 1fr;
+}
+
+.summary-alias-box {
+  background: #f0fdf4;
+  border: 1.5px solid #86efac;
+  border-radius: var(--radius-md);
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.summary-alias-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.84rem;
+  color: #166534;
+  font-weight: 600;
+}
+
+.summary-alias-action {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: white;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  border: 1px solid #bbf7d0;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.summary-alias-action:hover {
+  background: #dcfce7;
+  transform: scale(1.03);
+}
+
+.alias-code {
+  font-family: monospace;
+  font-size: 0.95rem;
+  color: #15803d;
+  font-weight: 700;
+}
+
+.alias-copy-tag {
+  font-size: 0.75rem;
+  color: #16a34a;
+  font-weight: 700;
+}
+
 .btn-confirm-whatsapp {
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: white;

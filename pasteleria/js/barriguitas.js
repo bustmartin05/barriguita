@@ -262,9 +262,14 @@ class BarriguitasApp {
 
       if (pDonuts && this.prices.cookies['Mini Donuts']) pDonuts.textContent = '$' + this.prices.cookies['Mini Donuts'].toLocaleString('es-AR');
       if (pCakepops && this.prices.cookies['Cake Pops']) pCakepops.textContent = '$' + this.prices.cookies['Cake Pops'].toLocaleString('es-AR');
-      if (pGranja && this.prices.cookies['Galletas Decoradas Granja']) pGranja.textContent = '$' + this.prices.cookies['Galletas Decoradas Granja'].toLocaleString('es-AR');
-      if (pCupcakes && this.prices.cookies['Cupcakes Decorados']) pCupcakes.textContent = '$' + this.prices.cookies['Cupcakes Decorados'].toLocaleString('es-AR');
-      if (pPaletas && this.prices.cookies['Paletas Decoradas']) pPaletas.textContent = '$' + this.prices.cookies['Paletas Decoradas'].toLocaleString('es-AR');
+      const priceG = this.prices.cookies['Galletas Animadas (x12)'] || this.prices.cookies['Galletas Decoradas Granja'];
+      if (pGranja && priceG) pGranja.textContent = '$' + priceG.toLocaleString('es-AR');
+      
+      const priceC = this.prices.cookies['Cupcakes (x6)'] || this.prices.cookies['Cupcakes Decorados'];
+      if (pCupcakes && priceC) pCupcakes.textContent = '$' + priceC.toLocaleString('es-AR');
+      
+      const priceP = this.prices.cookies['Paletas Dulces (x10)'] || this.prices.cookies['Paletas Decoradas'];
+      if (pPaletas && priceP) pPaletas.textContent = '$' + priceP.toLocaleString('es-AR');
     }
 
     // Box
@@ -461,14 +466,19 @@ class BarriguitasApp {
       btnWhatsApp.addEventListener('click', () => this.sendWhatsAppOrder());
     }
 
-    const btnPay = document.getElementById('btn-delivery-pay-online');
-    if (btnPay) {
-      btnPay.addEventListener('click', () => {
-        if (typeof confetti === 'function') {
-          confetti({ particleCount: 150, spread: 90, origin: { y: 0.6 } });
-        }
-        this.recordOrderInDatabase('seña_online_simulada');
-        alert(`¡Seña de $${this.calculated.deposit.toLocaleString('es-AR')} registrada con éxito! Tu pedido quedó guardado en nuestra base de datos.`);
+    // Botón Copiar Alias
+    const btnCopyAlias = document.getElementById('btn-copy-alias');
+    if (btnCopyAlias) {
+      btnCopyAlias.addEventListener('click', () => {
+        navigator.clipboard.writeText('barriguita.1').then(() => {
+          const status = document.getElementById('alias-copy-status');
+          if (status) {
+            status.textContent = '✅ ¡Copiado!';
+            setTimeout(() => { status.textContent = '📋 Copiar'; }, 2500);
+          }
+        }).catch(() => {
+          prompt('Copia el alias para transferir la seña:', 'barriguita.1');
+        });
       });
     }
   }
@@ -563,6 +573,7 @@ class BarriguitasApp {
 
     msg += `💰 *Total Presupuestado:* $${this.calculated.total.toLocaleString('es-AR')}\n`;
     msg += `🔒 *Seña del 50%: * $${this.calculated.deposit.toLocaleString('es-AR')}\n`;
+    msg += `🏦 *Alias para la Seña:* barriguita.1\n`;
     msg += `💵 *Saldo restante en entrega:* $${this.calculated.balance.toLocaleString('es-AR')}\n\n`;
     msg += `_(Pedido realizado con 72hs de anticipación conforme a las políticas de la pastelería)_\n`;
     msg += `¡Aguardo su confirmación para transferir la seña!`;

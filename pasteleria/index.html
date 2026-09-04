@@ -55,6 +55,9 @@
       </a>
       <a href="https://www.facebook.com/profile.php?id=100063446060447&locale=es_LA" target="_blank" rel="noopener" class="nav-social-btn nav-fb" title="Facebook: Pastelería Barriguitas">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M9 8H6v4h3v12h5V12h3.642L18 8h-4V6.333C14 5.374 14.5 5 15.6 5H18V0h-3.808C10.597 0 9 1.583 9 4.615V8z"/></svg>
+      <!-- Enlace a Administración (Desktop) -->
+      <a href="admin.html" class="nav-admin-link-discreet" title="Panel de Administración">
+        🔐 Admin
       </a>
 
       <!-- Botón Armar Pedido -->
@@ -382,15 +385,15 @@
           </div>
         </div>
 
-        <div class="item-card-png btn-cookie-item" data-item="Galletas Decoradas Granja">
-          <img src="assets/images/JUEGO INICIO/Galletas y dulces/galletasgranja_trans_v2.png" alt="Galletas Granja" class="item-png-img">
+        <div class="item-card-png btn-cookie-item" data-item="Galletas Animadas (x12)">
+          <img src="assets/images/JUEGO INICIO/Galletas y dulces/galletasgranja_trans_v2.png" alt="Galletas Animadas" class="item-png-img">
           <div class="item-btn-pill">
-            <div class="item-pill-title">Galletas Granja</div>
+            <div class="item-pill-title">Galletas Animadas (x12)</div>
             <div class="item-pill-price" id="price-cookie-granja">$13.500</div>
           </div>
         </div>
 
-        <div class="item-card-png btn-cookie-item" data-item="Cupcakes Decorados">
+        <div class="item-card-png btn-cookie-item" data-item="Cupcakes (x6)">
           <img src="assets/images/JUEGO INICIO/Galletas y dulces/cupcakesdeco_trans_v2.png" alt="Cupcakes Decorados" class="item-png-img">
           <div class="item-btn-pill">
             <div class="item-pill-title">Cupcakes (x6)</div>
@@ -398,10 +401,10 @@
           </div>
         </div>
 
-        <div class="item-card-png btn-cookie-item" data-item="Paletas Decoradas">
+        <div class="item-card-png btn-cookie-item" data-item="Paletas Dulces (x10)">
           <img src="assets/images/JUEGO INICIO/Galletas y dulces/paletasdeco_trans_v2.png" alt="Paletas Decoradas" class="item-png-img">
           <div class="item-btn-pill">
-            <div class="item-pill-title">Paletas Dulces</div>
+            <div class="item-pill-title">Paletas Dulces (x10)</div>
             <div class="item-pill-price" id="price-cookie-paletas">$14.000</div>
           </div>
         </div>
@@ -504,16 +507,25 @@
             <span class="summary-deposit-label">Seña a abonar (50%):</span>
             <span id="delivery-summary-deposit" class="summary-deposit-val">$14.750</span>
           </div>
+
+          <div class="summary-alias-box">
+            <div class="summary-alias-info">
+              <span class="alias-tag-icon">🏦</span>
+              <span class="alias-title-label">Alias para la seña (50%):</span>
+            </div>
+            <div class="summary-alias-action" id="btn-copy-alias" title="Hacer clic para copiar alias">
+              <strong class="alias-code">barriguita.1</strong>
+              <span class="alias-copy-tag" id="alias-copy-status">📋 Copiar</span>
+            </div>
+          </div>
+
           <div class="summary-footnote">
             * El 50% restante se abona contra entrega o retiro del pedido.
           </div>
 
-          <div class="summary-action-buttons">
+          <div class="summary-action-buttons single-btn">
             <button id="btn-delivery-whatsapp" class="btn-confirm-whatsapp">
               Confirmar por WhatsApp 📲
-            </button>
-            <button id="btn-delivery-pay-online" class="btn-pay-deposit">
-              Pagar Seña Online 💳
             </button>
           </div>
         </div>
