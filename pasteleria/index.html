@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pastelería Barriguitas 🎂 - Momentos Dulces & Pasteles Soñados</title>
+  
+  <!-- Tipografías de Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Lilita+One&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  
+  <!-- Supabase JS Client v2 -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <!-- Favicon: Nene de carga con globos -->
+  <link rel="icon" type="image/png" href="assets/images/nene-volando-globos.png">
+  
+  <!-- Estilos de Escenas y Minijuego V2 -->
+  <link rel="stylesheet" href="css/barriguitas.css">
+</head>
+<body>
+
+  <!-- PANTALLA DE CARGA (SPLASH SCREEN CON EL NENE Y GLOBOS) -->
+  <div id="splash-screen" class="splash-screen">
+    <img src="assets/images/nene-volando-globos.png" alt="Mascota Barriguitas con globos" class="splash-mascot-img">
+    <h1 class="splash-title">Pastelería Barriguitas</h1>
+    <p class="splash-subtitle">Cargando el taller de dulces sueños...</p>
+    <div class="splash-loader-bar">
+      <div class="splash-loader-progress"></div>
+    </div>
+  </div>
+
+  <!-- BARRA DE NAVEGACIÓN SUPERIOR FLOTANTE -->
+  <nav class="navbar-sweet">
+    <a href="javascript:void(0)" class="nav-logo" onclick="window.barriguitas.goToScene('scene-01')">
+      <span>Barriguitas</span>
+    </a>
+
+    <div class="nav-links">
+      <button class="nav-btn-link active" data-scene="scene-01">Inicio</button>
+      <button class="nav-btn-link" data-scene="scene-02">Cocinar</button>
+      <button class="nav-btn-link" data-scene="scene-05-gallery">Galería</button>
+      <button class="nav-btn-link" data-scene="scene-06-reviews">Comentarios</button>
+      <button class="nav-btn-link" data-scene="scene-07-promos">Promociones</button>
+    </div>
+
+    <div class="nav-actions-group">
+      <!-- Enlaces directos a Redes Sociales Oficiales -->
+      <a href="https://www.instagram.com/barriguitas.1/" target="_blank" rel="noopener" class="nav-social-btn nav-insta" title="Instagram: @barriguitas.1">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+      </a>
+      <a href="https://www.facebook.com/profile.php?id=100063446060447&locale=es_LA" target="_blank" rel="noopener" class="nav-social-btn nav-fb" title="Facebook: Pastelería Barriguitas">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M9 8H6v4h3v12h5V12h3.642L18 8h-4V6.333C14 5.374 14.5 5 15.6 5H18V0h-3.808C10.597 0 9 1.583 9 4.615V8z"/></svg>
+      </a>
+
+      <!-- Botón Armar Pedido -->
+      <button class="nav-cta-btn" onclick="window.barriguitas.goToScene('scene-02')">
+        Armar Pedido 🎂
+      </button>
+
+      <!-- Botón Menú Hamburguesa para Móvil -->
+      <button id="btn-toggle-mobile-menu" class="nav-hamburger-btn" aria-label="Abrir Menú de Navegación">
+        <span class="hamburger-bar"></span>
+        <span class="hamburger-bar"></span>
+        <span class="hamburger-bar"></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- MENÚ DESPLEGABLE MÓVIL (DRAWER LATERAL) -->
+  <div id="mobile-drawer-overlay" class="mobile-drawer-backdrop"></div>
+  <aside id="mobile-drawer-menu" class="mobile-drawer-panel">
+    <div class="drawer-header-row">
+      <div class="drawer-brand-title">
+        <img src="assets/images/nene-volando-globos.png" alt="Barriguitas" class="drawer-logo-icon">
+        <span>Barriguitas</span>
+      </div>
+      <button id="btn-close-mobile-menu" class="drawer-close-btn" aria-label="Cerrar Menú">&times;</button>
+    </div>
+
+    <!-- Menú Desplegable con el orden exacto solicitado -->
+    <div class="drawer-nav-items">
+      <button class="drawer-nav-btn active" data-scene="scene-01">🏠 Inicio</button>
+      <button class="drawer-nav-btn" data-scene="scene-02">🧁 Cocina</button>
+      <button class="drawer-nav-btn" data-scene="scene-05-gallery">📸 Galería</button>
+      <button class="drawer-nav-btn" data-scene="scene-06-reviews">⭐ Opiniones</button>
+      <button class="drawer-nav-btn" data-scene="scene-07-promos">🎁 Promociones</button>
+      
+      <!-- Al finalizar el menú: Armar tu pedido -->
+      <button class="drawer-nav-btn drawer-btn-order-cta" data-scene="scene-02">
+        🎂 Armar tu pedido
+      </button>
+    </div>
+
+    <!-- Abajo: Dirección de Instagram y Facebook -->
+    <div class="drawer-social-section">
+      <div class="drawer-section-label">Síguenos en Redes Sociales:</div>
+      <div class="drawer-social-links-grid">
+        <a href="https://www.instagram.com/barriguitas.1/" target="_blank" rel="noopener" class="drawer-social-link insta">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          <span>Instagram: @barriguitas.1</span>
+        </a>
+        <a href="https://www.facebook.com/profile.php?id=100063446060447&locale=es_LA" target="_blank" rel="noopener" class="drawer-social-link fb">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          <span>Facebook: Pastelería Barriguitas</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="drawer-footer-discreet">
+      <a href="admin.html" class="discreet-admin-anchor">🔒 Panel Administrativo</a>
+    </div>
+  </aside>
+
+  <!-- BOTÓN FLOTANTE DE WHATSAPP -->
+  <a href="https://wa.me/5492612571131?text=Hola%20Pasteler%C3%ADa%20Barriguitas%2C%20quisiera%20hacer%20una%20consulta" target="_blank" rel="noopener" id="floating-whatsapp-btn" class="floating-whatsapp-btn" title="Contactar por WhatsApp (+54 9 2612 57-1131)">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="white"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.699c.971.53 1.871.815 2.796.815 3.183 0 5.768-2.586 5.768-5.766.001-3.181-2.584-5.766-5.768-5.766zm6.819 5.767c0 3.766-3.056 6.822-6.819 6.822-.99 0-1.956-.215-2.834-.634l-3.957 1.037 1.056-3.861c-.512-1.002-.782-2.128-.782-3.364 0-3.766 3.056-6.822 6.819-6.822 3.763.001 6.817 3.057 6.817 6.822z"/></svg>
+    <span class="floating-wa-bubble">¿Dudas? ¡Escríbenos!</span>
+  </a>
+
+  <!-- ESCENARIO DEL MINIJUEGO CON FONDOS DUALES (PC / MÓVIL) -->
+  <main class="game-stage-container">
+
+    <!-- =======================================================================
+         PÁGINA 1: INICIO Y BIENVENIDA (FONDO SEMI-TRANSPARENTE)
+         ======================================================================= -->
+    <div id="scene-01" class="scene-frame active">
+      <div class="overlay-hero-glass">
+        <span class="hero-tag-pill">Bienvenidos a Barriguitas</span>
+        <h2 class="hero-title-main">El Sabor Mágico de tus Momentos</h2>
+        <p class="hero-desc-clean">
+          En Pastelería Barriguitas horneamos recuerdos inolvidables. Diseña tu pastel paso a paso en nuestro taller interactivo, elige tus sabores preferidos y reserva tu fecha con el 50% de seña.
+        </p>
+        <button id="btn-hero-start" class="nav-admin-btn" style="background: var(--candy-pink); color: white; border: none; font-size: 1.1rem; padding: 12px 28px; width: 100%;">
+          ¡Empezar Aventura Dulce! 🧁
+        </button>
+      </div>
+    </div>
+
+    <!-- =======================================================================
+         PÁGINA 2: MOSTRADOR CON LOS 4 PRODUCTOS TRANSPARENTES
+         ======================================================================= -->
+    <div id="scene-02" class="scene-frame">
+      <div class="scene-header-banner">¿Qué delicia te gustaría hornear hoy?</div>
+
+      <div class="counter-table-stage">
+        <!-- 1. Pasteles -->
+        <div class="item-card-png btn-main-product" data-category="pastel">
+          <img src="assets/images/JUEGO INICIO/cake_transparent.png" alt="Pasteles Personalizados" class="item-png-img">
+          <div class="item-btn-pill">
+            <div class="item-pill-title">Pasteles</div>
+            <div class="item-pill-price">Elegir Pastel</div>
+          </div>
+        </div>
+
+        <!-- 2. Tartas -->
+        <div class="item-card-png btn-main-product" data-category="tarta">
+          <img src="assets/images/JUEGO INICIO/tart_transparent.png" alt="Tartas Artesanales" class="item-png-img">
+          <div class="item-btn-pill">
+            <div class="item-pill-title">Tartas</div>
+            <div class="item-pill-price">Elegir Tartas</div>
+          </div>
+        </div>
+
+        <!-- 3. Galletas y Dulces -->
+        <div class="item-card-png btn-main-product" data-category="cookies">
+          <img src="assets/images/JUEGO INICIO/cookies_transparent.png" alt="Galletas y Bocaditos" class="item-png-img">
+          <div class="item-btn-pill">
+            <div class="item-pill-title">Galletas y Dulces</div>
+            <div class="item-pill-price">Elegir Bocaditos</div>
+          </div>
+        </div>
+
+        <!-- 4. Boxes -->
+        <div class="item-card-png btn-main-product" data-category="box">
+          <img src="assets/images/JUEGO INICIO/giftbox_transparent.png" alt="Boxes Dulces" class="item-png-img">
+          <div class="item-btn-pill">
+            <div class="item-pill-title">Boxes Dulces</div>
+            <div class="item-pill-price">Elegir Box</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =======================================================================
+         SUB-ESCENA PASTELES: TAMAÑOS
+         ======================================================================= -->
+    <div id="scene-sub-cakes" class="scene-frame">
+      <button class="btn-scene-back" data-to="scene-02">← Volver</button>
+      <div class="scene-header-banner">Selecciona el Tamaño de tu Pastel</div>
+
+      <div class="counter-table-stage">
+        <!-- 1.5 kg -->
+        <div class="item-card-png btn-cake-size-item" data-size="1_5kg">
+          <img src="assets/images/JUEGO INICIO/Tipo de pasteles/pastel1_transparent.png" alt="Pastel 1.5 kg" class="item-png-img">
+          <div class="item-btn-pill">
+            <div class="item-pill-title">1.5 kg (1 Piso)</div>
+            <div class="item-pill-price" id="price-cake-1_5">$27.000</div>
+          </div>
+        </div>
+
+        <!-- 2.5 kg -->
+        <div class="item-card-png btn-cake-size-item" data-size="2_5kg">
+          <img src="assets/images/JUEGO INICIO/Tipo de pasteles/pastel2_transparent.png" alt="Pastel 2.5 kg" class="item-png-img">
+          <div class="item-btn-pill">
+            <div class="item-pill-title">2.5 kg (1 Piso Alto)</div>
+            <div class="item-pill-price" id="price-cake-2_5">$45.000</div>
+          </div>
+        </div>
+
+        <!-- 3.5 kg -->
+        <div class="item-card-png btn-cake-size-item" data-size="3_5kg">
+          <img src="assets/images/JUEGO INICIO/Tipo de pasteles/pastel3_transparent.png" alt="Pastel 3.5 kg" class="item-png-img">
+          <div class="item-btn-pill">
+            <div class="item-pill-title">3.5 kg (2 Pisos)</div>
+            <div class="item-pill-price" id="price-cake-3_5">$63.000</div>
+          </div>
+        </div>
+
+        <!-- 4.0 kg -->
+        <div class="item-card-png btn-cake-size-item" data-size="4_0kg">
+          <img src="assets/images/JUEGO INICIO/Tipo de pasteles/pastel4_transparent.png" alt="Pastel 4.0 kg" class="item-png-img">
+          <div class="item-btn-pill">
+            <div class="item-pill-title">4.0 kg (3 Pisos)</div>
+            <div class="item-pill-price" id="price-cake-4_0">$72.000</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =======================================================================
+         SUB-ESCENA PASTELES: DECORACIÓN Y FOTOS (FONDO BG 3)
+         (El nene decora en el lado izquierdo; toda la interacción va en el lado derecho)
+         ======================================================================= -->
+    <div id="scene-sub-decor" class="scene-frame">
+      <button class="btn-scene-back" data-to="scene-sub-cakes">← Cambiar Tamaño</button>
+
+      <!-- PANEL DERECHO: El nene queda 100% visible a la izquierda -->
+      <div class="decor-panel-right">
+        <div class="decor-panel-header">
+          <span class="decor-step-tag">Paso 2: Estilo Artístico</span>
+          <h3 class="decor-title-text">Decoración del Pastel 🎂</h3>
+          <p class="decor-subtitle-text">Elige un estilo y agrega tu toque personalizado:</p>
+        </div>
+
+        <!-- 4 Estilos de Decoración con PNGs transparentes -->
+        <div class="decor-styles-grid">
+          <div class="decor-item-card btn-decor-item selected" data-decor="Estilo 1 (Infantil con Personaje)" data-img="assets/images/JUEGO INICIO/Tipo de pasteles/Tipo de decoracion/deco1_transparent.png">
+            <img src="assets/images/JUEGO INICIO/Tipo de pasteles/Tipo de decoracion/deco1_transparent.png" alt="Estilo 1" class="decor-card-img">
+            <div class="decor-card-meta">
+              <div class="decor-card-name">Estilo 1</div>
+              <div class="decor-card-desc">Infantil Sprinkles</div>
+            </div>
+            <div class="decor-check-badge">✓</div>
+          </div>
+
+          <div class="decor-item-card btn-decor-item" data-decor="Estilo 2 (Rayas y Flores)" data-img="assets/images/JUEGO INICIO/Tipo de pasteles/Tipo de decoracion/deco2_transparent.png">
+            <img src="assets/images/JUEGO INICIO/Tipo de pasteles/Tipo de decoracion/deco2_transparent.png" alt="Estilo 2" class="decor-card-img">
+            <div class="decor-card-meta">
+              <div class="decor-card-name">Estilo 2</div>
+              <div class="decor-card-desc">Rayas & Flores</div>
+            </div>
+            <div class="decor-check-badge">✓</div>
+          </div>
+
+          <div class="decor-item-card btn-decor-item" data-decor="Estilo 3 (Degradé con Mascotas)" data-img="assets/images/JUEGO INICIO/Tipo de pasteles/Tipo de decoracion/deco3_transparent.png">
+            <img src="assets/images/JUEGO INICIO/Tipo de pasteles/Tipo de decoracion/deco3_transparent.png" alt="Estilo 3" class="decor-card-img">
+            <div class="decor-card-meta">
+              <div class="decor-card-name">Estilo 3</div>
+              <div class="decor-card-desc">Degradé Osito</div>
+            </div>
+            <div class="decor-check-badge">✓</div>
+          </div>
+
+          <div class="decor-item-card btn-decor-item" data-decor="Estilo 4 (Elegante Clásico)" data-img="assets/images/JUEGO INICIO/Tipo de pasteles/Tipo de decoracion/deco4_transparent.png">
+            <img src="assets/images/JUEGO INICIO/Tipo de pasteles/Tipo de decoracion/deco4_transparent.png" alt="Estilo 4" class="decor-card-img">
+            <div class="decor-card-meta">
+              <div class="decor-card-name">Estilo 4</div>
+              <div class="decor-card-desc">Encaje Boda 3 Pisos</div>
+            </div>
+            <div class="decor-check-badge">✓</div>
+          </div>
+        </div>
+
+        <!-- Personalización: Frase y Foto -->
+        <div class="decor-custom-fields">
+          <div class="decor-field-group">
+            <label class="decor-field-label">Frase o dedicatoria para el pastel:</label>
+            <input type="text" id="decor-comments-box" class="decor-input-box" placeholder="Ej: ¡Feliz Cumple Lucas! (Máx 40 caracteres)">
+          </div>
+
+          <div class="decor-field-group">
+            <label class="decor-field-label">Foto de inspiración / modelo (Opcional):</label>
+            <div class="decor-upload-wrapper">
+              <input type="file" id="decor-photo-uploader" accept="image/*" class="decor-file-btn">
+              <img id="decor-preview-photo" class="decor-thumb-preview" alt="Foto">
+            </div>
+          </div>
+
+          <button id="btn-to-delivery-decor" class="btn-proceed-sweet">
+            Continuar a Entrega y Pago 🛵
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- =======================================================================
+         SUB-ESCENA TARTAS ARTESANALES (5 PNGS)
+         ======================================================================= -->
+    <div id="scene-sub-tartas" class="scene-frame">
+      <button class="btn-scene-back" data-to="scene-02">← Volver</button>
+      <div class="scene-header-banner">Elige tu Tarta Artesanal</div>
+
+      <div class="counter-table-stage">
+        <div class="item-card-png btn-tart-item" data-tart="Lemon Pie">
+          <img src="assets/images/JUEGO INICIO/Tartas/lemon_pie_trans.png" alt="Lemon Pie" class="item-png-img">
+          <div class="item-btn-pill">
+            <div class="item-pill-title">Lemon Pie</div>
+            <div class="item-pill-price" id="price-tart-lemon">$15.000</div>
+          </div>
+        </div>
+
+        <div class="item-card-png btn-tart-item" data-tart="Coco con Dulce de Leche">
+          <img src="assets/images/JUEGO INICIO/Tartas/coco_trans.png" alt="Coco con Dulce de Leche" class="item-png-img">
+          <div class="item-btn-pill">
+            <div class="item-pill-title">Coco con DDL</div>
+            <div class="item-pill-price" id="price-tart-coco">$14.500</div>
+          </div>
+        </div>
+
+        <div class="item-card-png btn-tart-item" data-tart="Cheesecake">
+          <img src="assets/images/JUEGO INICIO/Tartas/cheesecake_trans.png" alt="Cheesecake" class="item-png-img">
+          <div class="item-btn-pill">
+            <div class="item-pill-title">Cheesecake</div>
+            <div class="item-pill-price" id="price-tart-cheese">$16.500</div>
+          </div>
+        </div>
+
+        <div class="item-card-png btn-tart-item" data-tart="Brownie con Dulce de Leche">
+          <img src="assets/images/JUEGO INICIO/Tartas/brownie_trans.png" alt="Brownie con DDL" class="item-png-img">
+          <div class="item-btn-pill">
+            <div class="item-pill-title">Brownie con DDL</div>
+            <div class="item-pill-price" id="price-tart-brownie">$15.500</div>
+          </div>
+        </div>
+
+        <div class="item-card-png btn-tart-item" data-tart="Rogel">
+          <img src="assets/images/JUEGO INICIO/Tartas/rogel_trans.png" alt="Rogel" class="item-png-img">
+          <div class="item-btn-pill">
+            <div class="item-pill-title">Rogel</div>
+            <div class="item-pill-price" id="price-tart-rogel">$16.000</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =======================================================================
+         SUB-ESCENA GALLETAS Y DULCES (5 PNGS)
+         ======================================================================= -->
+    <div id="scene-sub-cookies" class="scene-frame">
+      <button class="btn-scene-back" data-to="scene-02">← Volver</button>
+      <div class="scene-header-banner">Elige tus Bocaditos Dulces</div>
+
+      <div class="counter-table-stage">
+        <div class="item-card-png btn-cookie-item" data-item="Mini Donuts">
+          <img src="assets/images/JUEGO INICIO/Galletas y dulces/minidonuts_trans.png" alt="Mini Donuts" class="item-png-img">
+          <div class="item-btn-pill">
+            <div class="item-pill-title">Mini Donuts (x12)</div>
+            <div class="item-pill-price" id="price-cookie-donuts">$11.000</div>
+          </div>
+        </div>
+
+        <div class="item-card-png btn-cookie-item" data-item="Cake Pops">
+          <img src="assets/images/JUEGO INICIO/Galletas y dulces/cakepops_trans_v2.png" alt="Cake Pops" class="item-png-img">
+          <div class="item-btn-pill">
+            <div class="item-pill-title">Cake Pops (x12)</div>
+            <div class="item-pill-price" id="price-cookie-cakepops">$12.000</div>
+          </div>
+        </div>
+
+        <div class="item-card-png btn-cookie-item" data-item="Galletas Decoradas Granja">
+          <img src="assets/images/JUEGO INICIO/Galletas y dulces/galletasgranja_trans_v2.png" alt="Galletas Granja" class="item-png-img">
+          <div class="item-btn-pill">
+            <div class="item-pill-title">Galletas Granja</div>
+            <div class="item-pill-price" id="price-cookie-granja">$13.500</div>
+          </div>
+        </div>
+
+        <div class="item-card-png btn-cookie-item" data-item="Cupcakes Decorados">
+          <img src="assets/images/JUEGO INICIO/Galletas y dulces/cupcakesdeco_trans_v2.png" alt="Cupcakes Decorados" class="item-png-img">
+          <div class="item-btn-pill">
+            <div class="item-pill-title">Cupcakes (x6)</div>
+            <div class="item-pill-price" id="price-cookie-cupcakes">$12.500</div>
+          </div>
+        </div>
+
+        <div class="item-card-png btn-cookie-item" data-item="Paletas Decoradas">
+          <img src="assets/images/JUEGO INICIO/Galletas y dulces/paletasdeco_trans_v2.png" alt="Paletas Decoradas" class="item-png-img">
+          <div class="item-btn-pill">
+            <div class="item-pill-title">Paletas Dulces</div>
+            <div class="item-pill-price" id="price-cookie-paletas">$14.000</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =======================================================================
+         SUB-ESCENA BOXES DULCES (PNG CAJA DE MADERA)
+         ======================================================================= -->
+    <div id="scene-sub-box" class="scene-frame">
+      <button class="btn-scene-back" data-to="scene-02">← Volver</button>
+      <div class="scene-header-banner">Box Degustación x12 Mini Tartas</div>
+
+      <div class="box-presentation-card">
+        <img src="assets/images/JUEGO INICIO/Box/caja_15_trans_final.png" alt="Caja Degustación" class="box-presentation-img">
+        <p id="box-scene-desc" class="box-presentation-desc">
+          Incluye degustación de 12 mini tartas artesanales variadas (Lemon pie, Coco con DDL, Cheesecake, Brownie y Rogel) en caja de madera especial.
+        </p>
+        <button id="btn-order-box-tray" class="nav-admin-btn btn-order-box-action">
+          Pedir Box Degustación (<span id="box-scene-price">$18.500</span>) 🎁
+        </button>
+      </div>
+    </div>
+
+    <!-- =======================================================================
+         SUB-ESCENA ENTREGA: MOTO VS CASITA (FONDO BG 4)
+         (El nene dibuja en el lado derecho; toda la interacción va en el lado izquierdo)
+         ======================================================================= -->
+    <div id="scene-sub-delivery" class="scene-frame">
+      <button class="btn-scene-back" data-to="scene-02">← Modificar Pedido</button>
+
+      <!-- PANEL IZQUIERDO: El nene dibujando queda 100% visible a la derecha -->
+      <div class="delivery-panel-left">
+        <div class="delivery-panel-header">
+          <span class="delivery-step-tag">Paso Final: Entrega & Reserva</span>
+          <h3 class="delivery-title-text">¿Cómo deseas recibirlo? 🚚</h3>
+          <p class="delivery-subtitle-text">Elige cómo retirar tu pedido y confirma tu seña del 50%:</p>
+        </div>
+
+        <div class="delivery-choice-cards-row">
+          <!-- Moto: Envío a Domicilio -->
+          <div id="card-choice-moto" class="delivery-choice-card selected">
+            <img src="assets/images/JUEGO INICIO/final/moto_transparent.png" alt="Envío en Moto" class="delivery-choice-img">
+            <div class="delivery-choice-meta">
+              <div class="delivery-choice-name">Envío en Moto 🛵</div>
+              <div class="delivery-choice-desc">Directo a tu domicilio o salón</div>
+            </div>
+            <div class="delivery-choice-radio"></div>
+          </div>
+
+          <!-- Casa: Retiro en la Pastelería -->
+          <div id="card-choice-casa" class="delivery-choice-card">
+            <img src="assets/images/JUEGO INICIO/final/casita_transparent_v2.png" alt="Retiro en Casa" class="delivery-choice-img">
+            <div class="delivery-choice-meta">
+              <div class="delivery-choice-name">Retiro en Taller 🏡</div>
+              <div class="delivery-choice-desc">Lo pasas a buscar por el local</div>
+            </div>
+            <div class="delivery-choice-radio"></div>
+          </div>
+        </div>
+
+        <!-- Formulario de Entrega -->
+        <div class="delivery-form-box">
+          <div id="delivery-address-group" class="delivery-addr-section">
+            <label class="delivery-field-label">Zona de Envío:</label>
+            <select id="delivery-zone-dropdown" class="delivery-select-box">
+              <option value="centro">Zona Centro / Cercanías (+$1.500)</option>
+              <option value="norte">Zona Norte / Gran Mendoza (+$2.200)</option>
+              <option value="sur">Zona Sur (+$2.500)</option>
+            </select>
+            <input type="text" id="delivery-input-addr" class="delivery-input-box" placeholder="Dirección exacta, Piso y Dpto">
+          </div>
+
+          <div class="delivery-grid-two-col">
+            <div>
+              <label class="delivery-field-label">Fecha del Evento:</label>
+              <input type="date" id="delivery-input-date" class="delivery-input-box" required>
+            </div>
+            <div>
+              <label class="delivery-field-label">Tu Nombre:</label>
+              <input type="text" id="delivery-input-name" class="delivery-input-box" placeholder="Nombre completo" required>
+            </div>
+          </div>
+          <div class="delivery-notice-72h">
+            ⏰ <strong>Importante:</strong> Los pedidos requieren un mínimo de <strong>72 horas de anticipación</strong> (3 días) y quedan confirmados una vez coordinada la seña por WhatsApp.
+          </div>
+        </div>
+
+        <!-- Resumen de Costos y Seña 50% -->
+        <div class="delivery-summary-card">
+          <div class="summary-top-row">
+            <div id="delivery-summary-desc" class="summary-product-label">Pastel 2.5 kg</div>
+            <span class="summary-deposit-pill">Seña 50%</span>
+          </div>
+          <div class="summary-calc-row">
+            <span class="summary-calc-label">Total Presupuestado:</span>
+            <span id="delivery-summary-total" class="summary-calc-val">$29.500</span>
+          </div>
+          <div class="summary-calc-row highlight">
+            <span class="summary-deposit-label">Seña a abonar (50%):</span>
+            <span id="delivery-summary-deposit" class="summary-deposit-val">$14.750</span>
+          </div>
+          <div class="summary-footnote">
+            * El 50% restante se abona contra entrega o retiro del pedido.
+          </div>
+
+          <div class="summary-action-buttons">
+            <button id="btn-delivery-whatsapp" class="btn-confirm-whatsapp">
+              Confirmar por WhatsApp 📲
+            </button>
+            <button id="btn-delivery-pay-online" class="btn-pay-deposit">
+              Pagar Seña Online 💳
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =======================================================================
+         PÁGINA 5: CARRUSEL DE PASTELES (FONDO BG 5 - 3 FOTOS SIMULTÁNEAS)
+         ======================================================================= -->
+    <div id="scene-05-gallery" class="scene-frame">
+      <div class="gallery-carousel-transparent-stage">
+        <!-- Encabezado con título y filtros de categoría -->
+        <div class="gallery-header-bar">
+          <div class="gallery-title-pill">
+            <h3 class="gallery-main-heading">📸 Galería de Pasteles</h3>
+            <span class="gallery-subtitle-badge">Nuestras Creaciones Artesanales</span>
+          </div>
+          <div class="gallery-filter-chips">
+            <button class="nav-admin-btn filter-pill-btn active" data-filter="all">Todos</button>
+            <button class="nav-admin-btn filter-pill-btn" data-filter="infantiles">Infantiles</button>
+            <button class="nav-admin-btn filter-pill-btn" data-filter="adultos">Adultos</button>
+            <button class="nav-admin-btn filter-pill-btn" data-filter="quinces">15 Años</button>
+            <button class="nav-admin-btn filter-pill-btn" data-filter="bodas">Bodas</button>
+          </div>
+        </div>
+
+        <!-- Carrusel de 3 Fotos simultáneas con Flechas laterales -->
+        <div class="gallery-carousel-stage">
+          <button id="btn-gallery-prev" class="reviews-nav-arrow prev" title="Fotos anteriores">‹</button>
+          <div id="gallery-carousel-track" class="gallery-slider-grid">
+            <!-- 3 fotos por página renderizadas dinámicamente -->
+          </div>
+          <button id="btn-gallery-next" class="reviews-nav-arrow next" title="Fotos siguientes">›</button>
+        </div>
+
+        <!-- Paginación con puntitos interactivos -->
+        <div id="gallery-dots-container" class="reviews-dots-row"></div>
+      </div>
+    </div>
+
+    <!-- =======================================================================
+         PÁGINA 6: CARRUSEL DE COMENTARIOS / GOOGLE MAPS (FONDO BG 6)
+         (3 comentarios visibles en simultáneo, rotación automática cada 5 segundos)
+         ======================================================================= -->
+    <div id="scene-06-reviews" class="scene-frame">
+      <div class="reviews-carousel-box">
+        <!-- Cabecera estilo Google Maps -->
+        <div class="reviews-google-header">
+          <div class="reviews-google-left">
+            <div class="google-logo-badge">
+              <svg viewBox="0 0 24 24" width="22" height="22">
+                <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/>
+                <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"/>
+                <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.14-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/>
+                <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+              </svg>
+              <span>Opiniones en Google Maps</span>
+            </div>
+            <div class="google-rating-score-row">
+              <span class="score-stars">★★★★★</span>
+              <span class="score-val">4.9</span>
+              <span class="score-verified">✓ Verificadas</span>
+              <span class="score-timer-info">⏱ Auto-rotación (5s)</span>
+            </div>
+          </div>
+
+          <div class="reviews-google-right">
+            <button id="btn-open-review-dialog" class="btn-open-review-form" onclick="document.getElementById('dialog-add-review').style.display = 'flex'">
+              ⭐ Dejar mi Opinión
+            </button>
+          </div>
+        </div>
+
+        <!-- Línea de progreso de los 5 segundos -->
+        <div class="reviews-timer-track">
+          <div id="reviews-timer-bar" class="reviews-timer-progress"></div>
+        </div>
+
+        <!-- Viewport del carrusel con flechas laterales -->
+        <div class="reviews-carousel-stage">
+          <button id="btn-reviews-prev" class="reviews-nav-arrow prev" title="Opiniones anteriores">‹</button>
+          <div id="reviews-carousel-track" class="reviews-slider-track">
+            <!-- Renderizado dinámico de a 3 opiniones por página -->
+          </div>
+          <button id="btn-reviews-next" class="reviews-nav-arrow next" title="Opiniones siguientes">›</button>
+        </div>
+
+        <!-- Paginación con puntitos interactivos -->
+        <div id="reviews-dots-container" class="reviews-dots-row"></div>
+      </div>
+    </div>
+
+    <!-- =======================================================================
+         PÁGINA 7: PROMOCIONES (FONDO BG 7)
+         (Ubicadas en la parte alta para no tapar el picnic con el nene abajo)
+         ======================================================================= -->
+    <div id="scene-07-promos" class="scene-frame">
+      <div class="promos-container-elevated">
+        <div class="promos-header-badge">
+          <span class="promos-tag-top">🎁 Ofertas Especiales de la Semana</span>
+          <h3 class="promos-main-heading">Combos & Promociones Barriguitas</h3>
+        </div>
+        <div class="promos-cards-grid" id="promos-container-grid"></div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- MODAL PARA DEJAR RESEÑA (PÁGINA 6) -->
+  <div id="dialog-add-review" class="admin-full-modal">
+    <div class="admin-panel-card" style="max-width: 460px;">
+      <button id="btn-close-review-dialog" onclick="document.getElementById('dialog-add-review').style.display = 'none'" style="position: absolute; top: 12px; right: 12px; background: none; border: none; font-size: 1.4rem; cursor: pointer;">&times;</button>
+      <h3 style="font-family: 'Lilita One', cursive; color: #4285f4; font-size: 1.6rem; margin-bottom: 6px;">Escribir Reseña</h3>
+      <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 14px;">Tu comentario se sincronizará con nuestro catálogo y base de datos:</p>
+      <form id="form-add-public-review">
+        <input type="text" id="public-review-name" class="decor-input-box" style="margin-bottom: 10px;" placeholder="Tu Nombre completo (Ej: Florencia Romero)" required>
+        <select id="public-review-stars" class="delivery-select-box" style="margin-bottom: 10px;">
+          <option value="5">★★★★★ (5 Estrellas - Excelente, recomendado)</option>
+          <option value="4">★★★★☆ (4 Estrellas - Muy Bueno)</option>
+        </select>
+        <textarea id="public-review-text" class="decor-input-box" style="height: 90px; margin-bottom: 14px;" placeholder="Cuéntanos qué te pareció la torta, los sabores y la atención..." required></textarea>
+        <button type="submit" class="btn-proceed-sweet" style="background: #4285f4; color: white;">Publicar Comentario en Google</button>
+      </form>
+    </div>
+  </div>
+
+
+
+  <!-- Scripts -->
+  <script src="js/barriguitas.js"></script>
+</body>
+</html>

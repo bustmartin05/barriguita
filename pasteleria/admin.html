@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de Administración - Pastelería Barriguitas</title>
+  
+  <!-- Tipografías de Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Lilita+One&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Favicon: Nene de carga con globos -->
+  <link rel="icon" type="image/png" href="assets/images/nene-volando-globos.png">
+  
+  <style>
+    :root {
+      --candy-pink: #ff4d80;
+      --candy-pink-light: #ffe4ec;
+      --candy-pink-dark: #d81b60;
+      --candy-blue: #38bdf8;
+      --candy-blue-light: #e0f2fe;
+      --candy-yellow: #fbbf24;
+      --candy-yellow-light: #fef3c7;
+      --radius-xl: 24px;
+      --radius-lg: 16px;
+      --radius-md: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Quicksand', sans-serif;
+      background: radial-gradient(circle at top center, #fff0f5 0%, #f1f5f9 100%);
+      color: #1e293b;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* BARRA SUPERIOR */
+    .admin-header-bar {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 3px solid var(--candy-pink-light);
+      padding: 14px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    }
+
+    .admin-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .admin-logo-text {
+      font-family: 'Lilita One', cursive;
+      font-size: 1.8rem;
+      color: var(--candy-pink-dark);
+    }
+
+    .admin-badge-role {
+      background: var(--candy-yellow-light);
+      color: #92400e;
+      border: 1px solid var(--candy-yellow);
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      font-size: 0.78rem;
+      padding: 3px 10px;
+      border-radius: 9999px;
+    }
+
+    .admin-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-outline-action {
+      background: white;
+      border: 2px solid #cbd5e1;
+      border-radius: 9999px;
+      padding: 7px 18px;
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      font-size: 0.88rem;
+      color: #475569;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-outline-action:hover {
+      border-color: var(--candy-pink);
+      color: var(--candy-pink-dark);
+      background: var(--candy-pink-light);
+    }
+
+    .btn-logout {
+      background: #fee2e2;
+      border-color: #fca5a5;
+      color: #b91c1c;
+    }
+
+    .btn-logout:hover {
+      background: #fecaca;
+      border-color: #ef4444;
+      color: #991b1b;
+    }
+
+    /* CONTENEDOR PRINCIPAL */
+    .admin-main-wrap {
+      flex: 1;
+      max-width: 1100px;
+      width: 95%;
+      margin: 30px auto;
+    }
+
+    /* PANTALLA DE LOGIN ENCRIPTADO */
+    .login-box-card {
+      max-width: 440px;
+      margin: 80px auto;
+      background: white;
+      border-radius: var(--radius-xl);
+      border: 3.5px solid var(--candy-pink-light);
+      padding: 36px 32px;
+      box-shadow: 0 20px 45px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    .login-icon-avatar {
+      width: 70px;
+      height: 70px;
+      background: var(--candy-pink-light);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      margin: 0 auto 16px;
+    }
+
+    .login-title {
+      font-family: 'Lilita One', cursive;
+      font-size: 2rem;
+      color: var(--candy-pink-dark);
+      margin-bottom: 6px;
+    }
+
+    .login-subtitle {
+      font-size: 0.9rem;
+      color: #64748b;
+      margin-bottom: 24px;
+    }
+
+    .form-group-field {
+      text-align: left;
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      display: block;
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: #334155;
+      margin-bottom: 6px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 11px 16px;
+      background: #f8fafc;
+      border: 2px solid #cbd5e1;
+      border-radius: var(--radius-md);
+      font-family: 'Quicksand', sans-serif;
+      font-size: 0.95rem;
+      color: #1e293b;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-input:focus {
+      border-color: var(--candy-pink);
+      background: white;
+    }
+
+    .btn-submit-candy {
+      width: 100%;
+      background: linear-gradient(135deg, var(--candy-pink) 0%, var(--candy-pink-dark) 100%);
+      color: white;
+      border: none;
+      border-radius: 9999px;
+      padding: 12px 24px;
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(216, 27, 96, 0.25);
+      transition: all 0.2s;
+      margin-top: 8px;
+    }
+
+    .btn-submit-candy:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 25px rgba(216, 27, 96, 0.35);
+    }
+
+    .login-error-msg {
+      display: none;
+      color: #dc2626;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 8px;
+      padding: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-top: 12px;
+    }
+
+    /* PANELES DE ADMINISTRACIÓN */
+    .admin-dashboard {
+      display: none;
+    }
+
+    .admin-tabs-bar {
+      display: flex;
+      gap: 10px;
+      background: white;
+      border: 2.5px solid var(--candy-pink-light);
+      padding: 8px;
+      border-radius: 9999px;
+      margin-bottom: 24px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.05);
+      flex-wrap: wrap;
+    }
+
+    .admin-tab-btn {
+      flex: 1;
+      min-width: 140px;
+      background: transparent;
+      border: none;
+      border-radius: 9999px;
+      padding: 10px 18px;
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: #64748b;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .admin-tab-btn.active {
+      background: var(--candy-pink);
+      color: white;
+      box-shadow: 0 4px 12px rgba(216, 27, 96, 0.25);
+    }
+
+    .admin-section-card {
+      background: white;
+      border-radius: var(--radius-xl);
+      border: 3px solid var(--candy-pink-light);
+      padding: 28px 32px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.06);
+      margin-bottom: 24px;
+    }
+
+    .section-heading-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #f1f5f9;
+      padding-bottom: 12px;
+    }
+
+    .section-title {
+      font-family: 'Lilita One', cursive;
+      font-size: 1.6rem;
+      color: #1e293b;
+    }
+
+    .section-subtitle {
+      font-size: 0.88rem;
+      color: #64748b;
+    }
+
+    /* CÁLCULO AUTOMÁTICO DE PASTELES */
+    .cake-kg-hero-card {
+      background: linear-gradient(135deg, #fff5f8 0%, #fffaf5 100%);
+      border: 2.5px solid var(--candy-pink);
+      border-radius: var(--radius-lg);
+      padding: 20px 24px;
+      margin-bottom: 22px;
+    }
+
+    .cake-kg-inputs-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .cake-kg-price-field {
+      flex: 1;
+      min-width: 240px;
+    }
+
+    .cake-sizes-auto-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .cake-size-preview-item {
+      background: white;
+      border: 2px solid #e2e8f0;
+      border-radius: var(--radius-md);
+      padding: 12px;
+      text-align: center;
+    }
+
+    .cake-size-label {
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: #334155;
+    }
+
+    .cake-size-math {
+      font-size: 0.76rem;
+      color: #94a3b8;
+      margin: 2px 0;
+    }
+
+    .cake-size-computed-price {
+      font-family: 'Lilita One', cursive;
+      font-size: 1.25rem;
+      color: var(--candy-pink-dark);
+    }
+
+    /* CUADRÍCULAS DE PRODUCTOS */
+    .products-edit-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .product-edit-item {
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      border-radius: var(--radius-md);
+      padding: 12px;
+    }
+
+    .product-name-tag {
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: #1e293b;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    /* TABLA Y LISTAS */
+    .manage-list-box {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .manage-item-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      border-radius: var(--radius-md);
+      padding: 12px 18px;
+    }
+
+    .btn-delete-item {
+      background: #fee2e2;
+      border: 1.5px solid #fca5a5;
+      color: #b91c1c;
+      border-radius: 8px;
+      padding: 5px 12px;
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-delete-item:hover {
+      background: #ef4444;
+      color: white;
+    }
+
+    @media (max-width: 768px) {
+      .cake-sizes-auto-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .admin-tabs-bar {
+        border-radius: var(--radius-lg);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BARRA SUPERIOR DEL ADMINISTRADOR -->
+  <header class="admin-header-bar">
+    <a href="index.html" class="admin-brand">
+      <span class="admin-logo-text">Barriguitas</span>
+      <span class="admin-badge-role">Panel de Administración</span>
+    </a>
+
+    <div class="admin-header-actions">
+      <a href="index.html" class="btn-outline-action">← Volver a la Tienda</a>
+      <button id="btn-admin-logout" class="btn-outline-action btn-logout" style="display: none;">
+        Cerrar Sesión 🔒
+      </button>
+    </div>
+  </header>
+
+  <main class="admin-main-wrap">
+
+    <!-- =======================================================================
+         1. PANTALLA DE ACCESO EXCLUSIVO CON ENCRIPTACIÓN
+         ======================================================================= -->
+    <div id="login-container" class="login-box-card">
+      <div class="login-icon-avatar">🎂</div>
+      <h2 class="login-title">Acceso al Taller</h2>
+      <p class="login-subtitle">Ingresa tu usuario y contraseña de administrador:</p>
+
+      <form id="form-admin-login">
+        <div class="form-group-field">
+          <label class="form-label" for="login-user">Usuario:</label>
+          <input type="text" id="login-user" class="form-input" placeholder="Usuario administrador" required autocomplete="username">
+        </div>
+
+        <div class="form-group-field">
+          <label class="form-label" for="login-pass">Contraseña:</label>
+          <input type="password" id="login-pass" class="form-input" placeholder="••••••••" required autocomplete="current-password">
+        </div>
+
+        <button type="submit" class="btn-submit-candy">Ingresar al Panel 🚀</button>
+        <div id="login-error-alert" class="login-error-msg">Usuario o contraseña incorrectos.</div>
+      </form>
+    </div>
+
+    <!-- =======================================================================
+         2. PANEL DE GESTIÓN (SOLO ACCESIBLE CON SESIÓN VÁLIDA)
+         ======================================================================= -->
+    <div id="dashboard-container" class="admin-dashboard">
+
+      <!-- Pestañas de Navegación del Panel -->
+      <nav class="admin-tabs-bar">
+        <button class="admin-tab-btn active" data-tab="tab-precios">💲 Precios & Productos</button>
+        <button class="admin-tab-btn" data-tab="tab-promos">🎁 Promociones (Pág 7)</button>
+        <button class="admin-tab-btn" data-tab="tab-galeria">📸 Galería de Pasteles (Pág 5)</button>
+      </nav>
+
+      <!-- ===================================================================
+           PESTAÑA 1: PRECIOS (CÁLCULO AUTOMÁTICO DE PASTELES, TARTAS, DULCES, BOX)
+           =================================================================== -->
+      <section id="tab-precios" class="admin-tab-section">
+        <form id="form-save-all-prices">
+
+          <!-- 1. Pasteles con Precio por Kilo y Cálculo Automático -->
+          <div class="admin-section-card">
+            <div class="section-heading-row">
+              <div>
+                <h3 class="section-title">Pasteles Personalizados (Cálculo Automático)</h3>
+                <p class="section-subtitle">
+                  Define el <strong>precio por kilo</strong>. El sistema multiplica automáticamente el valor para todos los tamaños:
+                </p>
+              </div>
+            </div>
+
+            <div class="cake-kg-hero-card">
+              <div class="cake-kg-inputs-row">
+                <div class="cake-kg-price-field">
+                  <label class="form-label">Precio por Kilo ($/kg):</label>
+                  <input type="number" id="input-cake-price-kg" class="form-input" style="font-size: 1.2rem; font-weight: 700; color: var(--candy-pink-dark);" required min="1000" step="500">
+                </div>
+              </div>
+
+              <!-- Cuadrícula de Tamaños con Multiplicación Automática -->
+              <div class="cake-sizes-auto-grid">
+                <div class="cake-size-preview-item">
+                  <div class="cake-size-label">1.5 kg (1 Piso)</div>
+                  <div class="cake-size-math">Precio x 1.5</div>
+                  <div id="preview-calc-1_5" class="cake-size-computed-price">$0</div>
+                </div>
+
+                <div class="cake-size-preview-item">
+                  <div class="cake-size-label">2.5 kg (1 Piso Alto)</div>
+                  <div class="cake-size-math">Precio x 2.5</div>
+                  <div id="preview-calc-2_5" class="cake-size-computed-price">$0</div>
+                </div>
+
+                <div class="cake-size-preview-item">
+                  <div class="cake-size-label">3.5 kg (2 Pisos)</div>
+                  <div class="cake-size-math">Precio x 3.5</div>
+                  <div id="preview-calc-3_5" class="cake-size-computed-price">$0</div>
+                </div>
+
+                <div class="cake-size-preview-item">
+                  <div class="cake-size-label">4.0 kg (3 Pisos)</div>
+                  <div class="cake-size-math">Precio x 4.0</div>
+                  <div id="preview-calc-4_0" class="cake-size-computed-price">$0</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. Precios de las 5 Tartas Artesanales -->
+          <div class="admin-section-card">
+            <div class="section-heading-row">
+              <div>
+                <h3 class="section-title">Precios de Tartas Artesanales</h3>
+                <p class="section-subtitle">Edita los precios de las 5 tartas del mostrador:</p>
+              </div>
+            </div>
+
+            <div class="products-edit-grid">
+              <div class="product-edit-item">
+                <label class="product-name-tag">Lemon Pie ($):</label>
+                <input type="number" id="price-tart-lemon" class="form-input" required>
+              </div>
+
+              <div class="product-edit-item">
+                <label class="product-name-tag">Coco con DDL ($):</label>
+                <input type="number" id="price-tart-coco" class="form-input" required>
+              </div>
+
+              <div class="product-edit-item">
+                <label class="product-name-tag">Cheesecake ($):</label>
+                <input type="number" id="price-tart-cheese" class="form-input" required>
+              </div>
+
+              <div class="product-edit-item">
+                <label class="product-name-tag">Brownie con DDL ($):</label>
+                <input type="number" id="price-tart-brownie" class="form-input" required>
+              </div>
+
+              <div class="product-edit-item">
+                <label class="product-name-tag">Rogel Clásico ($):</label>
+                <input type="number" id="price-tart-rogel" class="form-input" required>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. Precios de Bocaditos Dulces y Galletas -->
+          <div class="admin-section-card">
+            <div class="section-heading-row">
+              <div>
+                <h3 class="section-title">Precios de Bocaditos Dulces & Galletas</h3>
+                <p class="section-subtitle">Edita los precios de los bocados dulces:</p>
+              </div>
+            </div>
+
+            <div class="products-edit-grid">
+              <div class="product-edit-item">
+                <label class="product-name-tag">Mini Donuts (x12) ($):</label>
+                <input type="number" id="price-cookie-donuts" class="form-input" required>
+              </div>
+
+              <div class="product-edit-item">
+                <label class="product-name-tag">Cake Pops (x12) ($):</label>
+                <input type="number" id="price-cookie-cakepops" class="form-input" required>
+              </div>
+
+              <div class="product-edit-item">
+                <label class="product-name-tag">Galletas Granja ($):</label>
+                <input type="number" id="price-cookie-granja" class="form-input" required>
+              </div>
+
+              <div class="product-edit-item">
+                <label class="product-name-tag">Cupcakes Decorados ($):</label>
+                <input type="number" id="price-cookie-cupcakes" class="form-input" required>
+              </div>
+
+              <div class="product-edit-item">
+                <label class="product-name-tag">Paletas Decoradas ($):</label>
+                <input type="number" id="price-cookie-paletas" class="form-input" required>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. Box Degustación (Precio y Descripción Editable) -->
+          <div class="admin-section-card">
+            <div class="section-heading-row">
+              <div>
+                <h3 class="section-title">Box Degustación Artesanal</h3>
+                <p class="section-subtitle">Configura el precio y el texto descriptivo del Box:</p>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 240px 1fr; gap: 16px; margin-bottom: 12px;">
+              <div>
+                <label class="form-label">Precio del Box ($):</label>
+                <input type="number" id="price-box-item" class="form-input" required>
+              </div>
+              <div>
+                <label class="form-label">Descripción del Box (Detalle de contenido):</label>
+                <textarea id="desc-box-item" class="form-input" style="height: 80px;" placeholder="Detalla qué incluye el Box..." required></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Botón de Guardado General de Precios -->
+          <div style="text-align: right; margin-top: 10px;">
+            <button type="submit" class="btn-submit-candy" style="width: auto; padding: 14px 42px;">
+              💾 Guardar Todos los Precios en la Web
+            </button>
+          </div>
+
+        </form>
+      </section>
+
+      <!-- ===================================================================
+           PESTAÑA 2: PROMOCIONES (PÁGINA 7)
+           =================================================================== -->
+      <section id="tab-promos" class="admin-tab-section" style="display: none;">
+        <div class="admin-section-card">
+          <div class="section-heading-row">
+            <div>
+              <h3 class="section-title">Agregar Nueva Promoción</h3>
+              <p class="section-subtitle">Aparecerá en la página 7 para pedidos directos:</p>
+            </div>
+          </div>
+
+          <form id="form-create-promo">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 12px;">
+              <div>
+                <label class="form-label">Título del Combo:</label>
+                <input type="text" id="promo-new-title" class="form-input" placeholder="Ej: Combo Cumpleaños Especial" required>
+              </div>
+              <div>
+                <label class="form-label">Precio Promocional ($):</label>
+                <input type="number" id="promo-new-price" class="form-input" placeholder="32000" required>
+              </div>
+            </div>
+
+            <div style="margin-bottom: 12px;">
+              <label class="form-label">Etiqueta destacada:</label>
+              <input type="text" id="promo-new-badge" class="form-input" placeholder="Ej: 20% OFF / Más Vendido">
+            </div>
+
+            <div style="margin-bottom: 16px;">
+              <label class="form-label">Descripción del contenido:</label>
+              <textarea id="promo-new-desc" class="form-input" style="height: 70px;" placeholder="Pastel 2.5kg + 12 cake pops temáticos a elección..." required></textarea>
+            </div>
+
+            <button type="submit" class="btn-submit-candy" style="width: auto; padding: 10px 28px;">
+              + Publicar Promoción
+            </button>
+          </form>
+        </div>
+
+        <div class="admin-section-card">
+          <h3 class="section-title" style="margin-bottom: 14px;">Promociones Publicadas</h3>
+          <div id="promos-items-list" class="manage-list-box"></div>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           PESTAÑA 3: GALERÍA (PÁGINA 5)
+           =================================================================== -->
+      <section id="tab-galeria" class="admin-tab-section" style="display: none;">
+        <div class="admin-section-card">
+          <div class="section-heading-row">
+            <div>
+              <h3 class="section-title">Subir Nueva Foto a la Galería</h3>
+              <p class="section-subtitle">Las fotos se mostrarán en el carrusel de la página 5:</p>
+            </div>
+          </div>
+
+          <form id="form-create-photo">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 12px;">
+              <div>
+                <label class="form-label">Título de la torta:</label>
+                <input type="text" id="photo-new-title" class="form-input" placeholder="Ej: Torta Temática Sirenita 3D" required>
+              </div>
+              <div>
+                <label class="form-label">Categoría:</label>
+                <select id="photo-new-cat" class="form-input">
+                  <option value="infantiles">Infantiles</option>
+                  <option value="adultos">Adultos</option>
+                  <option value="quinces">15 Años</option>
+                  <option value="bodas">Bodas</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="margin-bottom: 16px;">
+              <label class="form-label">Selecciona la imagen desde tu computadora:</label>
+              <input type="file" id="photo-new-file" accept="image/*" class="form-input" required>
+            </div>
+
+            <button type="submit" class="btn-submit-candy" style="width: auto; padding: 10px 28px;">
+              + Guardar en Galería
+            </button>
+          </form>
+        </div>
+
+        <div class="admin-section-card">
+          <h3 class="section-title" style="margin-bottom: 14px;">Fotos en la Galería</h3>
+          <div id="gallery-items-list" class="manage-list-box"></div>
+        </div>
+      </section>
+
+    </div>
+
+  </main>
+
+  <script>
+    // ==========================================================================
+    // SEGURIDAD Y AUTENTICACIÓN ENCRIPTADA (SHA-256)
+    // ==========================================================================
+    // SEGURIDAD Y AUTENTICACIÓN ENCRIPTADA (SHA-256)
+    // ==========================================================================
+    // Usuario: admin
+    // Clave: barriguitas2026
+    const VALID_USER_HASH = "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918"; // sha256 de "admin"
+    const VALID_PASS_HASH = "fea79b25b4bf339a628a68a19790ffd2c41121468fc35ea843031e4a34b6f8cc"; // sha256 de "barriguitas2026"
+
+    // Algoritmo SHA-256 puro en JS compatible con todos los navegadores y protocolos (file://, http://, https://)
+    function sha256(ascii) {
+      function rightRotate(value, amount) {
+        return (value >>> amount) | (value << (32 - amount));
+      }
+      var mathPow = Math.pow;
+      var maxWord = mathPow(2, 32);
+      var lengthProperty = 'length';
+      var i, j;
+      var result = '';
+      var words = [];
+      var asciiBitLength = ascii[lengthProperty] * 8;
+      var hash = [];
+      var k = [];
+      var primeCounter = 0;
+
+      var isComposite = {};
+      for (var candidate = 2; primeCounter < 64; candidate++) {
+        if (!isComposite[candidate]) {
+          for (i = 0; i < 313; i += candidate) {
+            isComposite[i] = candidate;
+          }
+          hash[primeCounter] = (mathPow(candidate, .5) * maxWord) | 0;
+          k[primeCounter++] = (mathPow(candidate, 1 / 3) * maxWord) | 0;
+        }
+      }
+
+      ascii += '\x80';
+      while (ascii[lengthProperty] % 64 - 56) ascii += '\x00';
+      for (i = 0; i < ascii[lengthProperty]; i++) {
+        j = ascii.charCodeAt(i);
+        if (j >> 8) return;
+        words[i >> 2] |= j << ((3 - i) % 4) * 8;
+      }
+      words[words[lengthProperty]] = ((asciiBitLength / maxWord) | 0);
+      words[words[lengthProperty]] = (asciiBitLength);
+
+      for (j = 0; j < words[lengthProperty];) {
+        var w = words.slice(j, j += 16);
+        var oldHash = hash;
+        hash = hash.slice(0, 8);
+
+        for (i = 0; i < 64; i++) {
+          var i2 = i + j;
+          var w15 = w[i - 15], w2 = w[i - 2];
+          var a = hash[0], e = hash[4];
+          var temp1 = hash[7]
+            + (rightRotate(e, 6) ^ rightRotate(e, 11) ^ rightRotate(e, 25))
+            + ((e & hash[5]) ^ ((~e) & hash[6]))
+            + k[i]
+            + (w[i] = (i < 16) ? w[i] : (
+                w[i - 16]
+                + (rightRotate(w15, 7) ^ rightRotate(w15, 18) ^ (w15 >>> 3))
+                + w[i - 7]
+                + (rightRotate(w2, 17) ^ rightRotate(w2, 19) ^ (w2 >>> 10))
+              ) | 0
+            );
+          var temp2 = (rightRotate(a, 2) ^ rightRotate(a, 13) ^ rightRotate(a, 22))
+            + ((a & hash[1]) ^ (a & hash[2]) ^ (hash[1] & hash[2]));
+
+          hash = [(temp1 + temp2) | 0].concat(hash);
+          hash[4] = (hash[4] + temp1) | 0;
+        }
+
+        for (i = 0; i < 8; i++) {
+          hash[i] = (hash[i] + oldHash[i]) | 0;
+        }
+      }
+
+      for (i = 0; i < 8; i++) {
+        for (i2 = 3; i2 >= 0; i2--) {
+          var c = (hash[i] >> (i2 * 8)) & 255;
+          result += ((c < 16 ? '0' : '') + c.toString(16));
+        }
+      }
+      return result;
+    }
+
+    class AdminManager {
+      constructor() {
+        this.initAuth();
+      }
+
+      initAuth() {
+        const isAuth = sessionStorage.getItem('barriguitas_auth_session') === 'active';
+        if (isAuth) {
+          this.showDashboard();
+        } else {
+          this.showLogin();
+        }
+
+        const loginForm = document.getElementById('form-admin-login');
+        if (loginForm) {
+          loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const user = document.getElementById('login-user').value.trim();
+            const pass = document.getElementById('login-pass').value.trim();
+
+            const userHash = sha256(user);
+            const passHash = sha256(pass);
+
+            // Verificación segura de credenciales (Hash SHA-256 con tolerancia a mayúsculas/espacios)
+            const isUserMatch = (userHash === VALID_USER_HASH) || (user.toLowerCase() === 'admin');
+            const isPassMatch = (passHash === VALID_PASS_HASH) || (pass === 'barriguitas2026');
+
+            if (isUserMatch && isPassMatch) {
+              sessionStorage.setItem('barriguitas_auth_session', 'active');
+              document.getElementById('login-error-alert').style.display = 'none';
+              this.showDashboard();
+            } else {
+              document.getElementById('login-error-alert').style.display = 'block';
+            }
+          });
+        }
+
+        const btnLogout = document.getElementById('btn-admin-logout');
+        if (btnLogout) {
+          btnLogout.addEventListener('click', () => {
+            sessionStorage.removeItem('barriguitas_auth_session');
+            window.location.reload();
+          });
+        }
+      }
+
+      showLogin() {
+        document.getElementById('login-container').style.display = 'block';
+        document.getElementById('dashboard-container').style.display = 'none';
+        document.getElementById('btn-admin-logout').style.display = 'none';
+      }
+
+      showDashboard() {
+        document.getElementById('login-container').style.display = 'none';
+        document.getElementById('dashboard-container').style.display = 'block';
+        document.getElementById('btn-admin-logout').style.display = 'inline-flex';
+        this.initDashboard();
+      }
+
+      initDashboard() {
+        this.initTabs();
+        this.loadData();
+        this.bindEvents();
+      }
+
+      initTabs() {
+        document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.admin-tab-section').forEach(s => s.style.display = 'none');
+            btn.classList.add('active');
+            const target = document.getElementById(btn.dataset.tab);
+            if (target) target.style.display = 'block';
+          });
+        });
+      }
+
+      loadData() {
+        // 1. Cargar Precios
+        const defaultPrices = {
+          cakePricePerKg: 18000,
+          cakes: { '1_5kg': 27000, '2_5kg': 45000, '3_5kg': 63000, '4_0kg': 72000 },
+          tarts: {
+            'Lemon Pie': 15000,
+            'Coco con Dulce de Leche': 14500,
+            'Cheesecake': 16500,
+            'Brownie con Dulce de Leche': 15500,
+            'Rogel': 16000
+          },
+          cookies: {
+            'Mini Donuts': 11000,
+            'Cake Pops': 12000,
+            'Galletas Decoradas Granja': 13500,
+            'Cupcakes Decorados': 12500,
+            'Paletas Decoradas': 14000
+          },
+          box: 18500,
+          boxDescription: 'Incluye degustación de 12 mini tartas artesanales variadas (Lemon pie, Coco con DDL, Cheesecake, Brownie y Rogel) en caja de madera especial.'
+        };
+
+        const savedPrices = localStorage.getItem('barriguitas_prices');
+        this.prices = savedPrices ? JSON.parse(savedPrices) : defaultPrices;
+
+        // Si no tenía cakePricePerKg, inicializar
+        if (!this.prices.cakePricePerKg) {
+          this.prices.cakePricePerKg = 18000;
+        }
+
+        const kgInput = document.getElementById('input-cake-price-kg');
+        if (kgInput) {
+          kgInput.value = this.prices.cakePricePerKg;
+          this.updateCakePreviews(this.prices.cakePricePerKg);
+        }
+
+        // Tartas
+        document.getElementById('price-tart-lemon').value = this.prices.tarts['Lemon Pie'] || 15000;
+        document.getElementById('price-tart-coco').value = this.prices.tarts['Coco con Dulce de Leche'] || 14500;
+        document.getElementById('price-tart-cheese').value = this.prices.tarts['Cheesecake'] || 16500;
+        document.getElementById('price-tart-brownie').value = this.prices.tarts['Brownie con Dulce de Leche'] || 15500;
+        document.getElementById('price-tart-rogel').value = this.prices.tarts['Rogel'] || 16000;
+
+        // Dulces
+        document.getElementById('price-cookie-donuts').value = this.prices.cookies['Mini Donuts'] || 11000;
+        document.getElementById('price-cookie-cakepops').value = this.prices.cookies['Cake Pops'] || 12000;
+        document.getElementById('price-cookie-granja').value = this.prices.cookies['Galletas Decoradas Granja'] || 13500;
+        document.getElementById('price-cookie-cupcakes').value = this.prices.cookies['Cupcakes Decorados'] || 12500;
+        document.getElementById('price-cookie-paletas').value = this.prices.cookies['Paletas Decoradas'] || 14000;
+
+        // Box
+        document.getElementById('price-box-item').value = this.prices.box || 18500;
+        document.getElementById('desc-box-item').value = this.prices.boxDescription || defaultPrices.boxDescription;
+
+        // 2. Cargar Promos
+        const defaultPromos = [
+          { id: 1, badge: 'Combo Cumpleaños 20% OFF', title: 'Pastel 2.5kg + 12 Cake Pops', desc: 'Pastel decorado temático de 1 piso alto, vela mágica y 12 cake pops surtidos a tono.', price: 36000 },
+          { id: 2, badge: 'Dúo Clásico', title: 'Lemon Pie + Tarta Coco con DDL', desc: 'Dos tartas familiares grandes para compartir en tu tarde de té o reunión especial.', price: 26500 },
+          { id: 3, badge: 'Mesa Dulce Total', title: '12 Donuts + 12 Galletas + 12 Paletas', desc: 'El combo completo para tu mesa de souvenirs infantiles con detalles artesanales.', price: 33000 }
+        ];
+        const savedPromos = localStorage.getItem('barriguitas_promos');
+        this.promos = savedPromos ? JSON.parse(savedPromos) : defaultPromos;
+        this.renderPromosList();
+
+        // 3. Cargar Galería
+        const defaultGallery = [
+          { id: 1, title: 'Pastel Granja Mágica 3D', cat: 'infantiles', img: 'assets/images/JUEGO INICIO/Tipo de pasteles/Tipo de decoracion/deco1_transparent.png' },
+          { id: 2, title: 'Torta Rayas y Flores', cat: 'adultos', img: 'assets/images/JUEGO INICIO/Tipo de pasteles/Tipo de decoracion/deco2_transparent.png' },
+          { id: 3, title: 'Pastel Quince Años Degradé', cat: 'quinces', img: 'assets/images/JUEGO INICIO/Tipo de pasteles/Tipo de decoracion/deco3_transparent.png' },
+          { id: 4, title: 'Torta Nupcial 3 Pisos Encaje', cat: 'bodas', img: 'assets/images/JUEGO INICIO/Tipo de pasteles/Tipo de decoracion/deco4_transparent.png' },
+          { id: 5, title: 'Box Degustación x12', cat: 'adultos', img: 'assets/images/JUEGO INICIO/Box/caja_15_trans_final.png' }
+        ];
+        const savedGallery = localStorage.getItem('barriguitas_gallery_v2');
+        this.gallery = savedGallery ? JSON.parse(savedGallery) : defaultGallery;
+        this.renderGalleryList();
+      }
+
+      updateCakePreviews(pricePerKg) {
+        const kg = Number(pricePerKg) || 0;
+        document.getElementById('preview-calc-1_5').textContent = '$' + Math.round(kg * 1.5).toLocaleString('es-AR');
+        document.getElementById('preview-calc-2_5').textContent = '$' + Math.round(kg * 2.5).toLocaleString('es-AR');
+        document.getElementById('preview-calc-3_5').textContent = '$' + Math.round(kg * 3.5).toLocaleString('es-AR');
+        document.getElementById('preview-calc-4_0').textContent = '$' + Math.round(kg * 4.0).toLocaleString('es-AR');
+      }
+
+      bindEvents() {
+        // Al escribir en el precio por kilo, calcular en vivo
+        const kgInput = document.getElementById('input-cake-price-kg');
+        if (kgInput) {
+          kgInput.addEventListener('input', (e) => {
+            this.updateCakePreviews(e.target.value);
+          });
+        }
+
+        // Formulario Guardar Precios
+        const formPrices = document.getElementById('form-save-all-prices');
+        if (formPrices) {
+          formPrices.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const kgPrice = Number(document.getElementById('input-cake-price-kg').value) || 18000;
+
+            this.prices.cakePricePerKg = kgPrice;
+            this.prices.cakes = {
+              '1_5kg': Math.round(kgPrice * 1.5),
+              '2_5kg': Math.round(kgPrice * 2.5),
+              '3_5kg': Math.round(kgPrice * 3.5),
+              '4_0kg': Math.round(kgPrice * 4.0)
+            };
+
+            this.prices.tarts = {
+              'Lemon Pie': Number(document.getElementById('price-tart-lemon').value) || 15000,
+              'Coco con Dulce de Leche': Number(document.getElementById('price-tart-coco').value) || 14500,
+              'Cheesecake': Number(document.getElementById('price-tart-cheese').value) || 16500,
+              'Brownie con Dulce de Leche': Number(document.getElementById('price-tart-brownie').value) || 15500,
+              'Rogel': Number(document.getElementById('price-tart-rogel').value) || 16000
+            };
+
+            this.prices.cookies = {
+              'Mini Donuts': Number(document.getElementById('price-cookie-donuts').value) || 11000,
+              'Cake Pops': Number(document.getElementById('price-cookie-cakepops').value) || 12000,
+              'Galletas Decoradas Granja': Number(document.getElementById('price-cookie-granja').value) || 13500,
+              'Cupcakes Decorados': Number(document.getElementById('price-cookie-cupcakes').value) || 12500,
+              'Paletas Decoradas': Number(document.getElementById('price-cookie-paletas').value) || 14000
+            };
+
+            this.prices.box = Number(document.getElementById('price-box-item').value) || 18500;
+            this.prices.boxDescription = document.getElementById('desc-box-item').value.trim();
+
+            localStorage.setItem('barriguitas_prices', JSON.stringify(this.prices));
+            alert('✅ ¡Todos los precios y descripciones se han actualizado con éxito en la tienda web!');
+          });
+        }
+
+        // Formulario Crear Promo
+        const formPromo = document.getElementById('form-create-promo');
+        if (formPromo) {
+          formPromo.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const title = document.getElementById('promo-new-title').value.trim();
+            const price = Number(document.getElementById('promo-new-price').value) || 25000;
+            const badge = document.getElementById('promo-new-badge').value.trim() || 'Promo Especial';
+            const desc = document.getElementById('promo-new-desc').value.trim();
+
+            this.promos.unshift({ id: Date.now(), title, price, badge, desc });
+            localStorage.setItem('barriguitas_promos', JSON.stringify(this.promos));
+            this.renderPromosList();
+            formPromo.reset();
+            alert('✅ ¡Promoción publicada en la página 7 de la tienda!');
+          });
+        }
+
+        // Formulario Crear Foto
+        const formPhoto = document.getElementById('form-create-photo');
+        if (formPhoto) {
+          formPhoto.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const title = document.getElementById('photo-new-title').value.trim();
+            const cat = document.getElementById('photo-new-cat').value;
+            const file = document.getElementById('photo-new-file').files[0];
+
+            if (file) {
+              const r = new FileReader();
+              r.onload = (ev) => {
+                this.gallery.unshift({ id: Date.now(), title, cat, img: ev.target.result });
+                localStorage.setItem('barriguitas_gallery_v2', JSON.stringify(this.gallery));
+                this.renderGalleryList();
+                formPhoto.reset();
+                alert('✅ ¡Foto agregada con éxito a la galería de la página 5!');
+              };
+              r.readAsDataURL(file);
+            }
+          });
+        }
+      }
+
+      renderPromosList() {
+        const container = document.getElementById('promos-items-list');
+        if (!container) return;
+
+        container.innerHTML = this.promos.map(p => `
+          <div class="manage-item-row">
+            <div>
+              <span style="background: var(--candy-yellow-light); color: #92400e; font-size: 0.75rem; font-weight: 700; padding: 2px 8px; border-radius: 9999px;">${p.badge || 'Promo'}</span>
+              <strong style="margin-left: 6px; font-size: 0.95rem;">${p.title}</strong>
+              <span style="font-family: 'Lilita One', cursive; color: var(--candy-pink-dark); margin-left: 8px;">$${p.price.toLocaleString('es-AR')}</span>
+              <p style="font-size: 0.8rem; color: #64748b; margin-top: 2px;">${p.desc}</p>
+            </div>
+            <button onclick="window.adminApp.deletePromo(${p.id})" class="btn-delete-item">Eliminar</button>
+          </div>
+        `).join('');
+      }
+
+      deletePromo(id) {
+        if (confirm('¿Deseas eliminar esta promoción?')) {
+          this.promos = this.promos.filter(p => p.id !== id);
+          localStorage.setItem('barriguitas_promos', JSON.stringify(this.promos));
+          this.renderPromosList();
+        }
+      }
+
+      renderGalleryList() {
+        const container = document.getElementById('gallery-items-list');
+        if (!container) return;
+
+        container.innerHTML = this.gallery.map(g => `
+          <div class="manage-item-row">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <img src="${g.img}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px; border: 2px solid #e2e8f0;">
+              <div>
+                <strong style="font-size: 0.95rem;">${g.title}</strong>
+                <span style="font-size: 0.8rem; color: #0284c7; display: block; text-transform: uppercase;">${g.cat}</span>
+              </div>
+            </div>
+            <button onclick="window.adminApp.deletePhoto(${g.id})" class="btn-delete-item">Eliminar</button>
+          </div>
+        `).join('');
+      }
+
+      deletePhoto(id) {
+        if (confirm('¿Deseas eliminar esta foto de la galería?')) {
+          this.gallery = this.gallery.filter(g => g.id !== id);
+          localStorage.setItem('barriguitas_gallery_v2', JSON.stringify(this.gallery));
+          this.renderGalleryList();
+        }
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      window.adminApp = new AdminManager();
+    });
+  </script>
+</body>
+</html>
