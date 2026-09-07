@@ -211,6 +211,7 @@ class BarriguitasApp {
     this.initPublicReviewDialog();
     this.initSupabaseConnector();
     this.initStorageListener();
+    this.initGlobalSceneScroll();
     this.resolveInitialRoute();
     this.updateCheckoutCalculation();
   }
@@ -1373,6 +1374,107 @@ class BarriguitasApp {
     } catch (err) {
       alert('Error al subir datos a Supabase:\n' + err.message);
     }
+  }
+
+  // 14. Desplazamiento Táctil Global: Permite desplazar/scrollear el marco interactivo tocando cualquier parte de la pantalla o la imagen de fondo
+  initGlobalSceneScroll() {
+    let touchStartY = 0;
+    let touchStartX = 0;
+    let lastTouchY = 0;
+    let lastTime = 0;
+    let velocityY = 0;
+    let isDraggingBackground = false;
+    let momentumAnimId = null;
+
+    const getActiveScrollable = () => {
+      const activeScene = document.querySelector('.scene-frame.active');
+      if (!activeScene) return null;
+      return activeScene.querySelector(
+        '.overlay-hero-glass, .counter-table-stage, .decor-panel-right, .delivery-panel-left, .box-presentation-card, .promos-container-elevated, .carousel-container-box, .reviews-carousel-box, .gallery-carousel-transparent-stage'
+      );
+    };
+
+    const stopMomentum = () => {
+      if (momentumAnimId) {
+        cancelAnimationFrame(momentumAnimId);
+        momentumAnimId = null;
+      }
+    };
+
+    // Eventos táctiles en toda la pantalla
+    document.addEventListener('touchstart', (e) => {
+      stopMomentum();
+      if (!e.touches || e.touches.length !== 1) return;
+
+      const touch = e.touches[0];
+      touchStartY = touch.clientY;
+      touchStartX = touch.clientX;
+      lastTouchY = touch.clientY;
+      lastTime = performance.now();
+      velocityY = 0;
+
+      const scrollable = getActiveScrollable();
+      // Si el toque ocurre fuera del marco deslizable (ej: en el fondo o en la imagen inferior)
+      if (scrollable && !scrollable.contains(e.target)) {
+        isDraggingBackground = true;
+      } else {
+        isDraggingBackground = false;
+      }
+    }, { passive: true });
+
+    document.addEventListener('touchmove', (e) => {
+      if (!isDraggingBackground || !e.touches || e.touches.length !== 1) return;
+      const scrollable = getActiveScrollable();
+      if (!scrollable) return;
+
+      const touch = e.touches[0];
+      const currentY = touch.clientY;
+      const currentX = touch.clientX;
+      const deltaY = lastTouchY - currentY;
+      const deltaX = touchStartX - currentX;
+
+      // Movimiento vertical prioritario
+      if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > 2) {
+        const now = performance.now();
+        const dt = Math.max(now - lastTime, 8);
+        velocityY = deltaY / dt;
+
+        // Desplazar el contenido del marco suavemente
+        scrollable.scrollTop += deltaY;
+
+        lastTouchY = currentY;
+        lastTime = now;
+      }
+    }, { passive: true });
+
+    document.addEventListener('touchend', () => {
+      if (isDraggingBackground) {
+        const scrollable = getActiveScrollable();
+        if (scrollable && Math.abs(velocityY) > 0.12) {
+          // Desplazamiento fluido con inercia
+          let currentVelocity = velocityY * 15;
+          const applyMomentum = () => {
+            if (Math.abs(currentVelocity) > 0.4) {
+              scrollable.scrollTop += currentVelocity;
+              currentVelocity *= 0.92;
+              momentumAnimId = requestAnimationFrame(applyMomentum);
+            } else {
+              stopMomentum();
+            }
+          };
+          momentumAnimId = requestAnimationFrame(applyMomentum);
+        }
+      }
+      isDraggingBackground = false;
+    }, { passive: true });
+
+    // Desplazamiento con rueda de mouse en PC cuando el cursor está sobre el fondo
+    window.addEventListener('wheel', (e) => {
+      const scrollable = getActiveScrollable();
+      if (scrollable && !scrollable.contains(e.target)) {
+        scrollable.scrollTop += e.deltaY;
+      }
+    }, { passive: true });
   }
 
 }

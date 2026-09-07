@@ -2122,7 +2122,7 @@ html, body {
     display: flex !important;
   }
 
-  /* PÁGINA 1: TARJETA ARRIBA */
+  /* PÁGINA 1: TARJETA ARRIBA CON SCROLL SUAVE Y AMPLIO */
   .overlay-hero-glass {
     position: absolute;
     top: 50px;
@@ -2130,16 +2130,19 @@ html, body {
     right: 4%;
     transform: none;
     width: 92%;
-    max-height: 48vh;
+    max-height: 58vh;
     overflow-y: auto;
-    padding: 20px;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+    touch-action: pan-y;
+    padding: 22px 20px;
   }
 
   .hero-title-main {
     font-size: 2rem;
   }
 
-  /* PÁGINA 2 / SUB-ESCENAS DE PRODUCTOS: ARRIBA EN CUADRÍCULA COMPACTA */
+  /* PÁGINA 2 / SUB-ESCENAS DE PRODUCTOS: ARRIBA EN CUADRÍCULA COMPACTA CON SCROLL SUAVE */
   .counter-table-stage {
     position: absolute;
     top: 55px;
@@ -2147,12 +2150,15 @@ html, body {
     left: 4%;
     right: 4%;
     width: 92%;
-    max-height: 50vh;
+    max-height: 58vh;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+    touch-action: pan-y;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
-    padding: 6px;
+    padding: 8px 6px;
     align-items: flex-start;
   }
 
@@ -2188,9 +2194,12 @@ html, body {
     transform: none;
     width: 92%;
     max-width: none;
-    max-height: 52vh;
+    max-height: 58vh;
     overflow-y: auto;
-    padding: 16px 14px;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+    touch-action: pan-y;
+    padding: 18px 16px;
   }
 
   .box-presentation-img {
@@ -2218,9 +2227,12 @@ html, body {
     bottom: auto;
     width: 92%;
     max-width: none;
-    max-height: 52vh;
+    max-height: 58vh;
     overflow-y: auto;
-    padding: 16px;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+    touch-action: pan-y;
+    padding: 18px 16px;
   }
 
   .decor-styles-grid {
@@ -2242,9 +2254,12 @@ html, body {
     bottom: auto;
     width: 92%;
     max-width: none;
-    max-height: 54vh;
+    max-height: 60vh;
     overflow-y: auto;
-    padding: 16px;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+    touch-action: pan-y;
+    padding: 18px 16px;
   }
 
   .delivery-choice-cards-row {
@@ -2252,7 +2267,7 @@ html, body {
     gap: 8px;
   }
 
-  /* ESCENA 5 & 6: TOTALMENTE TRANSPARENTES (SIN MARCO EXTERIOR NI FONDO) */
+  /* ESCENA 5 & 6: TOTALMENTE TRANSPARENTES */
   .carousel-container-box, .gallery-carousel-transparent-stage, .reviews-carousel-box {
     position: absolute;
     top: 55px;
@@ -2261,8 +2276,11 @@ html, body {
     transform: none;
     width: 92%;
     max-width: none;
-    max-height: 52vh;
+    max-height: 58vh;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+    touch-action: pan-y;
     padding: 6px 2px !important;
     background: transparent !important;
     border: none !important;
@@ -2288,9 +2306,32 @@ html, body {
     transform: none;
     width: 92%;
     max-width: none;
-    max-height: 52vh;
+    max-height: 58vh;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+    touch-action: pan-y;
     padding: 18px 14px;
+  }
+
+  /* Barras de desplazamiento sutiles y estéticas en móvil */
+  .overlay-hero-glass::-webkit-scrollbar,
+  .counter-table-stage::-webkit-scrollbar,
+  .box-presentation-card::-webkit-scrollbar,
+  .decor-panel-right::-webkit-scrollbar,
+  .delivery-panel-left::-webkit-scrollbar,
+  .promos-container-elevated::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .overlay-hero-glass::-webkit-scrollbar-thumb,
+  .counter-table-stage::-webkit-scrollbar-thumb,
+  .box-presentation-card::-webkit-scrollbar-thumb,
+  .decor-panel-right::-webkit-scrollbar-thumb,
+  .delivery-panel-left::-webkit-scrollbar-thumb,
+  .promos-container-elevated::-webkit-scrollbar-thumb {
+    background: rgba(216, 27, 96, 0.4);
+    border-radius: 9999px;
   }
 
   .reviews-slider-track {
