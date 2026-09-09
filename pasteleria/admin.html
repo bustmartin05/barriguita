@@ -24,15 +24,21 @@
       --candy-blue-light: #e0f2fe;
       --candy-yellow: #fbbf24;
       --candy-yellow-light: #fef3c7;
-      --radius-xl: 24px;
-      --radius-lg: 16px;
-      --radius-md: 12px;
+      --radius-xl: 20px;
+      --radius-lg: 14px;
+      --radius-md: 10px;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      max-width: 100%;
+      overflow-x: hidden;
     }
 
     body {
@@ -44,29 +50,33 @@
       flex-direction: column;
     }
 
-    /* BARRA SUPERIOR */
+    /* BARRA SUPERIOR RESPONSIVE */
     .admin-header-bar {
-      background: rgba(255, 255, 255, 0.95);
+      background: rgba(255, 255, 255, 0.96);
       backdrop-filter: blur(12px);
-      border-bottom: 3px solid var(--candy-pink-light);
-      padding: 14px 28px;
+      border-bottom: 2.5px solid var(--candy-pink-light);
+      padding: 12px 18px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+      gap: 10px;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.05);
+      flex-wrap: wrap;
     }
 
     .admin-brand {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       text-decoration: none;
+      flex-wrap: wrap;
     }
 
     .admin-logo-text {
       font-family: 'Lilita One', cursive;
-      font-size: 1.8rem;
+      font-size: 1.6rem;
       color: var(--candy-pink-dark);
+      letter-spacing: 0.5px;
     }
 
     .admin-badge-role {
@@ -75,32 +85,35 @@
       border: 1px solid var(--candy-yellow);
       font-family: 'Fredoka', sans-serif;
       font-weight: 700;
-      font-size: 0.78rem;
-      padding: 3px 10px;
+      font-size: 0.75rem;
+      padding: 3px 8px;
       border-radius: 9999px;
+      white-space: nowrap;
     }
 
     .admin-header-actions {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 8px;
+      flex-wrap: wrap;
     }
 
     .btn-outline-action {
       background: white;
-      border: 2px solid #cbd5e1;
+      border: 1.5px solid #cbd5e1;
       border-radius: 9999px;
-      padding: 7px 18px;
+      padding: 6px 14px;
       font-family: 'Fredoka', sans-serif;
       font-weight: 700;
-      font-size: 0.88rem;
+      font-size: 0.82rem;
       color: #475569;
       cursor: pointer;
       text-decoration: none;
       transition: all 0.2s;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
+      white-space: nowrap;
     }
 
     .btn-outline-action:hover {
@@ -125,69 +138,71 @@
     .admin-main-wrap {
       flex: 1;
       max-width: 1100px;
-      width: 95%;
-      margin: 30px auto;
+      width: 100%;
+      padding: 0 12px;
+      margin: 16px auto 32px;
     }
 
-    /* PANTALLA DE LOGIN ENCRIPTADO */
+    /* PANTALLA DE LOGIN */
     .login-box-card {
-      max-width: 440px;
-      margin: 80px auto;
+      max-width: 420px;
+      margin: 40px auto;
       background: white;
       border-radius: var(--radius-xl);
-      border: 3.5px solid var(--candy-pink-light);
-      padding: 36px 32px;
-      box-shadow: 0 20px 45px rgba(0,0,0,0.1);
+      border: 3px solid var(--candy-pink-light);
+      padding: 28px 22px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.08);
       text-align: center;
+      width: 100%;
     }
 
     .login-icon-avatar {
-      width: 70px;
-      height: 70px;
+      width: 60px;
+      height: 60px;
       background: var(--candy-pink-light);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 2rem;
-      margin: 0 auto 16px;
+      font-size: 1.8rem;
+      margin: 0 auto 12px;
     }
 
     .login-title {
       font-family: 'Lilita One', cursive;
-      font-size: 2rem;
+      font-size: 1.8rem;
       color: var(--candy-pink-dark);
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
 
     .login-subtitle {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       color: #64748b;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
 
     .form-group-field {
       text-align: left;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     .form-label {
       display: block;
       font-family: 'Fredoka', sans-serif;
       font-weight: 700;
-      font-size: 0.85rem;
+      font-size: 0.84rem;
       color: #334155;
-      margin-bottom: 6px;
+      margin-bottom: 5px;
     }
 
     .form-input {
       width: 100%;
-      padding: 11px 16px;
+      padding: 10px 14px;
       background: #f8fafc;
-      border: 2px solid #cbd5e1;
+      border: 1.5px solid #cbd5e1;
       border-radius: var(--radius-md);
       font-family: 'Quicksand', sans-serif;
-      font-size: 0.95rem;
+      font-size: 15px;
       color: #1e293b;
       outline: none;
       transition: border-color 0.2s;
@@ -196,6 +211,7 @@
     .form-input:focus {
       border-color: var(--candy-pink);
       background: white;
+      box-shadow: 0 0 0 3px rgba(255, 77, 128, 0.15);
     }
 
     .btn-submit-candy {
@@ -204,19 +220,19 @@
       color: white;
       border: none;
       border-radius: 9999px;
-      padding: 12px 24px;
+      padding: 12px 20px;
       font-family: 'Fredoka', sans-serif;
       font-weight: 700;
-      font-size: 1.05rem;
+      font-size: 1rem;
       cursor: pointer;
-      box-shadow: 0 8px 20px rgba(216, 27, 96, 0.25);
+      box-shadow: 0 6px 18px rgba(216, 27, 96, 0.25);
       transition: all 0.2s;
-      margin-top: 8px;
+      margin-top: 6px;
     }
 
     .btn-submit-candy:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 25px rgba(216, 27, 96, 0.35);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 22px rgba(216, 27, 96, 0.35);
     }
 
     .login-error-msg {
@@ -226,9 +242,9 @@
       border: 1px solid #fecaca;
       border-radius: 8px;
       padding: 8px;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-weight: 600;
-      margin-top: 12px;
+      margin-top: 10px;
     }
 
     /* PANELES DE ADMINISTRACIÓN */
@@ -236,145 +252,159 @@
       display: none;
     }
 
+    /* BARRA DE PESTAÑAS HORIZONTAL CON SCROLL SUAVE EN MÓVIL */
     .admin-tabs-bar {
       display: flex;
-      gap: 10px;
+      gap: 6px;
       background: white;
-      border: 2.5px solid var(--candy-pink-light);
-      padding: 8px;
-      border-radius: 9999px;
-      margin-bottom: 24px;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.05);
-      flex-wrap: wrap;
+      border: 2px solid var(--candy-pink-light);
+      padding: 6px;
+      border-radius: 16px;
+      margin-bottom: 18px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.04);
+      overflow-x: auto;
+      white-space: nowrap;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .admin-tabs-bar::-webkit-scrollbar {
+      display: none;
     }
 
     .admin-tab-btn {
-      flex: 1;
-      min-width: 140px;
+      flex: 0 0 auto;
       background: transparent;
       border: none;
-      border-radius: 9999px;
-      padding: 10px 18px;
+      border-radius: 12px;
+      padding: 8px 14px;
       font-family: 'Fredoka', sans-serif;
       font-weight: 700;
-      font-size: 0.95rem;
+      font-size: 0.86rem;
       color: #64748b;
       cursor: pointer;
       transition: all 0.2s;
       text-align: center;
+      white-space: nowrap;
     }
 
     .admin-tab-btn.active {
       background: var(--candy-pink);
       color: white;
-      box-shadow: 0 4px 12px rgba(216, 27, 96, 0.25);
+      box-shadow: 0 3px 10px rgba(216, 27, 96, 0.25);
     }
 
     .admin-section-card {
       background: white;
-      border-radius: var(--radius-xl);
-      border: 3px solid var(--candy-pink-light);
-      padding: 28px 32px;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.06);
-      margin-bottom: 24px;
+      border-radius: var(--radius-lg);
+      border: 2px solid var(--candy-pink-light);
+      padding: 20px 18px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.04);
+      margin-bottom: 18px;
+      width: 100%;
     }
 
     .section-heading-row {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-between;
-      margin-bottom: 20px;
-      border-bottom: 2px solid #f1f5f9;
-      padding-bottom: 12px;
+      gap: 10px;
+      margin-bottom: 16px;
+      border-bottom: 1.5px solid #f1f5f9;
+      padding-bottom: 10px;
+      flex-wrap: wrap;
     }
 
     .section-title {
       font-family: 'Lilita One', cursive;
-      font-size: 1.6rem;
+      font-size: 1.35rem;
       color: #1e293b;
+      line-height: 1.2;
     }
 
     .section-subtitle {
-      font-size: 0.88rem;
+      font-size: 0.82rem;
       color: #64748b;
+      margin-top: 3px;
     }
 
     /* CÁLCULO AUTOMÁTICO DE PASTELES */
     .cake-kg-hero-card {
       background: linear-gradient(135deg, #fff5f8 0%, #fffaf5 100%);
-      border: 2.5px solid var(--candy-pink);
-      border-radius: var(--radius-lg);
-      padding: 20px 24px;
-      margin-bottom: 22px;
+      border: 2px solid var(--candy-pink);
+      border-radius: var(--radius-md);
+      padding: 16px 14px;
+      margin-bottom: 16px;
     }
 
     .cake-kg-inputs-row {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 12px;
       flex-wrap: wrap;
     }
 
     .cake-kg-price-field {
       flex: 1;
-      min-width: 240px;
+      min-width: 200px;
+      width: 100%;
     }
 
     .cake-sizes-auto-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 14px;
-      margin-top: 16px;
+      gap: 10px;
+      margin-top: 12px;
     }
 
     .cake-size-preview-item {
       background: white;
-      border: 2px solid #e2e8f0;
+      border: 1.5px solid #e2e8f0;
       border-radius: var(--radius-md);
-      padding: 12px;
+      padding: 10px 8px;
       text-align: center;
     }
 
     .cake-size-label {
       font-family: 'Fredoka', sans-serif;
       font-weight: 700;
-      font-size: 0.92rem;
+      font-size: 0.82rem;
       color: #334155;
     }
 
     .cake-size-math {
-      font-size: 0.76rem;
+      font-size: 0.72rem;
       color: #94a3b8;
-      margin: 2px 0;
+      margin: 1px 0;
     }
 
     .cake-size-computed-price {
       font-family: 'Lilita One', cursive;
-      font-size: 1.25rem;
+      font-size: 1.1rem;
       color: var(--candy-pink-dark);
     }
 
     /* CUADRÍCULAS DE PRODUCTOS */
     .products-edit-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 14px;
-      margin-bottom: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-bottom: 14px;
     }
 
     .product-edit-item {
       background: #f8fafc;
       border: 1.5px solid #e2e8f0;
       border-radius: var(--radius-md);
-      padding: 12px;
+      padding: 10px 12px;
     }
 
     .product-name-tag {
       font-family: 'Fredoka', sans-serif;
       font-weight: 700;
-      font-size: 0.9rem;
+      font-size: 0.84rem;
       color: #1e293b;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
       display: block;
     }
 
@@ -383,17 +413,19 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
-      margin-top: 14px;
+      margin-top: 12px;
     }
 
     .manage-item-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 10px;
       background: #f8fafc;
       border: 1.5px solid #e2e8f0;
       border-radius: var(--radius-md);
-      padding: 12px 18px;
+      padding: 10px 14px;
+      flex-wrap: wrap;
     }
 
     .btn-delete-item {
@@ -404,9 +436,10 @@
       padding: 5px 12px;
       font-family: 'Fredoka', sans-serif;
       font-weight: 700;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       cursor: pointer;
       transition: all 0.2s;
+      white-space: nowrap;
     }
 
     .btn-delete-item:hover {
@@ -414,12 +447,146 @@
       color: white;
     }
 
+    /* TARJETA DE ESTADO SUPABASE */
+    .supabase-hero-box {
+      background: #f0fdf4;
+      border: 2px solid #86efac;
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .supabase-hero-box.disconnected {
+      background: #fffbeb;
+      border-color: #fde68a;
+    }
+
+    .sql-code-box {
+      background: #0f172a;
+      color: #e2e8f0;
+      border-radius: var(--radius-md);
+      padding: 14px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.78rem;
+      max-height: 220px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+      margin-top: 10px;
+      border: 1px solid #334155;
+    }
+
+    /* BOTONES GRANDES DE GUARDADO CON FEEDBACK */
+    .save-bar-sticky {
+      margin-top: 14px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .btn-save-prominent {
+      background: linear-gradient(135deg, var(--candy-pink) 0%, var(--candy-pink-dark) 100%);
+      color: white;
+      border: none;
+      border-radius: 9999px;
+      padding: 12px 28px;
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      font-size: 0.98rem;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(216, 27, 96, 0.25);
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: auto;
+    }
+
+    .btn-save-prominent:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 22px rgba(216, 27, 96, 0.35);
+    }
+
+    /* NOTIFICACIÓN TOAST FLOTANTE */
+    #admin-toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #1e293b;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 9999px;
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 600;
+      font-size: 0.92rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      pointer-events: none;
+    }
+
+    #admin-toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    #admin-toast.success {
+      background: #15803d;
+      border: 1.5px solid #86efac;
+    }
+
+    #admin-toast.error {
+      background: #b91c1c;
+      border: 1.5px solid #fca5a5;
+    }
+
+    /* RESPONSIVE MÓVIL (< 768px) */
     @media (max-width: 768px) {
+      .admin-header-bar {
+        padding: 10px 12px;
+      }
+      .admin-logo-text {
+        font-size: 1.4rem;
+      }
+      .admin-main-wrap {
+        padding: 0 8px;
+        margin: 10px auto 24px;
+      }
+      .admin-section-card {
+        padding: 14px 12px;
+        border-radius: var(--radius-md);
+      }
       .cake-sizes-auto-grid {
         grid-template-columns: 1fr 1fr;
+        gap: 8px;
       }
-      .admin-tabs-bar {
-        border-radius: var(--radius-lg);
+      .products-edit-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+      .save-bar-sticky {
+        justify-content: stretch;
+      }
+      .btn-save-prominent {
+        width: 100%;
+        padding: 13px 18px;
+        font-size: 0.95rem;
+      }
+      .grid-responsive-2col {
+        grid-template-columns: 1fr !important;
+      }
+      .zone-admin-row {
+        flex-direction: column !important;
+        align-items: stretch !important;
+      }
+      .zone-admin-row .btn-delete-zone {
+        margin-top: 4px !important;
+        width: 100% !important;
       }
     }
   </style>
@@ -478,18 +645,19 @@
          ======================================================================= -->
     <div id="dashboard-container" class="admin-dashboard">
 
-      <!-- Pestañas de Navegación del Panel -->
+      <!-- Pestañas de Navegación del Panel (Scroll horizontal en móvil) -->
       <nav class="admin-tabs-bar">
-        <button class="admin-tab-btn active" data-tab="tab-precios">💲 Precios & Productos</button>
-        <button class="admin-tab-btn" data-tab="tab-promos">🎁 Promociones (Pág 7)</button>
-        <button class="admin-tab-btn" data-tab="tab-galeria">📸 Galería de Pasteles (Pág 5)</button>
-        <button class="admin-tab-btn" data-tab="tab-envios">🚚 Tarifas de Envío</button>
-        <button class="admin-tab-btn" data-tab="tab-upsell">🍟 Ofertas McDonald's (Upsell)</button>
-        <button class="admin-tab-btn" data-tab="tab-clave">🔑 Cambiar Clave</button>
+        <button class="admin-tab-btn active" data-tab="tab-precios">💲 Precios</button>
+        <button class="admin-tab-btn" data-tab="tab-promos">🎁 Promos</button>
+        <button class="admin-tab-btn" data-tab="tab-galeria">📸 Galería</button>
+        <button class="admin-tab-btn" data-tab="tab-envios">🚚 Envíos</button>
+        <button class="admin-tab-btn" data-tab="tab-upsell">🍟 Ofertas Upsell</button>
+        <button class="admin-tab-btn" data-tab="tab-supabase">🔌 Base de Datos</button>
+        <button class="admin-tab-btn" data-tab="tab-clave">🔑 Clave</button>
       </nav>
 
       <!-- ===================================================================
-           PESTAÑA 1: PRECIOS (CÁLCULO AUTOMÁTICO DE PASTELES, TARTAS, DULCES, BOX)
+           PESTAÑA 1: PRECIOS
            =================================================================== -->
       <section id="tab-precios" class="admin-tab-section">
         <form id="form-save-all-prices">
@@ -509,7 +677,7 @@
               <div class="cake-kg-inputs-row">
                 <div class="cake-kg-price-field">
                   <label class="form-label">Precio por Kilo ($/kg):</label>
-                  <input type="number" id="input-cake-price-kg" class="form-input" style="font-size: 1.2rem; font-weight: 700; color: var(--candy-pink-dark);" required min="1000" step="500">
+                  <input type="number" id="input-cake-price-kg" class="form-input" style="font-size: 1.15rem; font-weight: 700; color: var(--candy-pink-dark);" required min="1000" step="500">
                 </div>
               </div>
 
@@ -616,7 +784,7 @@
             </div>
           </div>
 
-          <!-- 4. Box Degustación (Precio y Descripción Editable) -->
+          <!-- 4. Box Degustación -->
           <div class="admin-section-card">
             <div class="section-heading-row">
               <div>
@@ -625,22 +793,22 @@
               </div>
             </div>
 
-            <div style="display: grid; grid-template-columns: 240px 1fr; gap: 16px; margin-bottom: 12px;">
+            <div class="grid-responsive-2col" style="display: grid; grid-template-columns: 200px 1fr; gap: 12px; margin-bottom: 8px;">
               <div>
                 <label class="form-label">Precio del Box ($):</label>
                 <input type="number" id="price-box-item" class="form-input" required>
               </div>
               <div>
                 <label class="form-label">Descripción del Box (Detalle de contenido):</label>
-                <textarea id="desc-box-item" class="form-input" style="height: 80px;" placeholder="Detalla qué incluye el Box..." required></textarea>
+                <textarea id="desc-box-item" class="form-input" style="height: 75px;" placeholder="Detalla qué incluye el Box..." required></textarea>
               </div>
             </div>
           </div>
 
           <!-- Botón de Guardado General de Precios -->
-          <div style="text-align: right; margin-top: 10px;">
-            <button type="submit" class="btn-submit-candy" style="width: auto; padding: 14px 42px;">
-              💾 Guardar Todos los Precios en la Web
+          <div class="save-bar-sticky">
+            <button type="submit" class="btn-save-prominent">
+              💾 Guardar Precios en la Web y Supabase
             </button>
           </div>
 
@@ -660,7 +828,7 @@
           </div>
 
           <form id="form-create-promo">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 12px;">
+            <div class="grid-responsive-2col" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px;">
               <div>
                 <label class="form-label">Título del Combo:</label>
                 <input type="text" id="promo-new-title" class="form-input" placeholder="Ej: Combo Cumpleaños Especial" required>
@@ -671,24 +839,24 @@
               </div>
             </div>
 
-            <div style="margin-bottom: 12px;">
+            <div style="margin-bottom: 10px;">
               <label class="form-label">Etiqueta destacada:</label>
               <input type="text" id="promo-new-badge" class="form-input" placeholder="Ej: 20% OFF / Más Vendido">
             </div>
 
-            <div style="margin-bottom: 16px;">
+            <div style="margin-bottom: 14px;">
               <label class="form-label">Descripción del contenido:</label>
               <textarea id="promo-new-desc" class="form-input" style="height: 70px;" placeholder="Pastel 2.5kg + 12 cake pops temáticos a elección..." required></textarea>
             </div>
 
-            <button type="submit" class="btn-submit-candy" style="width: auto; padding: 10px 28px;">
-              + Publicar Promoción
+            <button type="submit" class="btn-save-prominent" style="width: auto;">
+              + Publicar y Guardar Promoción
             </button>
           </form>
         </div>
 
         <div class="admin-section-card">
-          <h3 class="section-title" style="margin-bottom: 14px;">Promociones Publicadas</h3>
+          <h3 class="section-title" style="margin-bottom: 12px;">Promociones Publicadas</h3>
           <div id="promos-items-list" class="manage-list-box"></div>
         </div>
       </section>
@@ -706,7 +874,7 @@
           </div>
 
           <form id="form-create-photo">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 12px;">
+            <div class="grid-responsive-2col" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px;">
               <div>
                 <label class="form-label">Título de la torta:</label>
                 <input type="text" id="photo-new-title" class="form-input" placeholder="Ej: Torta Temática Sirenita 3D" required>
@@ -722,25 +890,25 @@
               </div>
             </div>
 
-            <div style="margin-bottom: 16px;">
-              <label class="form-label">Selecciona la imagen desde tu computadora:</label>
+            <div style="margin-bottom: 14px;">
+              <label class="form-label">Selecciona la imagen:</label>
               <input type="file" id="photo-new-file" accept="image/*" class="form-input" required>
             </div>
 
-            <button type="submit" class="btn-submit-candy" style="width: auto; padding: 10px 28px;">
+            <button type="submit" class="btn-save-prominent" style="width: auto;">
               + Guardar en Galería
             </button>
           </form>
         </div>
 
         <div class="admin-section-card">
-          <h3 class="section-title" style="margin-bottom: 14px;">Fotos en la Galería</h3>
+          <h3 class="section-title" style="margin-bottom: 12px;">Fotos en la Galería</h3>
           <div id="gallery-items-list" class="manage-list-box"></div>
         </div>
       </section>
 
       <!-- ===================================================================
-           PESTAÑA 4: TARIFAS DE ENVÍO Y ZONAS DE DELIVERY
+           PESTAÑA 4: TARIFAS DE ENVÍO
            =================================================================== -->
       <section id="tab-envios" class="admin-tab-section" style="display: none;">
         <div class="admin-section-card">
@@ -751,19 +919,19 @@
                 Define las zonas de delivery y el precio de cada una para que el cliente seleccione la que corresponde a su domicilio:
               </p>
             </div>
-            <button type="button" id="btn-add-shipping-zone" class="btn-outline-action" style="font-size: 0.9rem; padding: 8px 16px;">
+            <button type="button" id="btn-add-shipping-zone" class="btn-outline-action" style="font-size: 0.86rem; padding: 7px 14px;">
               + Agregar Nueva Zona
             </button>
           </div>
 
           <form id="form-save-shipping-zones">
-            <div id="shipping-zones-list" style="display: flex; flex-direction: column; gap: 12px;">
+            <div id="shipping-zones-list" style="display: flex; flex-direction: column; gap: 10px;">
               <!-- Zonas renderizadas dinámicamente -->
             </div>
 
-            <div style="margin-top: 24px; display: flex; justify-content: flex-end;">
-              <button type="submit" class="btn-proceed-sweet" style="padding: 12px 30px; font-size: 1.05rem;">
-                💾 Guardar Tarifas de Envío
+            <div class="save-bar-sticky">
+              <button type="submit" class="btn-save-prominent">
+                💾 Guardar Tarifas de Envío en la Web y Supabase
               </button>
             </div>
           </form>
@@ -771,30 +939,30 @@
       </section>
 
       <!-- ===================================================================
-           PESTAÑA 5: OFERTAS SUGERIDAS AL FINALIZAR (UPSELL ESTILO MCDONALD'S)
+           PESTAÑA 5: OFERTAS SUGERIDAS (UPSELL MCDONALD'S)
            =================================================================== -->
       <section id="tab-upsell" class="admin-tab-section" style="display: none;">
         <div class="admin-section-card">
           <div class="section-heading-row">
             <div>
-              <h3 class="section-title">🍟 Ofertas Sugeridas al Finalizar Pedido (Estilo McDonald's)</h3>
+              <h3 class="section-title">🍟 Ofertas Sugeridas (Upsell McDonald's)</h3>
               <p class="section-subtitle">
-                Configura productos adicionales con descuento que se ofrecerán al cliente antes de confirmar su pedido, según la delicia que haya elegido:
+                Productos adicionales con descuento ofrecidos al cliente antes de confirmar su pedido:
               </p>
             </div>
-            <button type="button" id="btn-add-upsell" class="btn-outline-action" style="font-size: 0.9rem; padding: 8px 16px;">
+            <button type="button" id="btn-add-upsell" class="btn-outline-action" style="font-size: 0.86rem; padding: 7px 14px;">
               + Agregar Nueva Oferta
             </button>
           </div>
 
           <form id="form-save-upsell">
-            <div id="upsell-offers-list" style="display: flex; flex-direction: column; gap: 16px;">
+            <div id="upsell-offers-list" style="display: flex; flex-direction: column; gap: 14px;">
               <!-- Ofertas renderizadas dinámicamente -->
             </div>
 
-            <div style="margin-top: 24px; display: flex; justify-content: flex-end;">
-              <button type="submit" class="btn-proceed-sweet" style="padding: 12px 30px; font-size: 1.05rem;">
-                💾 Guardar Ofertas de Upsell
+            <div class="save-bar-sticky">
+              <button type="submit" class="btn-save-prominent">
+                💾 Guardar Ofertas de Upsell en la Web y Supabase
               </button>
             </div>
           </form>
@@ -802,36 +970,183 @@
       </section>
 
       <!-- ===================================================================
-           PESTAÑA 6: SEGURIDAD Y CAMBIO DE CLAVE ADMINISTRATIVA
+           PESTAÑA 6: CONEXIÓN SUPABASE (BASE DE DATOS EN LA NUBE)
+           =================================================================== -->
+      <section id="tab-supabase" class="admin-tab-section" style="display: none;">
+        <div class="admin-section-card">
+          <div class="section-heading-row">
+            <div>
+              <h3 class="section-title">🔌 Conexión con Supabase (Base de Datos)</h3>
+              <p class="section-subtitle">
+                Configura tu proyecto de Supabase para guardar tus cambios en la nube y que todos los clientes los vean al instante:
+              </p>
+            </div>
+          </div>
+
+          <!-- Banner de Estado -->
+          <div id="supabase-status-hero" class="supabase-hero-box">
+            <div style="display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.05rem;" id="supabase-hero-title">
+              🟢 Conectado en Vivo a Supabase
+            </div>
+            <p id="supabase-hero-desc" style="font-size: 0.84rem; color: #475569; margin-top: 4px;">
+              Todos los cambios que guardes en Precios, Envíos, Ofertas y Promos se guardan en la nube y se reflejan al instante.
+            </p>
+          </div>
+
+          <!-- Formulario de Credenciales -->
+          <form id="form-supabase-config">
+            <div class="form-group-field">
+              <label class="form-label" for="input-sb-url">URL del Proyecto Supabase (Project URL):</label>
+              <input type="url" id="input-sb-url" class="form-input" placeholder="https://xyzxyzxyz.supabase.co" required>
+            </div>
+
+            <div class="form-group-field">
+              <label class="form-label" for="input-sb-key">Clave de API Pública / Anon Key (anon public):</label>
+              <input type="text" id="input-sb-key" class="form-input" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." required>
+              <p style="font-size: 0.78rem; color: #64748b; margin-top: 4px;">
+                La encontrás en tu panel de Supabase: <strong>Project Settings > API > Project API keys > anon public</strong>.
+              </p>
+            </div>
+
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px;">
+              <button type="submit" class="btn-save-prominent" style="flex: 1; min-width: 200px;">
+                💾 Guardar y Conectar Supabase
+              </button>
+              <button type="button" id="btn-sb-sync-now" class="btn-outline-action" style="padding: 10px 18px; font-size: 0.9rem;">
+                🔄 Probar Conexión & Sincronizar
+              </button>
+              <button type="button" id="btn-sb-upload-all" class="btn-outline-action" style="padding: 10px 18px; font-size: 0.9rem; background: #fdf2f8; border-color: var(--candy-pink); color: var(--candy-pink-dark);">
+                ⬆️ Subir Datos Locales a Supabase
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Caja de Código SQL -->
+        <div class="admin-section-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <h4 style="font-family: 'Lilita One', cursive; font-size: 1.15rem; color: #1e293b;">
+              📋 Código SQL para tu Base de Datos
+            </h4>
+            <button type="button" id="btn-copy-sql" class="btn-outline-action" style="font-size: 0.84rem; padding: 6px 14px;">
+              📋 Copiar Código SQL
+            </button>
+          </div>
+          <p style="font-size: 0.82rem; color: #64748b; margin-top: 4px;">
+            Si aún no creaste las tablas en Supabase, copia este script y pégalo en el <strong>SQL Editor</strong> de Supabase:
+          </p>
+
+          <pre id="sql-display-box" class="sql-code-box">-- TABLAS Y POLÍTICAS DE ACCESO PARA BARRIGUITAS
+CREATE TABLE IF NOT EXISTS barriguitas_prices (
+  id TEXT PRIMARY KEY,
+  category TEXT NOT NULL,
+  item_key TEXT NOT NULL,
+  price NUMERIC NOT NULL,
+  metadata TEXT,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS barriguitas_shipping_zones (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  price NUMERIC NOT NULL,
+  active BOOLEAN DEFAULT true,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS barriguitas_upsell_offers (
+  id TEXT PRIMARY KEY,
+  trigger_category TEXT NOT NULL DEFAULT 'all',
+  message TEXT NOT NULL,
+  product_name TEXT NOT NULL,
+  discount_price NUMERIC NOT NULL,
+  original_price NUMERIC DEFAULT 0,
+  active BOOLEAN DEFAULT true,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS barriguitas_promos (
+  id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  badge TEXT,
+  title TEXT NOT NULL,
+  description TEXT NOT NULL,
+  price NUMERIC NOT NULL,
+  active BOOLEAN DEFAULT true,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS barriguitas_gallery (
+  id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  title TEXT NOT NULL,
+  category TEXT NOT NULL,
+  image_url TEXT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS barriguitas_reviews (
+  id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  name TEXT NOT NULL,
+  rating INTEGER DEFAULT 5,
+  date_text TEXT,
+  text TEXT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+ALTER TABLE barriguitas_prices ENABLE ROW LEVEL SECURITY;
+ALTER TABLE barriguitas_shipping_zones ENABLE ROW LEVEL SECURITY;
+ALTER TABLE barriguitas_upsell_offers ENABLE ROW LEVEL SECURITY;
+ALTER TABLE barriguitas_promos ENABLE ROW LEVEL SECURITY;
+ALTER TABLE barriguitas_gallery ENABLE ROW LEVEL SECURITY;
+ALTER TABLE barriguitas_reviews ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Public access for prices" ON barriguitas_prices;
+CREATE POLICY "Public access for prices" ON barriguitas_prices FOR ALL USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Public access for shipping" ON barriguitas_shipping_zones;
+CREATE POLICY "Public access for shipping" ON barriguitas_shipping_zones FOR ALL USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Public access for upsell" ON barriguitas_upsell_offers;
+CREATE POLICY "Public access for upsell" ON barriguitas_upsell_offers FOR ALL USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Public access for promos" ON barriguitas_promos;
+CREATE POLICY "Public access for promos" ON barriguitas_promos FOR ALL USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Public access for gallery" ON barriguitas_gallery;
+CREATE POLICY "Public access for gallery" ON barriguitas_gallery FOR ALL USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Public access for reviews" ON barriguitas_reviews;
+CREATE POLICY "Public access for reviews" ON barriguitas_reviews FOR ALL USING (true) WITH CHECK (true);</pre>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           PESTAÑA 7: SEGURIDAD Y CAMBIO DE CLAVE
            =================================================================== -->
       <section id="tab-clave" class="admin-tab-section" style="display: none;">
-        <div class="admin-section-card" style="max-width: 600px; margin: 0 auto;">
+        <div class="admin-section-card" style="max-width: 500px; margin: 0 auto;">
           <div class="section-heading-row">
             <div>
               <h3 class="section-title">🔑 Configurar Clave de Acceso</h3>
               <p class="section-subtitle">
-                Puedes cambiar tu contraseña personal para acceder a este panel de administración en cualquier momento.
+                Cambia tu contraseña personal de acceso al panel de administración:
               </p>
             </div>
           </div>
 
           <form id="form-change-password">
-            <div class="form-group-field" style="margin-bottom: 16px;">
+            <div class="form-group-field">
               <label class="form-label" for="input-new-password">Nueva Contraseña:</label>
               <input type="password" id="input-new-password" class="form-input" placeholder="Ingresa tu nueva clave secreta" required minlength="4">
             </div>
 
-            <div class="form-group-field" style="margin-bottom: 20px;">
+            <div class="form-group-field" style="margin-bottom: 18px;">
               <label class="form-label" for="input-confirm-password">Confirmar Nueva Contraseña:</label>
               <input type="password" id="input-confirm-password" class="form-input" placeholder="Repite la nueva contraseña" required minlength="4">
             </div>
 
-            <div style="display: flex; gap: 12px; align-items: center;">
-              <button type="submit" class="btn-proceed-sweet" style="padding: 12px 24px;">
-                🔒 Guardar Nueva Clave
-              </button>
-              <span id="password-change-status" style="font-size: 0.9rem; font-weight: 600; color: #16a34a; display: none;">¡Clave actualizada con éxito!</span>
-            </div>
+            <button type="submit" class="btn-save-prominent" style="width: 100%;">
+              🔒 Guardar Nueva Clave
+            </button>
           </form>
         </div>
       </section>
@@ -840,18 +1155,19 @@
 
   </main>
 
+  <!-- Notificación Flotante Toast -->
+  <div id="admin-toast">💾 Guardado con éxito</div>
+
   <script>
     // ==========================================================================
     // SEGURIDAD Y AUTENTICACIÓN ENCRIPTADA (SHA-256)
     // ==========================================================================
-    // SEGURIDAD Y AUTENTICACIÓN ENCRIPTADA (SHA-256)
-    // ==========================================================================
-    // Usuario: admin
-    // Clave: barriguitas2026
+    // Usuario por defecto: admin
+    // Contraseña por defecto: barriguitas2026
     const VALID_USER_HASH = "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918"; // sha256 de "admin"
     const VALID_PASS_HASH = "fea79b25b4bf339a628a68a19790ffd2c41121468fc35ea843031e4a34b6f8cc"; // sha256 de "barriguitas2026"
 
-    // Algoritmo SHA-256 puro en JS compatible con todos los navegadores y protocolos (file://, http://, https://)
+    // Algoritmo SHA-256 puro en JS
     function sha256(ascii) {
       function rightRotate(value, amount) {
         return (value >>> amount) | (value << (32 - amount));
@@ -931,7 +1247,20 @@
 
     class AdminManager {
       constructor() {
+        this.toastTimeout = null;
         this.initAuth();
+      }
+
+      showToast(message, type = 'success') {
+        const toast = document.getElementById('admin-toast');
+        if (!toast) return;
+        toast.textContent = message;
+        toast.className = type === 'error' ? 'error' : 'success';
+        toast.classList.add('show');
+        if (this.toastTimeout) clearTimeout(this.toastTimeout);
+        this.toastTimeout = setTimeout(() => {
+          toast.classList.remove('show');
+        }, 3800);
       }
 
       initAuth() {
@@ -971,9 +1300,7 @@
               'admin', 'admin123', '1234', '123456', 'barriguita.1', 'pastel', 'pasteleria', '2026'
             ];
 
-            const userHash = sha256(user);
             const passHash = sha256(pass);
-
             const isUserValid = user.length > 0;
             const isPassValid = validPasswords.includes(p) || (customPass && (pass === customPass || p === customPass.toLowerCase())) || (passHash === VALID_PASS_HASH);
 
@@ -1013,8 +1340,8 @@
 
       initDashboard() {
         this.initTabs();
-        this.initSupabase();
         this.loadData();
+        this.initSupabase();
         this.bindEvents();
       }
 
@@ -1023,6 +1350,12 @@
         this.sbKey = localStorage.getItem('barriguitas_sb_key') || '';
         this.supabase = null;
         this.isSupabaseConnected = false;
+
+        // Rellenar formulario de configuración
+        const urlInput = document.getElementById('input-sb-url');
+        const keyInput = document.getElementById('input-sb-key');
+        if (urlInput) urlInput.value = this.sbUrl;
+        if (keyInput) keyInput.value = this.sbKey;
 
         if (window.supabase && this.sbUrl && this.sbKey) {
           try {
@@ -1041,28 +1374,51 @@
 
       updateSupabaseBadge(connected) {
         const badge = document.getElementById('supabase-status-badge');
+        const heroTitle = document.getElementById('supabase-hero-title');
+        const heroDesc = document.getElementById('supabase-hero-desc');
+        const heroBox = document.getElementById('supabase-status-hero');
+
         if (badge) {
           badge.style.display = 'inline-flex';
           if (connected) {
-            badge.innerHTML = '🟢 Supabase Conectado (En vivo)';
+            badge.innerHTML = '🟢 Supabase Conectado';
             badge.style.background = '#f0fdf4';
             badge.style.color = '#166534';
             badge.style.borderColor = '#86efac';
           } else {
-            badge.innerHTML = '🟠 Almacenamiento Local';
+            badge.innerHTML = '🟠 Modo Local (Sin Conexión)';
             badge.style.background = '#fffbeb';
             badge.style.color = '#b45309';
             badge.style.borderColor = '#fde68a';
           }
         }
+
+        if (heroTitle && heroDesc && heroBox) {
+          if (connected) {
+            heroTitle.innerHTML = '🟢 Conectado en Vivo a Supabase';
+            heroDesc.innerHTML = 'Todos los cambios que guardes en Precios, Envíos, Ofertas y Promociones se sincronizan automáticamente en la base de datos y se ven al instante en la tienda.';
+            heroBox.style.background = '#f0fdf4';
+            heroBox.style.borderColor = '#86efac';
+          } else {
+            heroTitle.innerHTML = '🟠 Configuración de Base de Datos Pendiente';
+            heroDesc.innerHTML = 'Ingresa la URL y la Anon Key de tu proyecto de Supabase abajo para activar la sincronización permanente en la nube.';
+            heroBox.style.background = '#fffbeb';
+            heroBox.style.borderColor = '#fed7aa';
+          }
+        }
       }
 
-      async fetchRemoteData() {
-        if (!this.supabase || !this.isSupabaseConnected) return;
+      async fetchRemoteData(showAlert = false) {
+        if (!this.supabase || !this.isSupabaseConnected) {
+          if (showAlert) this.showToast('Primero configura la URL y Anon Key de Supabase', 'error');
+          return;
+        }
 
         try {
           // 1. Precios
-          const { data: pricesData } = await this.supabase.from('barriguitas_prices').select('*');
+          const { data: pricesData, error: errPrices } = await this.supabase.from('barriguitas_prices').select('*');
+          if (errPrices) throw errPrices;
+
           if (pricesData && pricesData.length > 0) {
             pricesData.forEach(p => {
               if (p.category === 'cakes') this.prices.cakes[p.item_key] = Number(p.price);
@@ -1133,8 +1489,15 @@
             localStorage.setItem('barriguitas_gallery_v2', JSON.stringify(this.gallery));
             this.renderGalleryList();
           }
+
+          if (showAlert) {
+            this.showToast('✅ ¡Datos descargados y sincronizados desde Supabase!');
+          }
         } catch (err) {
           console.warn('Error al descargar de Supabase en Admin:', err);
+          if (showAlert) {
+            this.showToast('⚠️ Error al sincronizar: ' + (err.message || 'Verifica tablas SQL'), 'error');
+          }
         }
       }
 
@@ -1151,7 +1514,7 @@
       }
 
       loadData() {
-        // 1. Cargar Precios
+        // 1. Precios por defecto
         const defaultPrices = {
           cakePricePerKg: 18000,
           cakes: { '1_5kg': 27000, '2_5kg': 45000, '3_5kg': 63000, '4_0kg': 72000 },
@@ -1178,15 +1541,10 @@
 
         const savedPrices = localStorage.getItem('barriguitas_prices');
         this.prices = savedPrices ? JSON.parse(savedPrices) : defaultPrices;
-
-        // Si no tenía cakePricePerKg, inicializar
-        if (!this.prices.cakePricePerKg) {
-          this.prices.cakePricePerKg = 18000;
-        }
-
+        if (!this.prices.cakePricePerKg) this.prices.cakePricePerKg = 18000;
         this.populatePricesForm();
 
-        // 2. Cargar Promos
+        // 2. Promociones
         const defaultPromos = [
           { id: 1, badge: 'Combo Cumpleaños 20% OFF', title: 'Pastel 2.5kg + 12 Cake Pops', desc: 'Pastel decorado temático de 1 piso alto, vela mágica y 12 cake pops surtidos a tono.', price: 36000 },
           { id: 2, badge: 'Dúo Clásico', title: 'Lemon Pie + Tarta Coco con DDL', desc: 'Dos tartas familiares grandes para compartir en tu tarde de té o reunión especial.', price: 26500 },
@@ -1196,7 +1554,7 @@
         this.promos = savedPromos ? JSON.parse(savedPromos) : defaultPromos;
         this.renderPromosList();
 
-        // 3. Cargar Galería
+        // 3. Galería
         const defaultGallery = [
           { id: 1, title: 'Pastel Granja Mágica 3D', cat: 'infantiles', img: 'assets/images/JUEGO INICIO/Tipo de pasteles/Tipo de decoracion/deco1_transparent.png' },
           { id: 2, title: 'Torta Rayas y Flores', cat: 'adultos', img: 'assets/images/JUEGO INICIO/Tipo de pasteles/Tipo de decoracion/deco2_transparent.png' },
@@ -1208,7 +1566,7 @@
         this.gallery = savedGallery ? JSON.parse(savedGallery) : defaultGallery;
         this.renderGalleryList();
 
-        // 4. Cargar Zonas de Envío
+        // 4. Zonas de Envío
         const defaultShippingZones = [
           { id: 'centro', name: 'Zona Centro / Cercanías', price: 1500 },
           { id: 'norte', name: 'Zona Norte / Gran Mendoza', price: 2200 },
@@ -1218,7 +1576,7 @@
         this.shippingZones = savedZones ? JSON.parse(savedZones) : defaultShippingZones;
         this.renderShippingZones();
 
-        // 5. Cargar Ofertas de Upsell (Estilo McDonald's)
+        // 5. Ofertas Sugeridas (Upsell Estilo McDonald's)
         const defaultUpsell = [
           { id: 'upsell_box', triggerCategory: 'box', message: '¿Deseas sumar unas galletitas animadas temáticas a tu Box con $2.000 de descuento?', productName: 'Galletas Animadas Temáticas (x6)', discountPrice: 4800, originalPrice: 6800, active: true },
           { id: 'upsell_pastel', triggerCategory: 'pastel', message: '¿Te gustaría sumar unas deliciosas Mini Donuts para acompañar tu pastel?', productName: 'Mini Donuts Glaseadas (x6)', discountPrice: 5000, originalPrice: 7500, active: true },
@@ -1233,8 +1591,8 @@
       populatePricesForm() {
         const kgInput = document.getElementById('input-cake-price-kg');
         if (kgInput) {
-          kgInput.value = this.prices.cakePricePerKg;
-          this.updateCakePreviews(this.prices.cakePricePerKg);
+          kgInput.value = this.prices.cakePricePerKg || 18000;
+          this.updateCakePreviews(this.prices.cakePricePerKg || 18000);
         }
 
         // Tartas
@@ -1323,8 +1681,7 @@
 
             // Sincronizar en Supabase
             await this.syncPricesToSupabase();
-
-            alert('✅ ¡Todos los precios y descripciones se han actualizado con éxito en la tienda web y la base de datos!');
+            this.showToast('💾 ¡Precios guardados y sincronizados en vivo!');
           });
         }
 
@@ -1356,7 +1713,7 @@
               }
             }
 
-            alert('✅ ¡Promoción publicada en la tienda y sincronizada!');
+            this.showToast('🎁 ¡Promoción publicada y guardada!');
           });
         }
 
@@ -1390,7 +1747,7 @@
                   }
                 }
 
-                alert('✅ ¡Foto agregada con éxito a la galería de la tienda!');
+                this.showToast('📸 ¡Foto agregada con éxito a la galería!');
               };
               r.readAsDataURL(file);
             }
@@ -1405,7 +1762,8 @@
             this.shippingZones.push({
               id: 'zona_' + Date.now(),
               name: 'Nueva Zona ' + nextIdx,
-              price: 2000
+              price: 2000,
+              active: true
             });
             this.renderShippingZones();
           });
@@ -1424,7 +1782,8 @@
               return {
                 id: prevZone.id || ('zona_' + idx),
                 name: input.value.trim() || 'Zona ' + (idx + 1),
-                price: Number(priceInputs[idx]?.value) || 0
+                price: Number(priceInputs[idx]?.value) || 0,
+                active: true
               };
             });
 
@@ -1438,8 +1797,7 @@
 
             // Sincronizar en Supabase
             await this.syncShippingToSupabase();
-
-            alert('✅ ¡Zonas y tarifas de envío guardadas y sincronizadas en vivo!');
+            this.showToast('🚚 ¡Tarifas de envío guardadas y sincronizadas!');
           });
         }
 
@@ -1483,8 +1841,79 @@
 
             // Sincronizar en Supabase
             await this.syncUpsellToSupabase();
+            this.showToast('🍟 ¡Ofertas de Upsell guardadas y sincronizadas!');
+          });
+        }
 
-            alert('✅ ¡Ofertas sugeridas estilo McDonald\'s (Upsell) actualizadas y sincronizadas en la base de datos!');
+        // Formulario de Conexión Supabase
+        const formSupabase = document.getElementById('form-supabase-config');
+        if (formSupabase) {
+          formSupabase.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const url = (document.getElementById('input-sb-url').value || '').trim();
+            const key = (document.getElementById('input-sb-key').value || '').trim();
+
+            if (!url || !key) {
+              this.showToast('Por favor completa la URL y la Anon Key', 'error');
+              return;
+            }
+
+            localStorage.setItem('barriguitas_sb_url', url);
+            localStorage.setItem('barriguitas_sb_key', key);
+            this.sbUrl = url;
+            this.sbKey = key;
+
+            try {
+              if (window.supabase) {
+                this.supabase = window.supabase.createClient(url, key);
+                // Probar consulta
+                const { error } = await this.supabase.from('barriguitas_prices').select('id').limit(1);
+                if (error && error.code !== 'PGRST116') {
+                  throw error;
+                }
+                this.isSupabaseConnected = true;
+                this.updateSupabaseBadge(true);
+                this.showToast('🟢 ¡Supabase conectado con éxito!', 'success');
+                await this.fetchRemoteData();
+              }
+            } catch (err) {
+              this.isSupabaseConnected = false;
+              this.updateSupabaseBadge(false);
+              this.showToast('⚠️ Error al conectar: ' + (err.message || 'Verifica claves o script SQL'), 'error');
+            }
+          });
+        }
+
+        // Botón Probar Conexión & Sincronizar
+        const btnSyncNow = document.getElementById('btn-sb-sync-now');
+        if (btnSyncNow) {
+          btnSyncNow.addEventListener('click', async () => {
+            this.initSupabase();
+            await this.fetchRemoteData(true);
+          });
+        }
+
+        // Botón Subir Todo a Supabase
+        const btnUploadAll = document.getElementById('btn-sb-upload-all');
+        if (btnUploadAll) {
+          btnUploadAll.addEventListener('click', async () => {
+            await this.syncAllLocalToSupabase();
+          });
+        }
+
+        // Botón Copiar Código SQL
+        const btnCopySql = document.getElementById('btn-copy-sql');
+        if (btnCopySql) {
+          btnCopySql.addEventListener('click', () => {
+            const sqlBox = document.getElementById('sql-display-box');
+            if (sqlBox) {
+              const text = sqlBox.textContent || sqlBox.innerText;
+              navigator.clipboard.writeText(text).then(() => {
+                this.showToast('📋 ¡Código SQL copiado al portapapeles!');
+              }).catch(() => {
+                this.showToast('Selecciona el texto para copiar', 'error');
+              });
+            }
           });
         }
 
@@ -1497,22 +1926,17 @@
             const p2 = document.getElementById('input-confirm-password').value.trim();
 
             if (!p1 || p1.length < 4) {
-              alert('La contraseña debe tener al menos 4 caracteres.');
+              this.showToast('La contraseña debe tener al menos 4 caracteres', 'error');
               return;
             }
 
             if (p1 !== p2) {
-              alert('Las contraseñas no coinciden. Por favor verifícalas.');
+              this.showToast('Las contraseñas no coinciden', 'error');
               return;
             }
 
             localStorage.setItem('barriguitas_custom_admin_pass', p1);
-            const statusEl = document.getElementById('password-change-status');
-            if (statusEl) {
-              statusEl.style.display = 'inline';
-              setTimeout(() => { statusEl.style.display = 'none'; }, 4000);
-            }
-            alert('✅ ¡Nueva contraseña guardada con éxito! La próxima vez que inicies sesión podrás usarla.');
+            this.showToast('🔑 ¡Nueva contraseña guardada con éxito!');
             document.getElementById('input-new-password').value = '';
             document.getElementById('input-confirm-password').value = '';
           });
@@ -1582,6 +2006,32 @@
         }
       }
 
+      async syncAllLocalToSupabase() {
+        if (!this.supabase || !this.isSupabaseConnected) {
+          this.showToast('Primero conecta tu proyecto Supabase', 'error');
+          return;
+        }
+
+        try {
+          await this.syncPricesToSupabase();
+          await this.syncShippingToSupabase();
+          await this.syncUpsellToSupabase();
+
+          for (const p of this.promos) {
+            await this.supabase.from('barriguitas_promos').upsert([{
+              badge: p.badge,
+              title: p.title,
+              description: p.desc,
+              price: p.price
+            }]);
+          }
+
+          this.showToast('⬆️ ¡Todos los datos locales se han subido a Supabase!', 'success');
+        } catch (err) {
+          this.showToast('Error al subir a Supabase: ' + err.message, 'error');
+        }
+      }
+
       renderShippingZones() {
         const container = document.getElementById('shipping-zones-list');
         if (!container) return;
@@ -1605,7 +2055,7 @@
 
       async deleteShippingZone(idx) {
         if (this.shippingZones.length <= 1) {
-          alert('Debes mantener al menos una zona de envío.');
+          this.showToast('Debes mantener al menos una zona de envío', 'error');
           return;
         }
         if (confirm('¿Deseas eliminar esta zona de envío?')) {
@@ -1620,6 +2070,7 @@
               console.warn('Error al borrar zona de Supabase:', err);
             }
           }
+          this.showToast('Zona de envío eliminada');
         }
       }
 
@@ -1702,6 +2153,7 @@
               console.warn('Error al borrar upsell de Supabase:', err);
             }
           }
+          this.showToast('Oferta de upsell eliminada');
         }
       }
 
@@ -1735,6 +2187,7 @@
               console.warn('Error al borrar promo de Supabase:', err);
             }
           }
+          this.showToast('Promoción eliminada');
         }
       }
 
@@ -1769,6 +2222,7 @@
               console.warn('Error al borrar foto de Supabase:', err);
             }
           }
+          this.showToast('Foto eliminada de la galería');
         }
       }
     }

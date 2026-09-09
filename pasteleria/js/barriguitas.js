@@ -1226,9 +1226,22 @@ class BarriguitasApp {
       if (pricesData && pricesData.length > 0) {
         pricesData.forEach(p => {
           if (p.category === 'cakes') this.prices.cakes[p.item_key] = Number(p.price);
-          if (p.category === 'box') this.prices.box = Number(p.price);
+          if (p.category === 'cake_kg') this.prices.cakePricePerKg = Number(p.price);
+          if (p.category === 'tarts') {
+            if (!this.prices.tarts) this.prices.tarts = {};
+            this.prices.tarts[p.item_key] = Number(p.price);
+          }
+          if (p.category === 'cookies') {
+            if (!this.prices.cookies) this.prices.cookies = {};
+            this.prices.cookies[p.item_key] = Number(p.price);
+          }
+          if (p.category === 'box') {
+            this.prices.box = Number(p.price);
+            if (p.metadata) this.prices.boxDescription = p.metadata;
+          }
         });
         localStorage.setItem('barriguitas_prices', JSON.stringify(this.prices));
+        this.renderProductPrices();
         this.updateCheckoutCalculation();
       }
 
@@ -1318,13 +1331,26 @@ class BarriguitasApp {
 
     try {
       // Subir Precios
-      await this.supabase.from('barriguitas_prices').upsert([
+      const priceRecords = [
+        { id: 'cake_price_kg', category: 'cake_kg', item_key: 'kg', price: this.prices.cakePricePerKg || 18000, metadata: 'Precio base por kg' },
         { id: 'cake_1_5kg', category: 'cakes', item_key: '1_5kg', price: this.prices.cakes['1_5kg'] },
         { id: 'cake_2_5kg', category: 'cakes', item_key: '2_5kg', price: this.prices.cakes['2_5kg'] },
         { id: 'cake_3_5kg', category: 'cakes', item_key: '3_5kg', price: this.prices.cakes['3_5kg'] },
         { id: 'cake_4_0kg', category: 'cakes', item_key: '4_0kg', price: this.prices.cakes['4_0kg'] },
-        { id: 'box_degustacion', category: 'box', item_key: 'box', price: this.prices.box }
-      ]);
+        { id: 'box_degustacion', category: 'box', item_key: 'box', price: this.prices.box, metadata: this.prices.boxDescription }
+      ];
+
+      Object.entries(this.prices.tarts || {}).forEach(([name, price]) => {
+        const idKey = 'tart_' + name.toLowerCase().replace(/[^a-z0-9]/g, '_');
+        priceRecords.push({ id: idKey, category: 'tarts', item_key: name, price });
+      });
+
+      Object.entries(this.prices.cookies || {}).forEach(([name, price]) => {
+        const idKey = 'cookie_' + name.toLowerCase().replace(/[^a-z0-9]/g, '_');
+        priceRecords.push({ id: idKey, category: 'cookies', item_key: name, price });
+      });
+
+      await this.supabase.from('barriguitas_prices').upsert(priceRecords);
 
       // Subir Zonas de Envío
       for (const z of this.shippingZones) {
@@ -1352,7 +1378,6 @@ class BarriguitasApp {
       // Subir Promos
       for (const p of this.promos) {
         await this.supabase.from('barriguitas_promos').upsert([{
-          id: typeof p.id === 'number' && p.id < 1000 ? p.id : undefined,
           badge: p.badge,
           title: p.title,
           description: p.desc,
@@ -1374,6 +1399,57 @@ class BarriguitasApp {
     } catch (err) {
       alert('Error al subir datos a Supabase:\n' + err.message);
     }
+  }
+
+  // 10. Escuchar cambios de localStorage en tiempo real entre pestañas
+  initStorageListener() {
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'barriguitas_prices') {
+        try {
+          this.prices = JSON.parse(e.newValue);
+          this.renderProductPrices();
+          this.updateCheckoutCalculation();
+        } catch (err) {}
+      }
+      if (e.key === 'barriguitas_shipping_zones') {
+        try {
+          this.shippingZones = JSON.parse(e.newValue);
+          this.renderShippingZoneOptions();
+          this.updateCheckoutCalculation();
+        } catch (err) {}
+      }
+      if (e.key === 'barriguitas_upsell_offers') {
+        try {
+          this.upsellOffers = JSON.parse(e.newValue);
+          this.renderCheckoutUpsell();
+        } catch (err) {}
+      }
+      if (e.key === 'barriguitas_promos') {
+        try {
+          this.promos = JSON.parse(e.newValue);
+          this.renderPromos();
+        } catch (err) {}
+      }
+      if (e.key === 'barriguitas_gallery_v2') {
+        try {
+          this.gallery = JSON.parse(e.newValue);
+          this.renderGalleryCarousel(this.currentGalleryFilter || 'all');
+        } catch (err) {}
+      }
+      if (e.key === 'barriguitas_reviews_v2') {
+        try {
+          this.reviews = JSON.parse(e.newValue);
+          this.renderReviewsCarousel();
+        } catch (err) {}
+      }
+      if (e.key === 'barriguitas_sb_url' || e.key === 'barriguitas_sb_key') {
+        this.sbUrl = localStorage.getItem('barriguitas_sb_url');
+        this.sbKey = localStorage.getItem('barriguitas_sb_key');
+        if (this.sbUrl && this.sbKey) {
+          this.connectSupabase(false);
+        }
+      }
+    });
   }
 
   // 14. Desplazamiento Táctil Global: Permite desplazar/scrollear el marco interactivo tocando cualquier parte de la pantalla o la imagen de fondo
