@@ -33,7 +33,7 @@ Sitio web oficial e interactivo para **Pastelería Barriguitas**. Permite a los 
    - Acceso privado y encriptado con SHA-256 (Usuario: dmin / Clave: arriguitas2026).
    - Configuración de precio del kilo de pastel con cálculo automático de todos los tamaños.
    - Gestión de promociones, galería y reseñas.
-   - Sincronización en la nube con Supabase.
+   - Sincronización en la nube con Firebase Firestore mediante una API protegida.
 
 ---
 
@@ -45,3 +45,24 @@ Para publicar esta web gratis en GitHub Pages:
    - **Source**: Seleccionar Deploy from a branch.
    - **Branch**: master (o main), carpeta /pasteleria (o /root si se crea un redirect).
 3. Guardar y tu sitio estará en línea en minutos.
+
+## 🔐 Configuración de Firebase
+
+La aplicación ya no conecta la base de datos desde el navegador ni muestra SQL en el panel.
+
+- Las lecturas públicas y los envíos de reseñas/pedidos pasan por `api/data.js`.
+- Las escrituras administrativas requieren un token de Firebase Authentication con el custom claim `admin: true`.
+- Las credenciales del SDK Admin solo se configuran en el servidor mediante las variables de `.env.example`; nunca se deben subir al repositorio.
+- Publica `firestore.rules` para impedir accesos directos al proyecto; la API usa el SDK Admin y no queda limitada por esas reglas.
+- El despliegue debe soportar funciones Node (por ejemplo, Vercel). GitHub Pages por sí solo solo sirve archivos estáticos y no puede ejecutar `/api`.
+
+Para configurar el panel:
+
+1. Crea un usuario administrador en Firebase Authentication.
+2. Asigna el custom claim `admin: true` usando un entorno seguro con Firebase Admin SDK.
+3. Configura las variables de `.env.example` en el proveedor de despliegue.
+4. Instala dependencias con `npm install` y despliega.
+
+El proyecto Firebase asociado es `barriguita-dda93` (también está declarado en `.firebaserc`). Esto permite desplegar las reglas con `firebase deploy --only firestore:rules` después de iniciar sesión con Firebase CLI.
+
+Los cambios guardados desde el panel se escriben en Firestore y quedan disponibles para todos los visitantes. `localStorage` solo conserva una copia local para mejorar la experiencia cuando la API no responde; el panel muestra un error y no debe considerarse guardado en la nube hasta que la operación termine correctamente.

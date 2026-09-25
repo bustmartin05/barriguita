@@ -1936,7 +1936,7 @@ html, body {
   position: relative;
 }
 
-.supabase-status-pill {
+.firebase-status-pill {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -1947,13 +1947,13 @@ html, body {
   border-radius: 9999px;
 }
 
-.supabase-status-pill.local {
+.firebase-status-pill.local {
   background: #fef3c7;
   color: #92400e;
   border: 1.5px solid #fcd34d;
 }
 
-.supabase-status-pill.connected {
+.firebase-status-pill.connected {
   background: #dcfce7;
   color: #15803d;
   border: 1.5px solid #86efac;

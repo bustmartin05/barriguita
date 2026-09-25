@@ -9,8 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Lilita+One&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
   
-  <!-- Supabase JS Client v2 -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/firebase-api.js"></script>
   
   <!-- Favicon: Nene de carga con globos -->
   <link rel="icon" type="image/png" href="assets/images/nene-volando-globos.png">
@@ -448,7 +447,7 @@
     }
 
     /* TARJETA DE ESTADO SUPABASE */
-    .supabase-hero-box {
+    .firebase-hero-box {
       background: #f0fdf4;
       border: 2px solid #86efac;
       border-radius: var(--radius-md);
@@ -456,7 +455,7 @@
       margin-bottom: 16px;
     }
 
-    .supabase-hero-box.disconnected {
+    .firebase-hero-box.disconnected {
       background: #fffbeb;
       border-color: #fde68a;
     }
@@ -601,8 +600,8 @@
     </a>
 
     <div class="admin-header-actions">
-      <div id="supabase-status-badge" class="admin-badge-role" style="background: #f0fdf4; color: #166534; border: 1.5px solid #86efac; display: none;">
-        🟢 Supabase Conectado
+      <div id="firebase-status-badge" class="admin-badge-role" style="background: #f0fdf4; color: #166534; border: 1.5px solid #86efac; display: none;">
+        🟢 Firebase Conectado
       </div>
       <a href="./" class="btn-outline-action" onclick="window.location.href = window.location.pathname.includes('/pasteleria/') ? (window.location.origin + '/pasteleria/') : './'; return false;">← Volver a la Tienda</a>
       <button id="btn-admin-logout" class="btn-outline-action btn-logout" style="display: none;">
@@ -623,8 +622,8 @@
 
       <form id="form-admin-login">
         <div class="form-group-field">
-          <label class="form-label" for="login-user">Usuario:</label>
-          <input type="text" id="login-user" class="form-input" placeholder="Usuario administrador" required autocomplete="username">
+          <label class="form-label" for="login-user">Correo del administrador:</label>
+          <input type="email" id="login-user" class="form-input" placeholder="admin@tudominio.com" required autocomplete="username">
         </div>
 
         <div class="form-group-field">
@@ -652,7 +651,7 @@
         <button class="admin-tab-btn" data-tab="tab-galeria">📸 Galería</button>
         <button class="admin-tab-btn" data-tab="tab-envios">🚚 Envíos</button>
         <button class="admin-tab-btn" data-tab="tab-upsell">🍟 Ofertas Upsell</button>
-        <button class="admin-tab-btn" data-tab="tab-supabase">🔌 Base de Datos</button>
+        <button class="admin-tab-btn" data-tab="tab-firebase">🔌 Base de Datos</button>
         <button class="admin-tab-btn" data-tab="tab-clave">🔑 Clave</button>
       </nav>
 
@@ -757,10 +756,6 @@
             </div>
 
             <div class="products-edit-grid">
-              <div class="product-edit-item">
-                <label class="product-name-tag">Mini Donuts (x12) ($):</label>
-                <input type="number" id="price-cookie-donuts" class="form-input" required>
-              </div>
 
               <div class="product-edit-item">
                 <label class="product-name-tag">Cake Pops (x12) ($):</label>
@@ -808,7 +803,7 @@
           <!-- Botón de Guardado General de Precios -->
           <div class="save-bar-sticky">
             <button type="submit" class="btn-save-prominent">
-              💾 Guardar Precios en la Web y Supabase
+              💾 Guardar Precios en la Web y Firebase
             </button>
           </div>
 
@@ -931,7 +926,7 @@
 
             <div class="save-bar-sticky">
               <button type="submit" class="btn-save-prominent">
-                💾 Guardar Tarifas de Envío en la Web y Supabase
+                💾 Guardar Tarifas de Envío en la Web y Firebase
               </button>
             </div>
           </form>
@@ -962,7 +957,7 @@
 
             <div class="save-bar-sticky">
               <button type="submit" class="btn-save-prominent">
-                💾 Guardar Ofertas de Upsell en la Web y Supabase
+                💾 Guardar Ofertas de Upsell en la Web y Firebase
               </button>
             </div>
           </form>
@@ -972,156 +967,16 @@
       <!-- ===================================================================
            PESTAÑA 6: CONEXIÓN SUPABASE (BASE DE DATOS EN LA NUBE)
            =================================================================== -->
-      <section id="tab-supabase" class="admin-tab-section" style="display: none;">
+      <section id="tab-firebase" class="admin-tab-section" style="display: none;">
         <div class="admin-section-card">
-          <div class="section-heading-row">
-            <div>
-              <h3 class="section-title">🔌 Conexión con Supabase (Base de Datos)</h3>
-              <p class="section-subtitle">
-                Configura tu proyecto de Supabase para guardar tus cambios en la nube y que todos los clientes los vean al instante:
-              </p>
-            </div>
-          </div>
-
-          <!-- Banner de Estado -->
-          <div id="supabase-status-hero" class="supabase-hero-box">
-            <div style="display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.05rem;" id="supabase-hero-title">
-              🟢 Conectado en Vivo a Supabase
-            </div>
-            <p id="supabase-hero-desc" style="font-size: 0.84rem; color: #475569; margin-top: 4px;">
-              Todos los cambios que guardes en Precios, Envíos, Ofertas y Promos se guardan en la nube y se reflejan al instante.
-            </p>
-          </div>
-
-          <!-- Formulario de Credenciales -->
-          <form id="form-supabase-config">
-            <div class="form-group-field">
-              <label class="form-label" for="input-sb-url">URL del Proyecto Supabase (Project URL):</label>
-              <input type="url" id="input-sb-url" class="form-input" placeholder="https://xyzxyzxyz.supabase.co" required>
-            </div>
-
-            <div class="form-group-field">
-              <label class="form-label" for="input-sb-key">Clave de API Pública / Anon Key (anon public):</label>
-              <input type="text" id="input-sb-key" class="form-input" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." required>
-              <p style="font-size: 0.78rem; color: #64748b; margin-top: 4px;">
-                La encontrás en tu panel de Supabase: <strong>Project Settings > API > Project API keys > anon public</strong>.
-              </p>
-            </div>
-
-            <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px;">
-              <button type="submit" class="btn-save-prominent" style="flex: 1; min-width: 200px;">
-                💾 Guardar y Conectar Supabase
-              </button>
-              <button type="button" id="btn-sb-sync-now" class="btn-outline-action" style="padding: 10px 18px; font-size: 0.9rem;">
-                🔄 Probar Conexión & Sincronizar
-              </button>
-              <button type="button" id="btn-sb-upload-all" class="btn-outline-action" style="padding: 10px 18px; font-size: 0.9rem; background: #fdf2f8; border-color: var(--candy-pink); color: var(--candy-pink-dark);">
-                ⬆️ Subir Datos Locales a Supabase
-              </button>
-            </div>
-          </form>
-        </div>
-
-        <!-- Caja de Código SQL -->
-        <div class="admin-section-card">
-          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-            <h4 style="font-family: 'Lilita One', cursive; font-size: 1.15rem; color: #1e293b;">
-              📋 Código SQL para tu Base de Datos
-            </h4>
-            <button type="button" id="btn-copy-sql" class="btn-outline-action" style="font-size: 0.84rem; padding: 6px 14px;">
-              📋 Copiar Código SQL
-            </button>
-          </div>
-          <p style="font-size: 0.82rem; color: #64748b; margin-top: 4px;">
-            Si aún no creaste las tablas en Supabase, copia este script y pégalo en el <strong>SQL Editor</strong> de Supabase:
-          </p>
-
-          <pre id="sql-display-box" class="sql-code-box">-- TABLAS Y POLÍTICAS DE ACCESO PARA BARRIGUITAS
-CREATE TABLE IF NOT EXISTS barriguitas_prices (
-  id TEXT PRIMARY KEY,
-  category TEXT NOT NULL,
-  item_key TEXT NOT NULL,
-  price NUMERIC NOT NULL,
-  metadata TEXT,
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS barriguitas_shipping_zones (
-  id TEXT PRIMARY KEY,
-  name TEXT NOT NULL,
-  price NUMERIC NOT NULL,
-  active BOOLEAN DEFAULT true,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS barriguitas_upsell_offers (
-  id TEXT PRIMARY KEY,
-  trigger_category TEXT NOT NULL DEFAULT 'all',
-  message TEXT NOT NULL,
-  product_name TEXT NOT NULL,
-  discount_price NUMERIC NOT NULL,
-  original_price NUMERIC DEFAULT 0,
-  active BOOLEAN DEFAULT true,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS barriguitas_promos (
-  id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-  badge TEXT,
-  title TEXT NOT NULL,
-  description TEXT NOT NULL,
-  price NUMERIC NOT NULL,
-  active BOOLEAN DEFAULT true,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS barriguitas_gallery (
-  id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-  title TEXT NOT NULL,
-  category TEXT NOT NULL,
-  image_url TEXT NOT NULL,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS barriguitas_reviews (
-  id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-  name TEXT NOT NULL,
-  rating INTEGER DEFAULT 5,
-  date_text TEXT,
-  text TEXT NOT NULL,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
-);
-
-ALTER TABLE barriguitas_prices ENABLE ROW LEVEL SECURITY;
-ALTER TABLE barriguitas_shipping_zones ENABLE ROW LEVEL SECURITY;
-ALTER TABLE barriguitas_upsell_offers ENABLE ROW LEVEL SECURITY;
-ALTER TABLE barriguitas_promos ENABLE ROW LEVEL SECURITY;
-ALTER TABLE barriguitas_gallery ENABLE ROW LEVEL SECURITY;
-ALTER TABLE barriguitas_reviews ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "Public access for prices" ON barriguitas_prices;
-CREATE POLICY "Public access for prices" ON barriguitas_prices FOR ALL USING (true) WITH CHECK (true);
-
-DROP POLICY IF EXISTS "Public access for shipping" ON barriguitas_shipping_zones;
-CREATE POLICY "Public access for shipping" ON barriguitas_shipping_zones FOR ALL USING (true) WITH CHECK (true);
-
-DROP POLICY IF EXISTS "Public access for upsell" ON barriguitas_upsell_offers;
-CREATE POLICY "Public access for upsell" ON barriguitas_upsell_offers FOR ALL USING (true) WITH CHECK (true);
-
-DROP POLICY IF EXISTS "Public access for promos" ON barriguitas_promos;
-CREATE POLICY "Public access for promos" ON barriguitas_promos FOR ALL USING (true) WITH CHECK (true);
-
-DROP POLICY IF EXISTS "Public access for gallery" ON barriguitas_gallery;
-CREATE POLICY "Public access for gallery" ON barriguitas_gallery FOR ALL USING (true) WITH CHECK (true);
-
-DROP POLICY IF EXISTS "Public access for reviews" ON barriguitas_reviews;
-CREATE POLICY "Public access for reviews" ON barriguitas_reviews FOR ALL USING (true) WITH CHECK (true);</pre>
+          <h3 class="section-title">🔌 Firebase Firestore</h3>
+          <p class="section-subtitle">La tienda usa una API segura para leer datos públicos. Las modificaciones del panel requieren una cuenta de Firebase Authentication con el permiso de administrador.</p>
+          <p style="font-size: 0.84rem; color: #475569;">Las credenciales privadas y la configuración de Firestore permanecen en el servidor. No pegues claves de servicio en este panel.</p>
+          <button type="button" id="btn-sb-sync-now" class="btn-outline-action">🔄 Recargar datos desde Firebase</button>
+          <button type="button" id="btn-sb-upload-all" class="btn-outline-action">⬆️ Guardar datos locales en Firebase</button>
         </div>
       </section>
 
-      <!-- ===================================================================
-           PESTAÑA 7: SEGURIDAD Y CAMBIO DE CLAVE
-           =================================================================== -->
       <section id="tab-clave" class="admin-tab-section" style="display: none;">
         <div class="admin-section-card" style="max-width: 500px; margin: 0 auto;">
           <div class="section-heading-row">
@@ -1159,15 +1014,6 @@ CREATE POLICY "Public access for reviews" ON barriguitas_reviews FOR ALL USING (
   <div id="admin-toast">💾 Guardado con éxito</div>
 
   <script>
-    // ==========================================================================
-    // SEGURIDAD Y AUTENTICACIÓN ENCRIPTADA (SHA-256)
-    // ==========================================================================
-    // Usuario por defecto: admin
-    // Contraseña por defecto: barriguitas2026
-    const VALID_USER_HASH = "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918"; // sha256 de "admin"
-    const VALID_PASS_HASH = "fea79b25b4bf339a628a68a19790ffd2c41121468fc35ea843031e4a34b6f8cc"; // sha256 de "barriguitas2026"
-
-    // Algoritmo SHA-256 puro en JS
     function sha256(ascii) {
       function rightRotate(value, amount) {
         return (value >>> amount) | (value << (32 - amount));
@@ -1264,7 +1110,8 @@ CREATE POLICY "Public access for reviews" ON barriguitas_reviews FOR ALL USING (
       }
 
       initAuth() {
-        const isAuth = (sessionStorage.getItem('barriguitas_auth_session') === 'active') || (localStorage.getItem('barriguitas_auth_session') === 'active');
+        const isAuth = sessionStorage.getItem('barriguitas_auth_session') === 'active'
+          && Boolean(sessionStorage.getItem('barriguitas_firebase_token'));
         if (isAuth) {
           this.showDashboard();
         } else {
@@ -1287,29 +1134,18 @@ CREATE POLICY "Public access for reviews" ON barriguitas_reviews FOR ALL USING (
 
         const loginForm = document.getElementById('form-admin-login');
         if (loginForm) {
-          loginForm.addEventListener('submit', (e) => {
+          loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const user = (document.getElementById('login-user').value || '').trim();
             const pass = (document.getElementById('login-pass').value || '').trim();
-
-            const p = pass.toLowerCase();
-            const customPass = (localStorage.getItem('barriguitas_custom_admin_pass') || '').trim();
-
-            const validPasswords = [
-              'barriguitas2026', 'barriguita2026', 'barriguitas', 'barriguita',
-              'admin', 'admin123', '1234', '123456', 'barriguita.1', 'pastel', 'pasteleria', '2026'
-            ];
-
-            const passHash = sha256(pass);
-            const isUserValid = user.length > 0;
-            const isPassValid = validPasswords.includes(p) || (customPass && (pass === customPass || p === customPass.toLowerCase())) || (passHash === VALID_PASS_HASH);
-
-            if (isUserValid && isPassValid) {
+            try {
+              const result = await window.firebaseApi.login(user, pass);
+              sessionStorage.setItem('barriguitas_firebase_token', result.idToken);
               sessionStorage.setItem('barriguitas_auth_session', 'active');
-              localStorage.setItem('barriguitas_auth_session', 'active');
               document.getElementById('login-error-alert').style.display = 'none';
               this.showDashboard();
-            } else {
+            } catch (error) {
+              console.error('Error de autenticación:', error);
               document.getElementById('login-error-alert').style.display = 'block';
             }
           });
@@ -1320,6 +1156,7 @@ CREATE POLICY "Public access for reviews" ON barriguitas_reviews FOR ALL USING (
           btnLogout.addEventListener('click', () => {
             sessionStorage.removeItem('barriguitas_auth_session');
             localStorage.removeItem('barriguitas_auth_session');
+            sessionStorage.removeItem('barriguitas_firebase_token');
             window.location.reload();
           });
         }
@@ -1341,47 +1178,27 @@ CREATE POLICY "Public access for reviews" ON barriguitas_reviews FOR ALL USING (
       initDashboard() {
         this.initTabs();
         this.loadData();
-        this.initSupabase();
+        this.initFirebase();
         this.bindEvents();
       }
 
-      initSupabase() {
-        this.sbUrl = localStorage.getItem('barriguitas_sb_url') || 'https://kutoqygjgsorzpwcjotp.supabase.co';
-        this.sbKey = localStorage.getItem('barriguitas_sb_key') || '';
-        this.supabase = null;
-        this.isSupabaseConnected = false;
-
-        // Rellenar formulario de configuración
-        const urlInput = document.getElementById('input-sb-url');
-        const keyInput = document.getElementById('input-sb-key');
-        if (urlInput) urlInput.value = this.sbUrl;
-        if (keyInput) keyInput.value = this.sbKey;
-
-        if (window.supabase && this.sbUrl && this.sbKey) {
-          try {
-            this.supabase = window.supabase.createClient(this.sbUrl, this.sbKey);
-            this.isSupabaseConnected = true;
-            this.updateSupabaseBadge(true);
-            this.fetchRemoteData();
-          } catch (err) {
-            console.warn('Error al conectar Supabase en Admin:', err);
-            this.updateSupabaseBadge(false);
-          }
-        } else {
-          this.updateSupabaseBadge(false);
-        }
+      initFirebase() {
+        this.firebase = window.firebaseApi;
+        this.isFirebaseConnected = Boolean(this.firebase && sessionStorage.getItem('barriguitas_firebase_token'));
+        this.updateFirebaseBadge(this.isFirebaseConnected);
+        if (this.isFirebaseConnected) this.fetchRemoteData();
       }
 
-      updateSupabaseBadge(connected) {
-        const badge = document.getElementById('supabase-status-badge');
-        const heroTitle = document.getElementById('supabase-hero-title');
-        const heroDesc = document.getElementById('supabase-hero-desc');
-        const heroBox = document.getElementById('supabase-status-hero');
+      updateFirebaseBadge(connected) {
+        const badge = document.getElementById('firebase-status-badge');
+        const heroTitle = document.getElementById('firebase-hero-title');
+        const heroDesc = document.getElementById('firebase-hero-desc');
+        const heroBox = document.getElementById('firebase-status-hero');
 
         if (badge) {
           badge.style.display = 'inline-flex';
           if (connected) {
-            badge.innerHTML = '🟢 Supabase Conectado';
+            badge.innerHTML = '🟢 Firebase Conectado';
             badge.style.background = '#f0fdf4';
             badge.style.color = '#166534';
             badge.style.borderColor = '#86efac';
@@ -1395,13 +1212,13 @@ CREATE POLICY "Public access for reviews" ON barriguitas_reviews FOR ALL USING (
 
         if (heroTitle && heroDesc && heroBox) {
           if (connected) {
-            heroTitle.innerHTML = '🟢 Conectado en Vivo a Supabase';
+            heroTitle.innerHTML = '🟢 Conectado en Vivo a Firebase';
             heroDesc.innerHTML = 'Todos los cambios que guardes en Precios, Envíos, Ofertas y Promociones se sincronizan automáticamente en la base de datos y se ven al instante en la tienda.';
             heroBox.style.background = '#f0fdf4';
             heroBox.style.borderColor = '#86efac';
           } else {
             heroTitle.innerHTML = '🟠 Configuración de Base de Datos Pendiente';
-            heroDesc.innerHTML = 'Ingresa la URL y la Anon Key de tu proyecto de Supabase abajo para activar la sincronización permanente en la nube.';
+            heroDesc.innerHTML = 'Ingresa la URL y la Anon Key de tu proyecto de Firebase abajo para activar la sincronización permanente en la nube.';
             heroBox.style.background = '#fffbeb';
             heroBox.style.borderColor = '#fed7aa';
           }
@@ -1409,14 +1226,14 @@ CREATE POLICY "Public access for reviews" ON barriguitas_reviews FOR ALL USING (
       }
 
       async fetchRemoteData(showAlert = false) {
-        if (!this.supabase || !this.isSupabaseConnected) {
-          if (showAlert) this.showToast('Primero configura la URL y Anon Key de Supabase', 'error');
+        if (!this.firebase || !this.isFirebaseConnected) {
+          if (showAlert) this.showToast('Primero configura la URL y Anon Key de Firebase', 'error');
           return;
         }
 
         try {
           // 1. Precios
-          const { data: pricesData, error: errPrices } = await this.supabase.from('barriguitas_prices').select('*');
+          const { data: pricesData, error: errPrices } = await this.firebase.from('barriguitas_prices').select('*');
           if (errPrices) throw errPrices;
 
           if (pricesData && pricesData.length > 0) {
@@ -1435,7 +1252,7 @@ CREATE POLICY "Public access for reviews" ON barriguitas_reviews FOR ALL USING (
           }
 
           // 2. Envíos
-          const { data: shippingData } = await this.supabase.from('barriguitas_shipping_zones').select('*');
+          const { data: shippingData } = await this.firebase.from('barriguitas_shipping_zones').select('*');
           if (shippingData && shippingData.length > 0) {
             this.shippingZones = shippingData.map(z => ({
               id: z.id,
@@ -1448,7 +1265,7 @@ CREATE POLICY "Public access for reviews" ON barriguitas_reviews FOR ALL USING (
           }
 
           // 3. Upsell
-          const { data: upsellData } = await this.supabase.from('barriguitas_upsell_offers').select('*');
+          const { data: upsellData } = await this.firebase.from('barriguitas_upsell_offers').select('*');
           if (upsellData && upsellData.length > 0) {
             this.upsellOffers = upsellData.map(u => ({
               id: u.id,
@@ -1464,7 +1281,7 @@ CREATE POLICY "Public access for reviews" ON barriguitas_reviews FOR ALL USING (
           }
 
           // 4. Promociones
-          const { data: promosData } = await this.supabase.from('barriguitas_promos').select('*').order('id', { ascending: false });
+          const { data: promosData } = await this.firebase.from('barriguitas_promos').select('*').order('id', { ascending: false });
           if (promosData && promosData.length > 0) {
             this.promos = promosData.map(p => ({
               id: p.id,
@@ -1478,7 +1295,7 @@ CREATE POLICY "Public access for reviews" ON barriguitas_reviews FOR ALL USING (
           }
 
           // 5. Galería
-          const { data: galleryData } = await this.supabase.from('barriguitas_gallery').select('*').order('id', { ascending: false });
+          const { data: galleryData } = await this.firebase.from('barriguitas_gallery').select('*').order('id', { ascending: false });
           if (galleryData && galleryData.length > 0) {
             this.gallery = galleryData.map(g => ({
               id: g.id,
@@ -1491,10 +1308,10 @@ CREATE POLICY "Public access for reviews" ON barriguitas_reviews FOR ALL USING (
           }
 
           if (showAlert) {
-            this.showToast('✅ ¡Datos descargados y sincronizados desde Supabase!');
+            this.showToast('✅ ¡Datos descargados y sincronizados desde Firebase!');
           }
         } catch (err) {
-          console.warn('Error al descargar de Supabase en Admin:', err);
+          console.warn('Error al descargar de Firebase en Admin:', err);
           if (showAlert) {
             this.showToast('⚠️ Error al sincronizar: ' + (err.message || 'Verifica tablas SQL'), 'error');
           }
@@ -1526,7 +1343,6 @@ CREATE POLICY "Public access for reviews" ON barriguitas_reviews FOR ALL USING (
             'Rogel': 16000
           },
           cookies: {
-            'Mini Donuts': 11000,
             'Cake Pops': 12000,
             'Galletas Animadas (x12)': 13500,
             'Galletas Decoradas Granja': 13500,
@@ -1579,7 +1395,6 @@ CREATE POLICY "Public access for reviews" ON barriguitas_reviews FOR ALL USING (
         // 5. Ofertas Sugeridas (Upsell Estilo McDonald's)
         const defaultUpsell = [
           { id: 'upsell_box', triggerCategory: 'box', message: '¿Deseas sumar unas galletitas animadas temáticas a tu Box con $2.000 de descuento?', productName: 'Galletas Animadas Temáticas (x6)', discountPrice: 4800, originalPrice: 6800, active: true },
-          { id: 'upsell_pastel', triggerCategory: 'pastel', message: '¿Te gustaría sumar unas deliciosas Mini Donuts para acompañar tu pastel?', productName: 'Mini Donuts Glaseadas (x6)', discountPrice: 5000, originalPrice: 7500, active: true },
           { id: 'upsell_tarta', triggerCategory: 'tarta', message: '¿Te gustaría probar además unas ricas paletas dulces de chocolate?', productName: 'Paletas Dulces de Chocolate (x5)', discountPrice: 4500, originalPrice: 6500, active: true },
           { id: 'upsell_cookies', triggerCategory: 'cookies', message: '¿Te gustaría acompañar tus bocaditos con unos ricos Cupcakes rellenos?', productName: 'Cupcakes Rellenos (x4)', discountPrice: 5200, originalPrice: 7800, active: true }
         ];
@@ -1606,7 +1421,6 @@ CREATE POLICY "Public access for reviews" ON barriguitas_reviews FOR ALL USING (
 
         // Dulces
         if (this.prices.cookies) {
-          if (document.getElementById('price-cookie-donuts')) document.getElementById('price-cookie-donuts').value = this.prices.cookies['Mini Donuts'] || 11000;
           if (document.getElementById('price-cookie-cakepops')) document.getElementById('price-cookie-cakepops').value = this.prices.cookies['Cake Pops'] || 12000;
           if (document.getElementById('price-cookie-granja')) document.getElementById('price-cookie-granja').value = this.prices.cookies['Galletas Animadas (x12)'] || this.prices.cookies['Galletas Decoradas Granja'] || 13500;
           if (document.getElementById('price-cookie-cupcakes')) document.getElementById('price-cookie-cupcakes').value = this.prices.cookies['Cupcakes (x6)'] || this.prices.cookies['Cupcakes Decorados'] || 12500;
@@ -1664,7 +1478,6 @@ CREATE POLICY "Public access for reviews" ON barriguitas_reviews FOR ALL USING (
             };
 
             this.prices.cookies = {
-              'Mini Donuts': Number(document.getElementById('price-cookie-donuts').value) || 11000,
               'Cake Pops': Number(document.getElementById('price-cookie-cakepops').value) || 12000,
               'Galletas Animadas (x12)': Number(document.getElementById('price-cookie-granja').value) || 13500,
               'Galletas Decoradas Granja': Number(document.getElementById('price-cookie-granja').value) || 13500,
@@ -1679,8 +1492,8 @@ CREATE POLICY "Public access for reviews" ON barriguitas_reviews FOR ALL USING (
 
             localStorage.setItem('barriguitas_prices', JSON.stringify(this.prices));
 
-            // Sincronizar en Supabase
-            await this.syncPricesToSupabase();
+            // Sincronizar en Firebase
+            await this.syncPricesToFirebase();
             this.showToast('💾 ¡Precios guardados y sincronizados en vivo!');
           });
         }
@@ -1702,14 +1515,14 @@ CREATE POLICY "Public access for reviews" ON barriguitas_reviews FOR ALL USING (
             this.renderPromosList();
             formPromo.reset();
 
-            // Sincronizar en Supabase
-            if (this.supabase && this.isSupabaseConnected) {
+            // Sincronizar en Firebase
+            if (this.firebase && this.isFirebaseConnected) {
               try {
-                await this.supabase.from('barriguitas_promos').insert([{
+                await this.firebase.from('barriguitas_promos').insert([{
                   badge, title, description: desc, price
                 }]);
               } catch (err) {
-                console.warn('Error al insertar promo en Supabase:', err);
+                console.warn('Error al insertar promo en Firebase:', err);
               }
             }
 
@@ -1736,14 +1549,14 @@ CREATE POLICY "Public access for reviews" ON barriguitas_reviews FOR ALL USING (
                 this.renderGalleryList();
                 formPhoto.reset();
 
-                // Sincronizar en Supabase si es URL o data
-                if (this.supabase && this.isSupabaseConnected) {
+                // Sincronizar en Firebase si es URL o data
+                if (this.firebase && this.isFirebaseConnected) {
                   try {
-                    await this.supabase.from('barriguitas_gallery').insert([{
+                    await this.firebase.from('barriguitas_gallery').insert([{
                       title, category: cat, image_url: imgData
                     }]);
                   } catch (err) {
-                    console.warn('Error al insertar foto en Supabase:', err);
+                    console.warn('Error al insertar foto en Firebase:', err);
                   }
                 }
 
@@ -1795,8 +1608,8 @@ CREATE POLICY "Public access for reviews" ON barriguitas_reviews FOR ALL USING (
             });
             localStorage.setItem('barriguitas_prices', JSON.stringify(this.prices));
 
-            // Sincronizar en Supabase
-            await this.syncShippingToSupabase();
+            // Sincronizar en Firebase
+            await this.syncShippingToFirebase();
             this.showToast('🚚 ¡Tarifas de envío guardadas y sincronizadas!');
           });
         }
@@ -1839,65 +1652,27 @@ CREATE POLICY "Public access for reviews" ON barriguitas_reviews FOR ALL USING (
 
             localStorage.setItem('barriguitas_upsell_offers', JSON.stringify(this.upsellOffers));
 
-            // Sincronizar en Supabase
-            await this.syncUpsellToSupabase();
+            // Sincronizar en Firebase
+            await this.syncUpsellToFirebase();
             this.showToast('🍟 ¡Ofertas de Upsell guardadas y sincronizadas!');
           });
         }
 
-        // Formulario de Conexión Supabase
-        const formSupabase = document.getElementById('form-supabase-config');
-        if (formSupabase) {
-          formSupabase.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const url = (document.getElementById('input-sb-url').value || '').trim();
-            const key = (document.getElementById('input-sb-key').value || '').trim();
-
-            if (!url || !key) {
-              this.showToast('Por favor completa la URL y la Anon Key', 'error');
-              return;
-            }
-
-            localStorage.setItem('barriguitas_sb_url', url);
-            localStorage.setItem('barriguitas_sb_key', key);
-            this.sbUrl = url;
-            this.sbKey = key;
-
-            try {
-              if (window.supabase) {
-                this.supabase = window.supabase.createClient(url, key);
-                // Probar consulta
-                const { error } = await this.supabase.from('barriguitas_prices').select('id').limit(1);
-                if (error && error.code !== 'PGRST116') {
-                  throw error;
-                }
-                this.isSupabaseConnected = true;
-                this.updateSupabaseBadge(true);
-                this.showToast('🟢 ¡Supabase conectado con éxito!', 'success');
-                await this.fetchRemoteData();
-              }
-            } catch (err) {
-              this.isSupabaseConnected = false;
-              this.updateSupabaseBadge(false);
-              this.showToast('⚠️ Error al conectar: ' + (err.message || 'Verifica claves o script SQL'), 'error');
-            }
-          });
-        }
-
+        // La conexión se inicializa después de autenticar al administrador.
         // Botón Probar Conexión & Sincronizar
         const btnSyncNow = document.getElementById('btn-sb-sync-now');
         if (btnSyncNow) {
           btnSyncNow.addEventListener('click', async () => {
-            this.initSupabase();
+            this.initFirebase();
             await this.fetchRemoteData(true);
           });
         }
 
-        // Botón Subir Todo a Supabase
+        // Botón Subir Todo a Firebase
         const btnUploadAll = document.getElementById('btn-sb-upload-all');
         if (btnUploadAll) {
           btnUploadAll.addEventListener('click', async () => {
-            await this.syncAllLocalToSupabase();
+            await this.syncAllLocalToFirebase();
           });
         }
 
@@ -1935,16 +1710,15 @@ CREATE POLICY "Public access for reviews" ON barriguitas_reviews FOR ALL USING (
               return;
             }
 
-            localStorage.setItem('barriguitas_custom_admin_pass', p1);
-            this.showToast('🔑 ¡Nueva contraseña guardada con éxito!');
+            this.showToast('La contraseña se administra desde Firebase Authentication.', 'error');
             document.getElementById('input-new-password').value = '';
             document.getElementById('input-confirm-password').value = '';
           });
         }
       }
 
-      async syncPricesToSupabase() {
-        if (!this.supabase || !this.isSupabaseConnected) return;
+      async syncPricesToFirebase() {
+        if (!this.firebase || !this.isFirebaseConnected) return;
         try {
           const records = [
             { id: 'cake_price_kg', category: 'cake_kg', item_key: 'kg', price: this.prices.cakePricePerKg, metadata: 'Precio base por kg' },
@@ -1965,17 +1739,17 @@ CREATE POLICY "Public access for reviews" ON barriguitas_reviews FOR ALL USING (
             records.push({ id: idKey, category: 'cookies', item_key: name, price });
           });
 
-          await this.supabase.from('barriguitas_prices').upsert(records);
+          await this.firebase.from('barriguitas_prices').upsert(records);
         } catch (err) {
-          console.warn('Error al sincronizar precios con Supabase:', err);
+          console.warn('Error al sincronizar precios con Firebase:', err);
         }
       }
 
-      async syncShippingToSupabase() {
-        if (!this.supabase || !this.isSupabaseConnected) return;
+      async syncShippingToFirebase() {
+        if (!this.firebase || !this.isFirebaseConnected) return;
         try {
           for (const z of this.shippingZones) {
-            await this.supabase.from('barriguitas_shipping_zones').upsert([{
+            await this.firebase.from('barriguitas_shipping_zones').upsert([{
               id: z.id,
               name: z.name,
               price: z.price,
@@ -1983,15 +1757,15 @@ CREATE POLICY "Public access for reviews" ON barriguitas_reviews FOR ALL USING (
             }]);
           }
         } catch (err) {
-          console.warn('Error al sincronizar envíos con Supabase:', err);
+          console.warn('Error al sincronizar envíos con Firebase:', err);
         }
       }
 
-      async syncUpsellToSupabase() {
-        if (!this.supabase || !this.isSupabaseConnected) return;
+      async syncUpsellToFirebase() {
+        if (!this.firebase || !this.isFirebaseConnected) return;
         try {
           for (const u of this.upsellOffers) {
-            await this.supabase.from('barriguitas_upsell_offers').upsert([{
+            await this.firebase.from('barriguitas_upsell_offers').upsert([{
               id: u.id,
               trigger_category: u.triggerCategory,
               message: u.message,
@@ -2002,23 +1776,23 @@ CREATE POLICY "Public access for reviews" ON barriguitas_reviews FOR ALL USING (
             }]);
           }
         } catch (err) {
-          console.warn('Error al sincronizar ofertas upsell con Supabase:', err);
+          console.warn('Error al sincronizar ofertas upsell con Firebase:', err);
         }
       }
 
-      async syncAllLocalToSupabase() {
-        if (!this.supabase || !this.isSupabaseConnected) {
-          this.showToast('Primero conecta tu proyecto Supabase', 'error');
+      async syncAllLocalToFirebase() {
+        if (!this.firebase || !this.isFirebaseConnected) {
+          this.showToast('Primero conecta tu proyecto Firebase', 'error');
           return;
         }
 
         try {
-          await this.syncPricesToSupabase();
-          await this.syncShippingToSupabase();
-          await this.syncUpsellToSupabase();
+          await this.syncPricesToFirebase();
+          await this.syncShippingToFirebase();
+          await this.syncUpsellToFirebase();
 
           for (const p of this.promos) {
-            await this.supabase.from('barriguitas_promos').upsert([{
+            await this.firebase.from('barriguitas_promos').upsert([{
               badge: p.badge,
               title: p.title,
               description: p.desc,
@@ -2026,9 +1800,9 @@ CREATE POLICY "Public access for reviews" ON barriguitas_reviews FOR ALL USING (
             }]);
           }
 
-          this.showToast('⬆️ ¡Todos los datos locales se han subido a Supabase!', 'success');
+          this.showToast('⬆️ ¡Todos los datos locales se han subido a Firebase!', 'success');
         } catch (err) {
-          this.showToast('Error al subir a Supabase: ' + err.message, 'error');
+          this.showToast('Error al subir a Firebase: ' + err.message, 'error');
         }
       }
 
@@ -2063,11 +1837,11 @@ CREATE POLICY "Public access for reviews" ON barriguitas_reviews FOR ALL USING (
           localStorage.setItem('barriguitas_shipping_zones', JSON.stringify(this.shippingZones));
           this.renderShippingZones();
 
-          if (this.supabase && this.isSupabaseConnected && removed?.id) {
+          if (this.firebase && this.isFirebaseConnected && removed?.id) {
             try {
-              await this.supabase.from('barriguitas_shipping_zones').delete().eq('id', removed.id);
+              await this.firebase.from('barriguitas_shipping_zones').delete().eq('id', removed.id);
             } catch (err) {
-              console.warn('Error al borrar zona de Supabase:', err);
+              console.warn('Error al borrar zona de Firebase:', err);
             }
           }
           this.showToast('Zona de envío eliminada');
@@ -2146,11 +1920,11 @@ CREATE POLICY "Public access for reviews" ON barriguitas_reviews FOR ALL USING (
           localStorage.setItem('barriguitas_upsell_offers', JSON.stringify(this.upsellOffers));
           this.renderUpsellOffers();
 
-          if (this.supabase && this.isSupabaseConnected && removed?.id) {
+          if (this.firebase && this.isFirebaseConnected && removed?.id) {
             try {
-              await this.supabase.from('barriguitas_upsell_offers').delete().eq('id', removed.id);
+              await this.firebase.from('barriguitas_upsell_offers').delete().eq('id', removed.id);
             } catch (err) {
-              console.warn('Error al borrar upsell de Supabase:', err);
+              console.warn('Error al borrar upsell de Firebase:', err);
             }
           }
           this.showToast('Oferta de upsell eliminada');
@@ -2180,11 +1954,11 @@ CREATE POLICY "Public access for reviews" ON barriguitas_reviews FOR ALL USING (
           localStorage.setItem('barriguitas_promos', JSON.stringify(this.promos));
           this.renderPromosList();
 
-          if (this.supabase && this.isSupabaseConnected) {
+          if (this.firebase && this.isFirebaseConnected) {
             try {
-              await this.supabase.from('barriguitas_promos').delete().eq('id', id);
+              await this.firebase.from('barriguitas_promos').delete().eq('id', id);
             } catch (err) {
-              console.warn('Error al borrar promo de Supabase:', err);
+              console.warn('Error al borrar promo de Firebase:', err);
             }
           }
           this.showToast('Promoción eliminada');
@@ -2215,11 +1989,11 @@ CREATE POLICY "Public access for reviews" ON barriguitas_reviews FOR ALL USING (
           localStorage.setItem('barriguitas_gallery_v2', JSON.stringify(this.gallery));
           this.renderGalleryList();
 
-          if (this.supabase && this.isSupabaseConnected) {
+          if (this.firebase && this.isFirebaseConnected) {
             try {
-              await this.supabase.from('barriguitas_gallery').delete().eq('id', id);
+              await this.firebase.from('barriguitas_gallery').delete().eq('id', id);
             } catch (err) {
-              console.warn('Error al borrar foto de Supabase:', err);
+              console.warn('Error al borrar foto de Firebase:', err);
             }
           }
           this.showToast('Foto eliminada de la galería');
