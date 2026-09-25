@@ -74,7 +74,7 @@ class BarriguitasApp {
       upsellOffer: null
     };
 
-    // Precios Iniciales (Sincronizados con admin.html y Supabase)
+    // Precios Iniciales (Sincronizados con admin.html y Firebase)
     this.defaultPrices = {
       cakePricePerKg: 18000,
       cakes: {
@@ -91,7 +91,6 @@ class BarriguitasApp {
         'Rogel': 16000
       },
       cookies: {
-        'Mini Donuts': 11000,
         'Cake Pops': 12000,
         'Galletas Animadas (x12)': 13500,
         'Galletas Decoradas Granja': 13500,
@@ -135,7 +134,6 @@ class BarriguitasApp {
     // Ofertas Sugeridas (Upsell Estilo McDonald's)
     this.defaultUpsell = [
       { id: 'upsell_box', triggerCategory: 'box', message: '¿Deseas sumar unas galletitas animadas temáticas a tu Box con $2.000 de descuento?', productName: 'Galletas Animadas Temáticas (x6)', discountPrice: 4800, originalPrice: 6800, active: true },
-      { id: 'upsell_pastel', triggerCategory: 'pastel', message: '¿Te gustaría sumar unas deliciosas Mini Donuts para acompañar tu pastel?', productName: 'Mini Donuts Glaseadas (x6)', discountPrice: 5000, originalPrice: 7500, active: true },
       { id: 'upsell_tarta', triggerCategory: 'tarta', message: '¿Te gustaría probar además unas ricas paletas dulces de chocolate?', productName: 'Paletas Dulces de Chocolate (x5)', discountPrice: 4500, originalPrice: 6500, active: true },
       { id: 'upsell_cookies', triggerCategory: 'cookies', message: '¿Te gustaría acompañar tus bocaditos con unos ricos Cupcakes rellenos?', productName: 'Cupcakes Rellenos (x4)', discountPrice: 5200, originalPrice: 7800, active: true }
     ];
@@ -166,7 +164,7 @@ class BarriguitasApp {
     this.defaultReviews = [
       { id: 1, name: 'Mariana Gómez', rating: 5, date: 'Hace 3 días', text: 'La torta de la granja para los 3 añitos de Joaco fue un sueño. ¡Riquísima, súper fresca y con detalles preciosos!' },
       { id: 2, name: 'Esteban Rossi', rating: 5, date: 'Hace 1 semana', text: 'Hicimos el pedido desde la web, pagamos la seña del 50% y nos llegó impecable en moto. Súper puntuales y muy amables.' },
-      { id: 3, name: 'Luciana Rivas', rating: 5, date: 'Hace 2 semanas', text: 'El lemon pie y las mini donuts fueron la sensación del cumple. Todos los invitados fascinados con el sabor.' },
+      { id: 3, name: 'Luciana Rivas', rating: 5, date: 'Hace 2 semanas', text: 'El lemon pie fue la sensación del cumple. Todos los invitados fascinados con el sabor.' },
       { id: 4, name: 'Carlos Benítez', rating: 5, date: 'Hace 3 semanas', text: 'Pedimos una torta de 2 pisos para los 15 de mi hija. Hermosa terminación, bizcochuelo bien húmedo y relleno abundante.' },
       { id: 5, name: 'Camila Santoro', rating: 5, date: 'Hace 1 mes', text: 'La caja degustación x12 mini tartas es un 10 total. Perfecta para regalar o para una merienda de domingo. Repetiremos sin dudas.' },
       { id: 6, name: 'Martín Paredes', rating: 5, date: 'Hace 1 mes', text: 'Excelente experiencia de compra. La web interactiva para armar el pastel es genial y la atención por WhatsApp de diez.' },
@@ -189,11 +187,8 @@ class BarriguitasApp {
     this.reviewCycleMs = 5000; // 5 Segundos
     this.isReviewsHovered = false;
 
-    // Supabase
-    this.sbUrl = localStorage.getItem('barriguitas_sb_url') || 'https://kutoqygjgsorzpwcjotp.supabase.co';
-    this.sbKey = localStorage.getItem('barriguitas_sb_key') || '';
-    this.supabase = null;
-    this.isSupabaseConnected = false;
+    this.firebase = window.firebaseApi;
+    this.isFirebaseConnected = Boolean(this.firebase);
 
     this.init();
   }
@@ -209,7 +204,7 @@ class BarriguitasApp {
     this.initReviewsCarousel();
     this.renderPromos();
     this.initPublicReviewDialog();
-    this.initSupabaseConnector();
+    this.initFirebaseConnector();
     this.initStorageListener();
     this.initGlobalSceneScroll();
     this.resolveInitialRoute();
@@ -361,13 +356,11 @@ class BarriguitasApp {
 
     // Bocaditos y Cookies
     if (this.prices.cookies) {
-      const pDonuts = document.getElementById('price-cookie-donuts');
       const pCakepops = document.getElementById('price-cookie-cakepops');
       const pGranja = document.getElementById('price-cookie-granja');
       const pCupcakes = document.getElementById('price-cookie-cupcakes');
       const pPaletas = document.getElementById('price-cookie-paletas');
 
-      if (pDonuts && this.prices.cookies['Mini Donuts']) pDonuts.textContent = '$' + this.prices.cookies['Mini Donuts'].toLocaleString('es-AR');
       if (pCakepops && this.prices.cookies['Cake Pops']) pCakepops.textContent = '$' + this.prices.cookies['Cake Pops'].toLocaleString('es-AR');
       const priceG = this.prices.cookies['Galletas Animadas (x12)'] || this.prices.cookies['Galletas Decoradas Granja'];
       if (pGranja && priceG) pGranja.textContent = '$' + priceG.toLocaleString('es-AR');
@@ -791,7 +784,7 @@ class BarriguitasApp {
       return;
     }
 
-    // Guardar en Base de Datos Supabase (si está conectada)
+    // Guardar en Base de Datos Firebase (si está conectada)
     this.recordOrderInDatabase('whatsapp_pendiente', { addr, date, name });
 
     let msg = `✨🎂 *¡HOLA PASTELERÍA BARRIGUITAS! QUIERO CONFIRMAR MI PEDIDO* 🎂✨\n\n`;
@@ -841,12 +834,12 @@ class BarriguitasApp {
       payment_status: status
     };
 
-    if (this.supabase && this.isSupabaseConnected) {
+    if (this.firebase && this.isFirebaseConnected) {
       try {
-        await this.supabase.from('barriguitas_orders').insert([orderRecord]);
-        console.log('Pedido registrado en Supabase con éxito');
+        await this.firebase.from('barriguitas_orders').insert([orderRecord]);
+        console.log('Pedido registrado en Firebase con éxito');
       } catch (e) {
-        console.warn('Error al registrar pedido en Supabase:', e);
+        console.warn('Error al registrar pedido en Firebase:', e);
       }
     }
   }
@@ -1152,13 +1145,13 @@ class BarriguitasApp {
         localStorage.setItem('barriguitas_reviews_v2', JSON.stringify(this.reviews));
         this.renderReviewsCarousel();
 
-        if (this.supabase && this.isSupabaseConnected) {
+        if (this.firebase && this.isFirebaseConnected) {
           try {
-            await this.supabase.from('barriguitas_reviews').insert([{
+            await this.firebase.from('barriguitas_reviews').insert([{
               name, rating, text, date_text: 'Hoy'
             }]);
           } catch (err) {
-            console.warn('Error al enviar reseña a Supabase:', err);
+            console.warn('Error al enviar reseña a Firebase:', err);
           }
         }
 
@@ -1169,60 +1162,44 @@ class BarriguitasApp {
     }
   }
 
-  // 9. Integración Silenciosa con Supabase
-  initSupabaseConnector() {
-    // Auto-conectar silenciosamente si ya hay credenciales guardadas
-    if (this.sbUrl && this.sbKey) {
-      this.connectSupabase(false);
-    }
+  // 9. Integración Silenciosa con Firebase
+  initFirebaseConnector() {
+    this.firebase = window.firebaseApi;
+    this.isFirebaseConnected = Boolean(this.firebase);
+    if (this.isFirebaseConnected) this.fetchDataFromFirebase(false);
   }
 
-  async connectSupabase(showAlert = false) {
-    if (!window.supabase) {
-      if (showAlert) alert('La librería Supabase JS no pudo cargarse.');
-      return;
-    }
-
-    if (!this.sbUrl || !this.sbKey) {
-      if (showAlert) alert('Por favor ingresa la URL y la Anon Key de tu proyecto Supabase.');
+  async connectFirebase(showAlert = false) {
+    if (!window.firebaseApi) {
+      if (showAlert) alert('La librería Firebase JS no pudo cargarse.');
       return;
     }
 
     try {
-      this.supabase = window.supabase.createClient(this.sbUrl, this.sbKey);
-      
-      // Probar lectura de la tabla de precios
-      const { data, error } = await this.supabase.from('barriguitas_prices').select('id').limit(1);
-      
-      if (error && error.code !== 'PGRST116') {
-        throw error;
-      }
-
-      this.isSupabaseConnected = true;
-
-      // Cargar datos remotos
-      await this.fetchDataFromSupabase(false);
+      this.firebase = window.firebaseApi;
+      this.isFirebaseConnected = true;
+      await this.fetchDataFromFirebase(false);
 
       if (showAlert) {
-        alert('✅ ¡Conexión con Supabase establecida con éxito! Tu base de datos está sincronizada.');
+        alert('✅ ¡Conexión con Firebase establecida con éxito! Tu base de datos está sincronizada.');
       }
     } catch (err) {
-      this.isSupabaseConnected = false;
+      this.isFirebaseConnected = false;
       if (showAlert) {
-        alert('⚠️ No se pudo conectar a Supabase:\n' + (err.message || 'Verifica la URL, la API Key y que hayas ejecutado el script SQL para crear las tablas.'));
+        alert('⚠️ No se pudo conectar a Firebase:\n' + (err.message || 'Revisa el despliegue de la API y sus variables de entorno.'));
       }
     }
   }
 
-  async fetchDataFromSupabase(showAlert = false) {
-    if (!this.supabase || !this.isSupabaseConnected) {
-      if (showAlert) alert('Primero conecta tu proyecto de Supabase.');
+  async fetchDataFromFirebase(showAlert = false) {
+    if (!this.firebase || !this.isFirebaseConnected) {
+      if (showAlert) alert('Primero conecta tu proyecto de Firebase.');
       return;
     }
 
     try {
       // 1. Precios
-      const { data: pricesData } = await this.supabase.from('barriguitas_prices').select('*');
+      const { data: pricesData } = await this.firebase.from('barriguitas_prices').select('*');
       if (pricesData && pricesData.length > 0) {
         pricesData.forEach(p => {
           if (p.category === 'cakes') this.prices.cakes[p.item_key] = Number(p.price);
@@ -1246,7 +1223,7 @@ class BarriguitasApp {
       }
 
       // 2. Zonas de Envío
-      const { data: shippingData } = await this.supabase.from('barriguitas_shipping_zones').select('*');
+      const { data: shippingData } = await this.firebase.from('barriguitas_shipping_zones').select('*');
       if (shippingData && shippingData.length > 0) {
         this.shippingZones = shippingData.map(z => ({
           id: z.id,
@@ -1260,7 +1237,7 @@ class BarriguitasApp {
       }
 
       // 3. Ofertas Sugeridas (Upsell McDonald's)
-      const { data: upsellData } = await this.supabase.from('barriguitas_upsell_offers').select('*');
+      const { data: upsellData } = await this.firebase.from('barriguitas_upsell_offers').select('*');
       if (upsellData && upsellData.length > 0) {
         this.upsellOffers = upsellData.map(u => ({
           id: u.id,
@@ -1276,7 +1253,7 @@ class BarriguitasApp {
       }
 
       // 4. Promociones
-      const { data: promosData } = await this.supabase.from('barriguitas_promos').select('*').order('id', { ascending: false });
+      const { data: promosData } = await this.firebase.from('barriguitas_promos').select('*').order('id', { ascending: false });
       if (promosData && promosData.length > 0) {
         this.promos = promosData.map(p => ({
           id: p.id,
@@ -1290,7 +1267,7 @@ class BarriguitasApp {
       }
 
       // 5. Reseñas
-      const { data: reviewsData } = await this.supabase.from('barriguitas_reviews').select('*').order('id', { ascending: false });
+      const { data: reviewsData } = await this.firebase.from('barriguitas_reviews').select('*').order('id', { ascending: false });
       if (reviewsData && reviewsData.length > 0) {
         this.reviews = reviewsData.map(r => ({
           id: r.id,
@@ -1304,7 +1281,7 @@ class BarriguitasApp {
       }
 
       // 6. Galería
-      const { data: galleryData } = await this.supabase.from('barriguitas_gallery').select('*').order('id', { ascending: false });
+      const { data: galleryData } = await this.firebase.from('barriguitas_gallery').select('*').order('id', { ascending: false });
       if (galleryData && galleryData.length > 0) {
         this.gallery = galleryData.map(g => ({
           id: g.id,
@@ -1316,16 +1293,16 @@ class BarriguitasApp {
         this.renderGalleryCarousel('all');
       }
 
-      if (showAlert) alert('¡Datos descargados y sincronizados desde Supabase!');
+      if (showAlert) alert('¡Datos descargados y sincronizados desde Firebase!');
     } catch (err) {
-      console.warn('Error al descargar de Supabase:', err);
+      console.warn('Error al descargar de Firebase:', err);
       if (showAlert) alert('Error al descargar datos: ' + err.message);
     }
   }
 
-  async syncLocalDataToSupabase() {
-    if (!this.supabase || !this.isSupabaseConnected) {
-      alert('Conecta primero tu proyecto Supabase.');
+  async syncLocalDataToFirebase() {
+    if (!this.firebase || !this.isFirebaseConnected) {
+      alert('Conecta primero tu proyecto Firebase.');
       return;
     }
 
@@ -1350,11 +1327,11 @@ class BarriguitasApp {
         priceRecords.push({ id: idKey, category: 'cookies', item_key: name, price });
       });
 
-      await this.supabase.from('barriguitas_prices').upsert(priceRecords);
+      await this.firebase.from('barriguitas_prices').upsert(priceRecords);
 
       // Subir Zonas de Envío
       for (const z of this.shippingZones) {
-        await this.supabase.from('barriguitas_shipping_zones').upsert([{
+        await this.firebase.from('barriguitas_shipping_zones').upsert([{
           id: z.id,
           name: z.name,
           price: z.price,
@@ -1364,7 +1341,7 @@ class BarriguitasApp {
 
       // Subir Ofertas de Upsell
       for (const u of this.upsellOffers) {
-        await this.supabase.from('barriguitas_upsell_offers').upsert([{
+        await this.firebase.from('barriguitas_upsell_offers').upsert([{
           id: u.id,
           trigger_category: u.triggerCategory,
           message: u.message,
@@ -1377,7 +1354,7 @@ class BarriguitasApp {
 
       // Subir Promos
       for (const p of this.promos) {
-        await this.supabase.from('barriguitas_promos').upsert([{
+        await this.firebase.from('barriguitas_promos').upsert([{
           badge: p.badge,
           title: p.title,
           description: p.desc,
@@ -1387,7 +1364,7 @@ class BarriguitasApp {
 
       // Subir Reseñas
       for (const r of this.reviews) {
-        await this.supabase.from('barriguitas_reviews').upsert([{
+        await this.firebase.from('barriguitas_reviews').upsert([{
           name: r.name,
           rating: r.rating,
           date_text: r.date,
@@ -1395,9 +1372,9 @@ class BarriguitasApp {
         }]);
       }
 
-      alert('✅ ¡Todos los datos locales se han subido con éxito a tu base de datos Supabase!');
+      alert('✅ ¡Todos los datos locales se han subido con éxito a tu base de datos Firebase!');
     } catch (err) {
-      alert('Error al subir datos a Supabase:\n' + err.message);
+      alert('Error al subir datos a Firebase:\n' + err.message);
     }
   }
 
@@ -1441,13 +1418,6 @@ class BarriguitasApp {
           this.reviews = JSON.parse(e.newValue);
           this.renderReviewsCarousel();
         } catch (err) {}
-      }
-      if (e.key === 'barriguitas_sb_url' || e.key === 'barriguitas_sb_key') {
-        this.sbUrl = localStorage.getItem('barriguitas_sb_url');
-        this.sbKey = localStorage.getItem('barriguitas_sb_key');
-        if (this.sbUrl && this.sbKey) {
-          this.connectSupabase(false);
-        }
       }
     });
   }
