@@ -654,7 +654,6 @@
         <button class="admin-tab-btn" data-tab="tab-galeria">📸 Galería</button>
         <button class="admin-tab-btn" data-tab="tab-envios">🚚 Envíos</button>
         <button class="admin-tab-btn" data-tab="tab-upsell">🍟 Ofertas Upsell</button>
-        <button class="admin-tab-btn" data-tab="tab-firebase">🔌 Base de Datos</button>
         <button class="admin-tab-btn" data-tab="tab-clave">🔑 Clave</button>
       </nav>
 
@@ -964,19 +963,6 @@
               </button>
             </div>
           </form>
-        </div>
-      </section>
-
-      <!-- ===================================================================
-           PESTAÑA 6: CONEXIÓN SUPABASE (BASE DE DATOS EN LA NUBE)
-           =================================================================== -->
-      <section id="tab-firebase" class="admin-tab-section" style="display: none;">
-        <div class="admin-section-card">
-          <h3 class="section-title">🔌 Firebase Firestore</h3>
-          <p class="section-subtitle">La tienda usa una API segura para leer datos públicos. Las modificaciones del panel requieren una cuenta de Firebase Authentication con el permiso de administrador.</p>
-          <p style="font-size: 0.84rem; color: #475569;">Las credenciales privadas y la configuración de Firestore permanecen en el servidor. No pegues claves de servicio en este panel.</p>
-          <button type="button" id="btn-sb-sync-now" class="btn-outline-action">🔄 Recargar datos desde Firebase</button>
-          <button type="button" id="btn-sb-upload-all" class="btn-outline-action">⬆️ Guardar datos locales en Firebase</button>
         </div>
       </section>
 
@@ -1479,7 +1465,8 @@
         if (formPrices) {
           formPrices.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const kgPrice = Number(document.getElementById('input-cake-price-kg').value) || 18000;
+            try {
+              const kgPrice = Number(document.getElementById('input-cake-price-kg').value) || 18000;
 
             this.prices.cakePricePerKg = kgPrice;
             this.prices.cakes = {
@@ -1514,7 +1501,12 @@
 
             // Sincronizar en Firebase
             await this.syncPricesToFirebase();
-            this.showToast('💾 ¡Precios guardados y sincronizados en vivo!');
+            await this.fetchRemoteData(false);
+            this.showToast('💾 ¡Precios guardados en Firebase!');
+          } catch (err) {
+            console.error('Error al guardar precios en Firebase:', err);
+              this.showToast('⚠️ No se pudieron guardar los precios: ' + err.message, 'error');
+            }
           });
         }
 
@@ -1696,22 +1688,6 @@
           });
         }
 
-        // Botón Copiar Código SQL
-        const btnCopySql = document.getElementById('btn-copy-sql');
-        if (btnCopySql) {
-          btnCopySql.addEventListener('click', () => {
-            const sqlBox = document.getElementById('sql-display-box');
-            if (sqlBox) {
-              const text = sqlBox.textContent || sqlBox.innerText;
-              navigator.clipboard.writeText(text).then(() => {
-                this.showToast('📋 ¡Código SQL copiado al portapapeles!');
-              }).catch(() => {
-                this.showToast('Selecciona el texto para copiar', 'error');
-              });
-            }
-          });
-        }
-
         // Formulario de Cambio de Clave
         const formPass = document.getElementById('form-change-password');
         if (formPass) {
@@ -1762,6 +1738,7 @@
           await this.firebase.from('barriguitas_prices').upsert(records);
         } catch (err) {
           console.warn('Error al sincronizar precios con Firebase:', err);
+          throw err;
         }
       }
 
@@ -1778,6 +1755,7 @@
           }
         } catch (err) {
           console.warn('Error al sincronizar envíos con Firebase:', err);
+          throw err;
         }
       }
 
@@ -1797,6 +1775,7 @@
           }
         } catch (err) {
           console.warn('Error al sincronizar ofertas upsell con Firebase:', err);
+          throw err;
         }
       }
 

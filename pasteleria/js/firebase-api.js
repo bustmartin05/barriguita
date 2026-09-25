@@ -1,7 +1,7 @@
 (function () {
   function request(collection, method, body, token) {
     const options = { method, headers: {} };
-    if (token) options.headers.Authorization = `Bearer ${token}`;
+    if (token) options.headers.Authorization = 'Bearer ' + token;
     if (body) {
       options.headers['Content-Type'] = 'application/json';
       options.body = JSON.stringify(body);
