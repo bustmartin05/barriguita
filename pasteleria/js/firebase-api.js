@@ -1,7 +1,7 @@
 (function () {
   function request(collection, method, body, token) {
     const options = { method, headers: {} };
-    if (token) options.headers.Authorization = `Bearer ${token}`;
+    if (token) options.headers.Authorization = 'Bearer ' + token;
     if (body) {
       options.headers['Content-Type'] = 'application/json';
       options.body = JSON.stringify(body);
@@ -68,6 +68,23 @@
       const result = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(result.error || 'No fue posible iniciar sesión.');
       return result;
+    },
+    async loginWithGoogle() {
+      const configResponse = await fetch('/api/auth/config');
+      const config = await configResponse.json();
+      if (!config.apiKey || !config.authDomain || !config.projectId) {
+        throw new Error('Falta configurar Firebase Web en el servidor.');
+      }
+      if (!window.firebase || !window.firebase.auth) {
+        throw new Error('No se pudo cargar Firebase Authentication.');
+      }
+      if (!window.firebase.apps.length) {
+        window.firebase.initializeApp(config);
+      }
+      const provider = new window.firebase.auth.GoogleAuthProvider();
+      const credential = await window.firebase.auth().signInWithPopup(provider);
+      const idToken = await credential.user.getIdToken(true);
+      return { idToken };
     }
   };
 }());

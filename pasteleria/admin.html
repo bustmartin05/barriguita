@@ -10,6 +10,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Lilita+One&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
   
   <script src="js/firebase-api.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
   
   <!-- Favicon: Nene de carga con globos -->
   <link rel="icon" type="image/png" href="assets/images/nene-volando-globos.png">
@@ -600,9 +602,6 @@
     </a>
 
     <div class="admin-header-actions">
-      <div id="firebase-status-badge" class="admin-badge-role" style="background: #f0fdf4; color: #166534; border: 1.5px solid #86efac; display: none;">
-        🟢 Firebase Conectado
-      </div>
       <a href="./" class="btn-outline-action" onclick="window.location.href = window.location.pathname.includes('/pasteleria/') ? (window.location.origin + '/pasteleria/') : './'; return false;">← Volver a la Tienda</a>
       <button id="btn-admin-logout" class="btn-outline-action btn-logout" style="display: none;">
         Cerrar Sesión 🔒
@@ -635,6 +634,7 @@
         </div>
 
         <button type="submit" class="btn-submit-candy">Ingresar al Panel 🚀</button>
+        <button type="button" id="btn-google-login" class="btn-outline-action" style="width: 100%; margin-top: 10px;">Continuar con Google</button>
         <div id="login-error-alert" class="login-error-msg">Usuario o contraseña incorrectos.</div>
       </form>
     </div>
@@ -651,7 +651,6 @@
         <button class="admin-tab-btn" data-tab="tab-galeria">📸 Galería</button>
         <button class="admin-tab-btn" data-tab="tab-envios">🚚 Envíos</button>
         <button class="admin-tab-btn" data-tab="tab-upsell">🍟 Ofertas Upsell</button>
-        <button class="admin-tab-btn" data-tab="tab-firebase">🔌 Base de Datos</button>
         <button class="admin-tab-btn" data-tab="tab-clave">🔑 Clave</button>
       </nav>
 
@@ -964,19 +963,6 @@
         </div>
       </section>
 
-      <!-- ===================================================================
-           PESTAÑA 6: CONEXIÓN SUPABASE (BASE DE DATOS EN LA NUBE)
-           =================================================================== -->
-      <section id="tab-firebase" class="admin-tab-section" style="display: none;">
-        <div class="admin-section-card">
-          <h3 class="section-title">🔌 Firebase Firestore</h3>
-          <p class="section-subtitle">La tienda usa una API segura para leer datos públicos. Las modificaciones del panel requieren una cuenta de Firebase Authentication con el permiso de administrador.</p>
-          <p style="font-size: 0.84rem; color: #475569;">Las credenciales privadas y la configuración de Firestore permanecen en el servidor. No pegues claves de servicio en este panel.</p>
-          <button type="button" id="btn-sb-sync-now" class="btn-outline-action">🔄 Recargar datos desde Firebase</button>
-          <button type="button" id="btn-sb-upload-all" class="btn-outline-action">⬆️ Guardar datos locales en Firebase</button>
-        </div>
-      </section>
-
       <section id="tab-clave" class="admin-tab-section" style="display: none;">
         <div class="admin-section-card" style="max-width: 500px; margin: 0 auto;">
           <div class="section-heading-row">
@@ -1147,6 +1133,23 @@
             } catch (error) {
               console.error('Error de autenticación:', error);
               document.getElementById('login-error-alert').style.display = 'block';
+            }
+
+            const googleButton = document.getElementById('btn-google-login');
+            if (googleButton) {
+              googleButton.addEventListener('click', async () => {
+                try {
+                  const result = await window.firebaseApi.loginWithGoogle();
+                  sessionStorage.setItem('barriguitas_firebase_token', result.idToken);
+                  sessionStorage.setItem('barriguitas_auth_session', 'active');
+                  document.getElementById('login-error-alert').style.display = 'none';
+                  this.showDashboard();
+                } catch (error) {
+                  console.error('Error de autenticación con Google:', error);
+                  document.getElementById('login-error-alert').textContent = error.message || 'No fue posible iniciar sesión con Google.';
+                  document.getElementById('login-error-alert').style.display = 'block';
+                }
+              });
             }
           });
         }
@@ -1459,7 +1462,8 @@
         if (formPrices) {
           formPrices.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const kgPrice = Number(document.getElementById('input-cake-price-kg').value) || 18000;
+            try {
+              const kgPrice = Number(document.getElementById('input-cake-price-kg').value) || 18000;
 
             this.prices.cakePricePerKg = kgPrice;
             this.prices.cakes = {
@@ -1494,7 +1498,12 @@
 
             // Sincronizar en Firebase
             await this.syncPricesToFirebase();
-            this.showToast('💾 ¡Precios guardados y sincronizados en vivo!');
+            await this.fetchRemoteData(false);
+            this.showToast('💾 ¡Precios guardados en Firebase!');
+          } catch (err) {
+            console.error('Error al guardar precios en Firebase:', err);
+              this.showToast('⚠️ No se pudieron guardar los precios: ' + err.message, 'error');
+            }
           });
         }
 
@@ -1676,22 +1685,6 @@
           });
         }
 
-        // Botón Copiar Código SQL
-        const btnCopySql = document.getElementById('btn-copy-sql');
-        if (btnCopySql) {
-          btnCopySql.addEventListener('click', () => {
-            const sqlBox = document.getElementById('sql-display-box');
-            if (sqlBox) {
-              const text = sqlBox.textContent || sqlBox.innerText;
-              navigator.clipboard.writeText(text).then(() => {
-                this.showToast('📋 ¡Código SQL copiado al portapapeles!');
-              }).catch(() => {
-                this.showToast('Selecciona el texto para copiar', 'error');
-              });
-            }
-          });
-        }
-
         // Formulario de Cambio de Clave
         const formPass = document.getElementById('form-change-password');
         if (formPass) {
@@ -1742,6 +1735,7 @@
           await this.firebase.from('barriguitas_prices').upsert(records);
         } catch (err) {
           console.warn('Error al sincronizar precios con Firebase:', err);
+          throw err;
         }
       }
 
@@ -1758,6 +1752,7 @@
           }
         } catch (err) {
           console.warn('Error al sincronizar envíos con Firebase:', err);
+          throw err;
         }
       }
 
@@ -1777,6 +1772,7 @@
           }
         } catch (err) {
           console.warn('Error al sincronizar ofertas upsell con Firebase:', err);
+          throw err;
         }
       }
 
