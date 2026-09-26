@@ -7,6 +7,7 @@ const SCENE_TO_HASH = {
   'scene-01': '#inicio',
   'scene-02': '#cocina',
   'scene-sub-cakes': '#pasteles',
+  'scene-sub-fillings': '#rellenos',
   'scene-sub-decor': '#decoracion',
   'scene-sub-tartas': '#tartas',
   'scene-sub-cookies': '#dulces',
@@ -25,6 +26,7 @@ const HASH_TO_SCENE = {
   '#armar': 'scene-02',
   '#pasteles': 'scene-sub-cakes',
   '#pastel': 'scene-sub-cakes',
+  '#rellenos': 'scene-sub-fillings',
   '#decoracion': 'scene-sub-decor',
   '#tartas': 'scene-sub-tartas',
   '#tarta': 'scene-sub-tartas',
@@ -58,8 +60,8 @@ class BarriguitasApp {
     this.order = {
       category: 'pastel',
       cakeSize: '2_5kg',
-      decorStyle: 'Estilo 1 (Infantil con Personaje)',
-      decorImg: 'assets/images/JUEGO INICIO/Tipo de pasteles/Tipo de decoracion/deco1_transparent.png',
+      fillings: [],
+      decorStyle: 'Decoración a elección según referencia',
       tartName: 'Lemon Pie',
       cookieName: 'Galletas Animadas (x12)',
       boxName: 'Box Degustación x12 Mini Tartas',
@@ -130,6 +132,7 @@ class BarriguitasApp {
     ];
     const savedZones = localStorage.getItem('barriguitas_shipping_zones');
     this.shippingZones = savedZones ? JSON.parse(savedZones) : this.defaultShippingZones;
+    this.deliveryEnabled = localStorage.getItem('barriguitas_delivery_enabled') !== 'false';
 
     // Ofertas Sugeridas (Upsell Estilo McDonald's)
     this.defaultUpsell = [
@@ -189,6 +192,7 @@ class BarriguitasApp {
 
     this.firebase = window.firebaseApi;
     this.isFirebaseConnected = Boolean(this.firebase);
+    this.fillings = [];
 
     this.init();
   }
@@ -437,23 +441,38 @@ class BarriguitasApp {
 
     // Sub-Escena Pasteles: Tamaños
     document.querySelectorAll('.btn-cake-size-item').forEach(card => {
-      card.addEventListener('click', () => {
+      card.addEventListener('click', async () => {
         const size = card.dataset.size;
         this.order.cakeSize = size;
-        this.goToScene('scene-sub-decor');
+        this.order.fillings = this.order.fillings.slice(0, this.getMaxFillings());
+        const continueButton = document.getElementById('btn-to-decor-fillings');
+        if (continueButton) continueButton.disabled = true;
+        const error = document.getElementById('filling-load-error');
+        if (error) {
+          error.hidden = true;
+          error.textContent = '';
+        }
+        this.goToScene('scene-sub-fillings');
         this.updateCheckoutCalculation();
+        try {
+          await this.loadFillings();
+        } catch (loadError) {
+          console.error('No se pudieron cargar los rellenos:', loadError);
+          if (continueButton) continueButton.disabled = true;
+          if (error) {
+            error.textContent = 'No se pudieron cargar los rellenos. Intenta nuevamente en unos segundos.';
+            error.hidden = false;
+          }
+        }
       });
     });
 
-    // Sub-Escena Decoración de Pasteles (Panel Derecho)
-    document.querySelectorAll('.btn-decor-item').forEach(card => {
-      card.addEventListener('click', () => {
-        document.querySelectorAll('.btn-decor-item').forEach(c => c.classList.remove('selected'));
-        card.classList.add('selected');
-        this.order.decorStyle = card.dataset.decor;
-        this.order.decorImg = card.dataset.img;
+    const continueToDecor = document.getElementById('btn-to-decor-fillings');
+    if (continueToDecor) {
+      continueToDecor.addEventListener('click', () => {
+        this.goToScene('scene-sub-decor');
       });
-    });
+    }
 
     const commentInput = document.getElementById('decor-comments-box');
     if (commentInput) {
@@ -616,6 +635,7 @@ class BarriguitasApp {
 
     if (cardMoto && cardCasa) {
       cardMoto.addEventListener('click', () => {
+        if (!this.deliveryEnabled) return;
         this.order.deliveryMethod = 'moto';
         cardMoto.classList.add('selected');
         cardCasa.classList.remove('selected');
@@ -631,7 +651,6 @@ class BarriguitasApp {
         this.updateCheckoutCalculation();
       });
     }
-
     if (zoneSelect) {
       zoneSelect.addEventListener('change', (e) => {
         this.order.deliveryZone = e.target.value;
@@ -681,6 +700,23 @@ class BarriguitasApp {
         });
       });
     }
+    this.applyDeliveryAvailability();
+  }
+
+  applyDeliveryAvailability() {
+    const cardMoto = document.getElementById('card-choice-moto');
+    const cardCasa = document.getElementById('card-choice-casa');
+    const addrBlock = document.getElementById('delivery-address-group');
+    const cardsRow = document.querySelector('.delivery-choice-cards-row');
+    if (cardMoto) cardMoto.hidden = !this.deliveryEnabled;
+    if (cardsRow) cardsRow.style.gridTemplateColumns = this.deliveryEnabled ? '' : '1fr';
+    if (!this.deliveryEnabled) this.order.deliveryMethod = 'casa';
+
+    const isHomeDelivery = this.deliveryEnabled && this.order.deliveryMethod === 'moto';
+    if (addrBlock) addrBlock.style.display = isHomeDelivery ? 'block' : 'none';
+    if (cardMoto) cardMoto.classList.toggle('selected', isHomeDelivery);
+    if (cardCasa) cardCasa.classList.toggle('selected', !isHomeDelivery);
+    this.updateCheckoutCalculation();
   }
 
   updateCheckoutCalculation() {
@@ -692,10 +728,13 @@ class BarriguitasApp {
       const sizeNames = {
         '1_5kg': 'Pastel 1.5 kg (1 Piso)',
         '2_5kg': 'Pastel 2.5 kg (1 Piso Alto)',
-        '3_5kg': 'Pastel 3.5 kg (2 Pisos)',
-        '4_0kg': 'Pastel 4.0 kg (3 Pisos)'
+        '3_5kg': 'Pastel 3.5 kg (2 pisos a elección)',
+        '4_0kg': 'Pastel 4.0 kg (2 pisos a elección)'
       };
       description = `${sizeNames[this.order.cakeSize] || 'Pastel'} - ${this.order.decorStyle}`;
+      if (this.order.fillings.length) {
+        description += ` - Rellenos: ${this.order.fillings.map(filling => filling.name).join(', ')}`;
+      }
     } else if (this.order.category === 'tarta') {
       basePrice = this.prices.tarts[this.order.tartName] || 15000;
       description = `Tarta Artesanal: ${this.order.tartName}`;
@@ -708,7 +747,7 @@ class BarriguitasApp {
     }
 
     let deliveryFee = 0;
-    if (this.order.deliveryMethod === 'moto') {
+    if (this.deliveryEnabled && this.order.deliveryMethod === 'moto') {
       const selectedZone = this.shippingZones.find(z => z.id === this.order.deliveryZone);
       if (selectedZone) {
         deliveryFee = Number(selectedZone.price) || 0;
@@ -761,6 +800,7 @@ class BarriguitasApp {
   }
 
   sendWhatsAppOrder() {
+    if (!this.deliveryEnabled) this.order.deliveryMethod = 'casa';
     const addr = document.getElementById('delivery-input-addr')?.value.trim() || '';
     const dateInput = document.getElementById('delivery-input-date');
     const date = dateInput?.value || '';
@@ -797,13 +837,16 @@ class BarriguitasApp {
     }
 
     if (this.order.category === 'pastel' && this.order.comments) {
-      msg += `📝 *Dedicatoria/Notas:* "${this.order.comments}"\n`;
+      msg += `📝 *Notas para la decoración:* "${this.order.comments}"\n`;
     }
 
     const selectedZone = this.shippingZones.find(z => z.id === this.order.deliveryZone);
     const zoneName = selectedZone ? selectedZone.name : (this.order.deliveryZone || 'CENTRO').toUpperCase();
 
-    msg += `🚚 *Entrega:* ${this.order.deliveryMethod === 'moto' ? `Envío en Moto a ${addr} (${zoneName})` : 'Retiro por el taller'}\n`;
+    msg += `🚚 *Entrega:* ${this.order.deliveryMethod === 'moto' && this.deliveryEnabled ? `Envío a domicilio a ${addr} (${zoneName})` : 'Retirar en nuestra casita de chocolate'}\n`;
+    if (this.order.category === 'pastel' && this.order.referencePhoto) {
+      msg += '📎 Voy a adjuntar la imagen de referencia en este chat.\n';
+    }
     msg += `📅 *Fecha del evento:* ${date}\n`;
     msg += `👤 *Cliente:* ${name}\n\n`;
 
@@ -822,9 +865,10 @@ class BarriguitasApp {
       client_name: details.name || document.getElementById('delivery-input-name')?.value || 'Cliente Web',
       category: this.order.category,
       cake_size: this.order.cakeSize,
+      fillings: this.order.fillings.map(filling => filling.name),
       decor_style: this.order.decorStyle,
       comments: this.order.comments,
-      delivery_method: this.order.deliveryMethod,
+      delivery_method: this.deliveryEnabled ? this.order.deliveryMethod : 'casa',
       delivery_zone: this.order.deliveryZone,
       delivery_address: details.addr || document.getElementById('delivery-input-addr')?.value || '',
       event_date: details.date || document.getElementById('delivery-input-date')?.value || '',
@@ -1091,21 +1135,45 @@ class BarriguitasApp {
     const grid = document.getElementById('promos-container-grid');
     if (!grid) return;
 
-    grid.innerHTML = this.promos.map(p => `
-      <div class="promo-bubble-card">
-        <div>
-          <span class="hero-tag-pill" style="font-size: 0.78rem; margin-bottom: 6px; padding: 2px 10px;">${p.badge || 'Promo Especial'}</span>
-          <h4 style="font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 1.2rem; color: #1f2937; margin-bottom: 6px;">${p.title}</h4>
-          <p style="font-size: 0.86rem; color: #4b5563; line-height: 1.4; margin-bottom: 14px;">${p.desc}</p>
-        </div>
-        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1.5px dashed #fde68a; padding-top: 10px;">
-          <span style="font-family: 'Lilita One', cursive; font-size: 1.4rem; color: var(--candy-pink-dark);">$${p.price.toLocaleString('es-AR')}</span>
-          <a href="https://wa.me/${this.phoneWhatsApp}?text=Hola!%20Quiero%20pedir%20la%20promo:%20${encodeURIComponent(p.title)}" target="_blank" class="nav-admin-btn" style="background: var(--candy-pink); color: white; border: none; text-decoration: none; padding: 6px 14px;">
-            Pedir por WhatsApp
-          </a>
-        </div>
-      </div>
-    `).join('');
+    grid.replaceChildren();
+    this.promos.forEach(promo => {
+      const card = document.createElement('article');
+      card.className = 'promo-bubble-card';
+      if (promo.img) {
+        const image = document.createElement('img');
+        image.className = 'promo-card-image';
+        image.src = promo.img;
+        image.alt = `Imagen de ${promo.title}`;
+        card.append(image);
+      }
+
+      const details = document.createElement('div');
+      const badge = document.createElement('span');
+      badge.className = 'hero-tag-pill';
+      badge.textContent = promo.badge || 'Promo Especial';
+      const title = document.createElement('h4');
+      title.className = 'promo-card-title';
+      title.textContent = promo.title;
+      const description = document.createElement('p');
+      description.className = 'promo-card-description';
+      description.textContent = promo.desc;
+      details.append(badge, title, description);
+
+      const footer = document.createElement('div');
+      footer.className = 'promo-card-footer';
+      const price = document.createElement('span');
+      price.className = 'promo-card-price';
+      price.textContent = `$${Number(promo.price).toLocaleString('es-AR')}`;
+      const link = document.createElement('a');
+      link.href = `https://wa.me/${this.phoneWhatsApp}?text=${encodeURIComponent(`Hola! Quiero pedir la promo: ${promo.title}`)}`;
+      link.target = '_blank';
+      link.rel = 'noopener';
+      link.className = 'nav-admin-btn promo-card-order';
+      link.textContent = 'Pedir por WhatsApp';
+      footer.append(price, link);
+      card.append(details, footer);
+      grid.append(card);
+    });
   }
 
   // 8. Diálogo Público de Reseñas para Google Maps
@@ -1169,6 +1237,81 @@ class BarriguitasApp {
     if (this.isFirebaseConnected) this.fetchDataFromFirebase(false);
   }
 
+  async loadFillings() {
+    const result = await this.firebase.from('barriguitas_fillings').select('*');
+    if (result.error) throw result.error;
+    this.fillings = (result.data || [])
+      .filter(filling => filling.active === true)
+      .sort((a, b) => Number(a.sortOrder || 0) - Number(b.sortOrder || 0));
+    this.renderFillings();
+  }
+
+  getMaxFillings() {
+    const kilograms = Number(this.order.cakeSize.replace('kg', '').replace('_', '.'));
+    return kilograms <= 2 ? 2 : 3;
+  }
+
+  renderFillings() {
+    const container = document.getElementById('filling-categories');
+    const guidance = document.getElementById('filling-selection-guidance');
+    const continueButton = document.getElementById('btn-to-decor-fillings');
+    const maxFillings = this.getMaxFillings();
+    if (guidance) {
+      const sizeGuidance = maxFillings === 3
+        ? 'Para este tamaño podés elegir hasta 3 rellenos.'
+        : 'Para pasteles de hasta 2 kg podés elegir hasta 2 rellenos.';
+      guidance.textContent = `Si elegís más de 2 kg podés elegir hasta 3 rellenos (consultar disponibilidad). ${sizeGuidance}`;
+    }
+    if (!container) return;
+
+    const groups = [
+      { category: 'without_cold_chain', title: 'RELLENOS RIQUÍSIMOS (SIN FRÍO OBLIGATORIO)' },
+      { category: 'requires_cold_chain', title: 'RELLENOS MÁS RICOS (NECESITAN FRÍO)' }
+    ];
+    container.replaceChildren();
+    groups.forEach((group) => {
+      const details = document.createElement('details');
+      details.className = 'filling-category';
+      details.open = true;
+      const summary = document.createElement('summary');
+      summary.textContent = group.title;
+      const list = document.createElement('div');
+      list.className = 'filling-options-list';
+      this.fillings.filter(filling => filling.category === group.category).forEach((filling) => {
+        const label = document.createElement('label');
+        label.className = 'filling-option';
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.value = filling.id;
+        checkbox.checked = this.order.fillings.some(selected => selected.id === filling.id);
+        const name = document.createElement('span');
+        name.textContent = filling.name;
+        checkbox.addEventListener('change', () => {
+          if (checkbox.checked) {
+            if (this.order.fillings.length >= maxFillings) {
+              checkbox.checked = false;
+              window.alert(`Para este tamaño podés elegir hasta ${maxFillings} rellenos.`);
+              return;
+            }
+            this.order.fillings.push({ id: filling.id, name: filling.name });
+          } else {
+            this.order.fillings = this.order.fillings.filter(selected => selected.id !== filling.id);
+          }
+          this.renderFillings();
+          this.updateCheckoutCalculation();
+        });
+        label.append(checkbox, name);
+        list.append(label);
+      });
+      details.append(summary, list);
+      container.append(details);
+    });
+    if (continueButton) {
+      continueButton.disabled = this.order.fillings.length === 0;
+      continueButton.textContent = `Continuar a la decoración (${this.order.fillings.length}/${maxFillings}) 🎂`;
+    }
+  }
+
   async connectFirebase(showAlert = false) {
     if (!window.firebaseApi) {
       if (showAlert) alert('La librería Firebase JS no pudo cargarse.');
@@ -1223,6 +1366,15 @@ class BarriguitasApp {
       }
 
       // 2. Zonas de Envío
+      const { data: settingsData, error: settingsError } = await this.firebase.from('barriguitas_store_settings').select('*');
+      if (settingsError) throw settingsError;
+      const deliverySettings = (settingsData || []).find(setting => setting.id === 'delivery');
+      if (deliverySettings && typeof deliverySettings.enabled === 'boolean') {
+        this.deliveryEnabled = deliverySettings.enabled;
+        localStorage.setItem('barriguitas_delivery_enabled', String(this.deliveryEnabled));
+        this.applyDeliveryAvailability();
+      }
+
       const { data: shippingData } = await this.firebase.from('barriguitas_shipping_zones').select('*');
       if (shippingData && shippingData.length > 0) {
         this.shippingZones = shippingData.map(z => ({
@@ -1260,7 +1412,8 @@ class BarriguitasApp {
           badge: p.badge,
           title: p.title,
           desc: p.description,
-          price: Number(p.price)
+          price: Number(p.price),
+          img: p.image_url || ''
         }));
         localStorage.setItem('barriguitas_promos', JSON.stringify(this.promos));
         this.renderPromos();

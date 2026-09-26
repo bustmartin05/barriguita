@@ -570,7 +570,7 @@ html, body {
 #scene-02, #scene-sub-cakes, #scene-sub-tartas, #scene-sub-cookies, #scene-sub-box {
   background-image: url('../assets/backgrounds/pc/bg_02.jpg');
 }
-#scene-sub-decor { background-image: url('../assets/backgrounds/pc/bg_03.jpg'); }
+#scene-sub-fillings, #scene-sub-decor { background-image: url('../assets/backgrounds/pc/bg_03.jpg'); }
 #scene-sub-delivery { background-image: url('../assets/backgrounds/pc/bg_04.jpg'); }
 #scene-05-gallery { background-image: url('../assets/backgrounds/pc/bg_05.jpg'); }
 #scene-06-reviews { background-image: url('../assets/backgrounds/pc/bg_06.jpg'); }
@@ -582,7 +582,7 @@ html, body {
   #scene-02, #scene-sub-cakes, #scene-sub-tartas, #scene-sub-cookies, #scene-sub-box {
     background-image: url('../assets/backgrounds/mobile/bg_02.jpg');
   }
-  #scene-sub-decor { background-image: url('../assets/backgrounds/mobile/bg_03.jpg'); }
+  #scene-sub-fillings, #scene-sub-decor { background-image: url('../assets/backgrounds/mobile/bg_03.jpg'); }
   #scene-sub-delivery { background-image: url('../assets/backgrounds/mobile/bg_04.jpg'); }
   #scene-05-gallery { background-image: url('../assets/backgrounds/mobile/bg_05.jpg'); }
   #scene-06-reviews { background-image: url('../assets/backgrounds/mobile/bg_06.jpg'); }
@@ -702,6 +702,26 @@ html, body {
   font-weight: 700;
   font-size: 1.1rem;
   color: #1f2937;
+}
+
+.cake-portion-guide {
+  position: absolute;
+  top: 88px;
+  left: 0;
+  z-index: 10;
+  width: 100%;
+  margin: 0;
+  padding: 0 16px;
+  color: #475569;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.item-pill-portions {
+  margin-top: 2px;
+  color: #475569;
+  font-size: 0.82rem;
+  font-weight: 600;
 }
 
 .item-pill-price {
@@ -898,6 +918,78 @@ html, body {
   gap: 10px;
 }
 
+.filling-panel {
+  gap: 14px;
+}
+
+.filling-selection-guidance {
+  color: var(--candy-pink-dark);
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-top: 8px;
+}
+
+.filling-categories {
+  display: grid;
+  gap: 12px;
+  overflow-y: auto;
+  min-height: 0;
+  padding: 2px 4px 8px 0;
+}
+
+.filling-category {
+  background: #fff;
+  border: 2px solid var(--candy-pink-light);
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.filling-category summary {
+  cursor: pointer;
+  padding: 12px 14px;
+  color: var(--candy-pink-dark);
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.filling-options-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 0 12px 12px;
+}
+
+.filling-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 10px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 9px;
+  color: #334155;
+  cursor: pointer;
+  font-size: 0.88rem;
+}
+
+.filling-option:has(input:checked) {
+  border-color: var(--candy-pink);
+  background: #fff5f8;
+}
+
+.filling-option input {
+  accent-color: var(--candy-pink-dark);
+}
+
+.filling-load-error {
+  padding: 10px 12px;
+  border: 1px solid #fca5a5;
+  border-radius: 9px;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-weight: 600;
+}
+
 .decor-field-group {
   display: flex;
   flex-direction: column;
@@ -926,6 +1018,11 @@ html, body {
 .decor-input-box:focus {
   border-color: var(--candy-pink);
   background: #ffffff;
+}
+
+.decor-notes-box {
+  min-height: 96px;
+  resize: vertical;
 }
 
 .decor-upload-wrapper {
@@ -1042,6 +1139,10 @@ html, body {
   gap: 10px;
   cursor: pointer;
   transition: all 0.2s ease;
+}
+
+.delivery-choice-card[hidden] {
+  display: none !important;
 }
 
 .delivery-choice-card:hover {
@@ -1905,6 +2006,53 @@ html, body {
   transform: translateY(-4px);
 }
 
+.promo-card-image {
+  display: block;
+  width: 100%;
+  max-height: 190px;
+  object-fit: cover;
+  border-radius: calc(var(--radius-xl) - 8px);
+  margin-bottom: 14px;
+}
+
+.promo-card-title {
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: #1f2937;
+  margin: 6px 0;
+}
+
+.promo-card-description {
+  font-size: 0.86rem;
+  color: #4b5563;
+  line-height: 1.4;
+  margin-bottom: 14px;
+}
+
+.promo-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  border-top: 1.5px dashed #fde68a;
+  padding-top: 10px;
+}
+
+.promo-card-price {
+  font-family: 'Lilita One', cursive;
+  font-size: 1.4rem;
+  color: var(--candy-pink-dark);
+}
+
+.promo-card-order {
+  background: var(--candy-pink);
+  color: white;
+  border: none;
+  text-decoration: none;
+  padding: 6px 14px;
+}
+
 /* ==========================================================================
    PANEL DE ADMINISTRACIÓN Y SUPABASE
    ========================================================================== */
@@ -2145,12 +2293,12 @@ html, body {
   /* PÁGINA 2 / SUB-ESCENAS DE PRODUCTOS: ARRIBA EN CUADRÍCULA COMPACTA CON SCROLL SUAVE */
   .counter-table-stage {
     position: absolute;
-    top: 55px;
+    top: 82px;
     bottom: auto;
     left: 4%;
     right: 4%;
     width: 92%;
-    max-height: 58vh;
+    max-height: 54vh;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-y: contain;
@@ -2178,6 +2326,29 @@ html, body {
 
   .item-pill-title {
     font-size: 0.85rem;
+  }
+
+  .item-pill-portions {
+    font-size: 0.7rem;
+  }
+
+  .cake-portion-guide {
+    top: 48px;
+    font-size: 0.78rem;
+  }
+
+  .filling-panel {
+    gap: 10px;
+  }
+
+  .filling-options-list {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .filling-option {
+    padding: 7px 9px;
+    font-size: 0.8rem;
   }
 
   .item-pill-price {

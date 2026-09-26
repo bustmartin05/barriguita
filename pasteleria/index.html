@@ -195,6 +195,7 @@
     <div id="scene-sub-cakes" class="scene-frame">
       <button class="btn-scene-back" data-to="scene-02">← Volver</button>
       <div class="scene-header-banner">Selecciona el Tamaño de tu Pastel</div>
+      <p class="cake-portion-guide">Guía orientativa: 1 kg rinde aproximadamente para 6 a 8 personas.</p>
 
       <div class="counter-table-stage">
         <!-- 1.5 kg -->
@@ -202,6 +203,7 @@
           <img src="assets/images/JUEGO INICIO/Tipo de pasteles/pastel1_transparent.png" alt="Pastel 1.5 kg" class="item-png-img">
           <div class="item-btn-pill">
             <div class="item-pill-title">1.5 kg (1 Piso)</div>
+            <div class="item-pill-portions">Rinde aprox. 9–12 personas</div>
             <div class="item-pill-price" id="price-cake-1_5">$27.000</div>
           </div>
         </div>
@@ -211,6 +213,7 @@
           <img src="assets/images/JUEGO INICIO/Tipo de pasteles/pastel2_transparent.png" alt="Pastel 2.5 kg" class="item-png-img">
           <div class="item-btn-pill">
             <div class="item-pill-title">2.5 kg (1 Piso Alto)</div>
+            <div class="item-pill-portions">Rinde aprox. 15–20 personas</div>
             <div class="item-pill-price" id="price-cake-2_5">$45.000</div>
           </div>
         </div>
@@ -219,7 +222,8 @@
         <div class="item-card-png btn-cake-size-item" data-size="3_5kg">
           <img src="assets/images/JUEGO INICIO/Tipo de pasteles/pastel3_transparent.png" alt="Pastel 3.5 kg" class="item-png-img">
           <div class="item-btn-pill">
-            <div class="item-pill-title">3.5 kg (2 Pisos)</div>
+            <div class="item-pill-title">3.5 kg (2 pisos a elección)</div>
+            <div class="item-pill-portions">Rinde aprox. 21–28 personas</div>
             <div class="item-pill-price" id="price-cake-3_5">$63.000</div>
           </div>
         </div>
@@ -228,9 +232,32 @@
         <div class="item-card-png btn-cake-size-item" data-size="4_0kg">
           <img src="assets/images/JUEGO INICIO/Tipo de pasteles/pastel4_transparent.png" alt="Pastel 4.0 kg" class="item-png-img">
           <div class="item-btn-pill">
-            <div class="item-pill-title">4.0 kg (3 Pisos)</div>
+            <div class="item-pill-title">4.0 kg (2 pisos a elección)</div>
+            <div class="item-pill-portions">Rinde aprox. 24–32 personas</div>
             <div class="item-pill-price" id="price-cake-4_0">$72.000</div>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =======================================================================
+         SUB-ESCENA PASTELES: SELECCIÓN DE RELLENOS (FONDO BG 3)
+         ======================================================================= -->
+    <div id="scene-sub-fillings" class="scene-frame">
+      <button class="btn-scene-back" data-to="scene-sub-cakes">← Cambiar Tamaño</button>
+      <div class="decor-panel-right filling-panel">
+        <div class="decor-panel-header">
+          <span class="decor-step-tag">Paso 2: Elegí tus sabores</span>
+          <h3 class="decor-title-text">Rellenos riquísimos 🍰</h3>
+          <p class="decor-subtitle-text">Elegí los rellenos para tu pastel. Podés combinar tus favoritos:</p>
+          <p id="filling-selection-guidance" class="filling-selection-guidance"></p>
+        </div>
+        <div id="filling-load-error" class="filling-load-error" role="alert" hidden></div>
+        <div id="filling-categories" class="filling-categories" aria-live="polite"></div>
+        <div class="decor-custom-fields">
+          <button id="btn-to-decor-fillings" class="btn-proceed-sweet" type="button" disabled>
+            Continuar a la decoración 🎂
+          </button>
         </div>
       </div>
     </div>
@@ -240,67 +267,27 @@
          (El nene decora en el lado izquierdo; toda la interacción va en el lado derecho)
          ======================================================================= -->
     <div id="scene-sub-decor" class="scene-frame">
-      <button class="btn-scene-back" data-to="scene-sub-cakes">← Cambiar Tamaño</button>
+      <button class="btn-scene-back" data-to="scene-sub-fillings">← Cambiar Rellenos</button>
 
-      <!-- PANEL DERECHO: El nene queda 100% visible a la izquierda -->
+      <!-- Configuración de decoración del pastel -->
       <div class="decor-panel-right">
         <div class="decor-panel-header">
-          <span class="decor-step-tag">Paso 2: Estilo Artístico</span>
+          <span class="decor-step-tag">Paso 3: Tu diseño</span>
           <h3 class="decor-title-text">Decoración del Pastel 🎂</h3>
-          <p class="decor-subtitle-text">Elige un estilo y agrega tu toque personalizado:</p>
+          <p class="decor-subtitle-text">¡Esta es la parte más divertida! Podés buscar en internet alguna imagen o referencia y nosotros te la hacemos. Podés subir el archivo o enviárnosla a nuestro WhatsApp al finalizar el pedido. Si querés algún detalle o algo específico, también lo podés pedir por WhatsApp.</p>
         </div>
 
-        <!-- 4 Estilos de Decoración con PNGs transparentes -->
-        <div class="decor-styles-grid">
-          <div class="decor-item-card btn-decor-item selected" data-decor="Estilo 1 (Infantil con Personaje)" data-img="assets/images/JUEGO INICIO/Tipo de pasteles/Tipo de decoracion/deco1_transparent.png">
-            <img src="assets/images/JUEGO INICIO/Tipo de pasteles/Tipo de decoracion/deco1_transparent.png" alt="Estilo 1" class="decor-card-img">
-            <div class="decor-card-meta">
-              <div class="decor-card-name">Estilo 1</div>
-              <div class="decor-card-desc">Infantil Sprinkles</div>
-            </div>
-            <div class="decor-check-badge">✓</div>
-          </div>
-
-          <div class="decor-item-card btn-decor-item" data-decor="Estilo 2 (Rayas y Flores)" data-img="assets/images/JUEGO INICIO/Tipo de pasteles/Tipo de decoracion/deco2_transparent.png">
-            <img src="assets/images/JUEGO INICIO/Tipo de pasteles/Tipo de decoracion/deco2_transparent.png" alt="Estilo 2" class="decor-card-img">
-            <div class="decor-card-meta">
-              <div class="decor-card-name">Estilo 2</div>
-              <div class="decor-card-desc">Rayas & Flores</div>
-            </div>
-            <div class="decor-check-badge">✓</div>
-          </div>
-
-          <div class="decor-item-card btn-decor-item" data-decor="Estilo 3 (Degradé con Mascotas)" data-img="assets/images/JUEGO INICIO/Tipo de pasteles/Tipo de decoracion/deco3_transparent.png">
-            <img src="assets/images/JUEGO INICIO/Tipo de pasteles/Tipo de decoracion/deco3_transparent.png" alt="Estilo 3" class="decor-card-img">
-            <div class="decor-card-meta">
-              <div class="decor-card-name">Estilo 3</div>
-              <div class="decor-card-desc">Degradé Osito</div>
-            </div>
-            <div class="decor-check-badge">✓</div>
-          </div>
-
-          <div class="decor-item-card btn-decor-item" data-decor="Estilo 4 (Elegante Clásico)" data-img="assets/images/JUEGO INICIO/Tipo de pasteles/Tipo de decoracion/deco4_transparent.png">
-            <img src="assets/images/JUEGO INICIO/Tipo de pasteles/Tipo de decoracion/deco4_transparent.png" alt="Estilo 4" class="decor-card-img">
-            <div class="decor-card-meta">
-              <div class="decor-card-name">Estilo 4</div>
-              <div class="decor-card-desc">Encaje Boda 3 Pisos</div>
-            </div>
-            <div class="decor-check-badge">✓</div>
-          </div>
-        </div>
-
-        <!-- Personalización: Frase y Foto -->
         <div class="decor-custom-fields">
           <div class="decor-field-group">
-            <label class="decor-field-label">Frase o dedicatoria para el pastel:</label>
-            <input type="text" id="decor-comments-box" class="decor-input-box" placeholder="Ej: ¡Feliz Cumple Lucas! (Máx 40 caracteres)">
+            <label class="decor-field-label" for="decor-comments-box">Notas o detalles para la decoración:</label>
+            <textarea id="decor-comments-box" class="decor-input-box decor-notes-box" maxlength="500" placeholder="Contanos qué te gustaría incluir (opcional)"></textarea>
           </div>
 
           <div class="decor-field-group">
-            <label class="decor-field-label">Foto de inspiración / modelo (Opcional):</label>
+            <label class="decor-field-label" for="decor-photo-uploader">Subí una foto de inspiración o referencia (opcional):</label>
             <div class="decor-upload-wrapper">
               <input type="file" id="decor-photo-uploader" accept="image/*" class="decor-file-btn">
-              <img id="decor-preview-photo" class="decor-thumb-preview" alt="Foto">
+              <img id="decor-preview-photo" class="decor-thumb-preview" alt="Vista previa de la referencia">
             </div>
           </div>
 
@@ -442,7 +429,7 @@
           <div id="card-choice-moto" class="delivery-choice-card selected">
             <img src="assets/images/JUEGO INICIO/final/moto_transparent.png" alt="Envío en Moto" class="delivery-choice-img">
             <div class="delivery-choice-meta">
-              <div class="delivery-choice-name">Envío en Moto 🛵</div>
+              <div class="delivery-choice-name">Envío a domicilio 🛵</div>
               <div class="delivery-choice-desc">Directo a tu domicilio o salón</div>
             </div>
             <div class="delivery-choice-radio"></div>
@@ -452,8 +439,8 @@
           <div id="card-choice-casa" class="delivery-choice-card">
             <img src="assets/images/JUEGO INICIO/final/casita_transparent_v2.png" alt="Retiro en Casa" class="delivery-choice-img">
             <div class="delivery-choice-meta">
-              <div class="delivery-choice-name">Retiro en Taller 🏡</div>
-              <div class="delivery-choice-desc">Lo pasas a buscar por el local</div>
+              <div class="delivery-choice-name">Retirar en nuestra casita de chocolate 🏡</div>
+              <div class="delivery-choice-desc">Te esperamos para retirar tu pedido</div>
             </div>
             <div class="delivery-choice-radio"></div>
           </div>
