@@ -52,6 +52,9 @@ La aplicación ya no conecta la base de datos desde el navegador ni muestra SQL 
 
 - Las lecturas públicas y los envíos de reseñas/pedidos pasan por `api/data.js`.
 - Las escrituras administrativas requieren un token de Firebase Authentication con el custom claim `admin: true`.
+- La colección `barriguitas_fillings` se inicializa en Firestore con el catálogo inicial la primera vez que se consulta y se administra desde la pestaña Rellenos del panel.
+- La API devuelve al público solo rellenos activos; el panel autenticado puede crear, activar, ocultar y eliminar rellenos.
+- Las promociones almacenan su imagen opcional en `image_url`, gestionable desde el panel. El ajuste `delivery` de `barriguitas_store_settings` controla si el cliente puede elegir envío a domicilio.
 - Las credenciales del SDK Admin solo se configuran en el servidor mediante las variables de `.env.example`; nunca se deben subir al repositorio.
 - Publica `firestore.rules` para impedir accesos directos al proyecto; la API usa el SDK Admin y no queda limitada por esas reglas.
 - El despliegue debe soportar funciones Node (por ejemplo, Vercel). GitHub Pages por sí solo solo sirve archivos estáticos y no puede ejecutar `/api`.
