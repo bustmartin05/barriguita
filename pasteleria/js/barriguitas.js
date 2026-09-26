@@ -1047,28 +1047,50 @@ class BarriguitasApp {
     const startIndex = this.currentReviewPage * pageSize;
     const currentReviews = this.reviews.slice(startIndex, startIndex + pageSize);
 
-    track.innerHTML = currentReviews.map(rev => {
-      const initial = (rev.name || 'C').charAt(0).toUpperCase();
-      return `
-        <div class="google-review-card">
-          <div class="rev-user-header">
-            <div class="rev-avatar-circle">${initial}</div>
-            <div class="rev-user-info">
-              <div class="rev-user-name">${rev.name}</div>
-              <div class="rev-post-date">${rev.date || 'Reciente'}</div>
-            </div>
-          </div>
-          <div class="rev-stars-row">${'★'.repeat(rev.rating)}</div>
-          <p class="rev-quote-text">"${rev.text}"</p>
-          <div class="rev-verified-tag">
-            <svg viewBox="0 0 24 24" width="14" height="14">
-              <path fill="#059669" d="M12 0L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-5zm-2 16l-4-4 1.41-1.41L10 13.17l6.59-6.59L18 8l-8 8z"/>
-            </svg>
-            Opinión de Google Maps
-          </div>
-        </div>
-      `;
-    }).join('');
+    track.replaceChildren();
+    currentReviews.forEach(rev => {
+      const card = document.createElement('div');
+      card.className = 'google-review-card';
+
+      const userHeader = document.createElement('div');
+      userHeader.className = 'rev-user-header';
+      const avatar = document.createElement('div');
+      avatar.className = 'rev-avatar-circle';
+      avatar.textContent = (String(rev.name || 'C')).charAt(0).toUpperCase();
+      const userInfo = document.createElement('div');
+      userInfo.className = 'rev-user-info';
+      const userName = document.createElement('div');
+      userName.className = 'rev-user-name';
+      userName.textContent = rev.name || '';
+      const date = document.createElement('div');
+      date.className = 'rev-post-date';
+      date.textContent = rev.date || 'Reciente';
+      userInfo.append(userName, date);
+      userHeader.append(avatar, userInfo);
+
+      const stars = document.createElement('div');
+      stars.className = 'rev-stars-row';
+      const rating = Math.min(5, Math.max(1, Number(rev.rating) || 5));
+      stars.textContent = '★'.repeat(rating);
+      const quote = document.createElement('p');
+      quote.className = 'rev-quote-text';
+      quote.textContent = `"${rev.text || ''}"`;
+
+      const verified = document.createElement('div');
+      verified.className = 'rev-verified-tag';
+      const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      icon.setAttribute('viewBox', '0 0 24 24');
+      icon.setAttribute('width', '14');
+      icon.setAttribute('height', '14');
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.setAttribute('fill', '#059669');
+      path.setAttribute('d', 'M12 0L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-5zm-2 16l-4-4 1.41-1.41L10 13.17l6.59-6.59L18 8l-8 8z');
+      icon.append(path);
+      verified.append(icon, document.createTextNode(' Opinión de Google Maps'));
+
+      card.append(userHeader, stars, quote, verified);
+      track.append(card);
+    });
 
     // Puntitos de paginación
     if (dotsRow) {
@@ -1585,6 +1607,9 @@ class BarriguitasApp {
     let isDraggingBackground = false;
     let momentumAnimId = null;
 
+    const isInteractiveTarget = target => target instanceof Element
+      && Boolean(target.closest('a, button, input, select, textarea, [contenteditable="true"]'));
+
     const getActiveScrollable = () => {
       const activeScene = document.querySelector('.scene-frame.active');
       if (!activeScene) return null;
@@ -1612,13 +1637,7 @@ class BarriguitasApp {
       lastTime = performance.now();
       velocityY = 0;
 
-      const scrollable = getActiveScrollable();
-      // Si el toque ocurre fuera del marco deslizable (ej: en el fondo o en la imagen inferior)
-      if (scrollable && !scrollable.contains(e.target)) {
-        isDraggingBackground = true;
-      } else {
-        isDraggingBackground = false;
-      }
+      isDraggingBackground = Boolean(getActiveScrollable()) && !isInteractiveTarget(e.target);
     }, { passive: true });
 
     document.addEventListener('touchmove', (e) => {
@@ -1634,6 +1653,7 @@ class BarriguitasApp {
 
       // Movimiento vertical prioritario
       if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > 2) {
+        e.preventDefault();
         const now = performance.now();
         const dt = Math.max(now - lastTime, 8);
         velocityY = deltaY / dt;
@@ -1644,7 +1664,7 @@ class BarriguitasApp {
         lastTouchY = currentY;
         lastTime = now;
       }
-    }, { passive: true });
+    }, { passive: false });
 
     document.addEventListener('touchend', () => {
       if (isDraggingBackground) {
@@ -1670,10 +1690,11 @@ class BarriguitasApp {
     // Desplazamiento con rueda de mouse en PC cuando el cursor está sobre el fondo
     window.addEventListener('wheel', (e) => {
       const scrollable = getActiveScrollable();
-      if (scrollable && !scrollable.contains(e.target)) {
+      if (scrollable && !isInteractiveTarget(e.target)) {
+        e.preventDefault();
         scrollable.scrollTop += e.deltaY;
       }
-    }, { passive: true });
+    }, { passive: false });
   }
 
 }

@@ -55,6 +55,8 @@ La aplicación ya no conecta la base de datos desde el navegador ni muestra SQL 
 - La colección `barriguitas_fillings` se inicializa en Firestore con el catálogo inicial la primera vez que se consulta y se administra desde la pestaña Rellenos del panel.
 - La API devuelve al público solo rellenos activos; el panel autenticado puede crear, activar, ocultar y eliminar rellenos.
 - Las promociones almacenan su imagen opcional en `image_url`, gestionable desde el panel. El ajuste `delivery` de `barriguitas_store_settings` controla si el cliente puede elegir envío a domicilio.
+- Las reseñas se insertan en el DOM como texto, no como HTML, para evitar XSS persistente. Vercel fuerza HTTPS en los dominios del proyecto y `vercel.json` añade HSTS y encabezados básicos de seguridad.
+- Vercel sirve `404.html` como página personalizada cuando una URL no existe. El favicon y el icono para dispositivos móviles usan la imagen de marca de la torta de chocolate.
 - Las credenciales del SDK Admin solo se configuran en el servidor mediante las variables de `.env.example`; nunca se deben subir al repositorio.
 - Publica `firestore.rules` para impedir accesos directos al proyecto; la API usa el SDK Admin y no queda limitada por esas reglas.
 - El despliegue debe soportar funciones Node (por ejemplo, Vercel). GitHub Pages por sí solo solo sirve archivos estáticos y no puede ejecutar `/api`.
