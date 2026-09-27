@@ -1279,6 +1279,10 @@ class BarriguitasApp {
     const guidance = document.getElementById('filling-selection-guidance');
     const continueButton = document.getElementById('btn-to-decor-fillings');
     const maxFillings = this.getMaxFillings();
+    const openCategories = new Set(
+      [...(container?.querySelectorAll('.filling-category[open]') || [])]
+        .map(category => category.dataset.category)
+    );
     if (guidance) {
       const sizeGuidance = maxFillings === 3
         ? 'Para este tamaño podés elegir hasta 3 rellenos.'
@@ -1295,7 +1299,8 @@ class BarriguitasApp {
     groups.forEach((group) => {
       const details = document.createElement('details');
       details.className = 'filling-category';
-      details.open = true;
+      details.dataset.category = group.category;
+      details.open = openCategories.has(group.category);
       const summary = document.createElement('summary');
       summary.textContent = group.title;
       const list = document.createElement('div');
@@ -1638,7 +1643,10 @@ class BarriguitasApp {
       lastTime = performance.now();
       velocityY = 0;
 
-      isDraggingBackground = Boolean(getActiveScrollable()) && !isInteractiveTarget(e.target);
+      const activeScene = document.querySelector('.scene-frame.active');
+      isDraggingBackground = activeScene?.id !== 'scene-sub-fillings'
+        && Boolean(getActiveScrollable())
+        && !isInteractiveTarget(e.target);
     }, { passive: true });
 
     document.addEventListener('touchmove', (e) => {

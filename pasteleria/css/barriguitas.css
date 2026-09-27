@@ -2218,6 +2218,48 @@ html, body {
    ========================================================================== */
 
 @media (max-width: 768px), (orientation: portrait) {
+  #scene-sub-fillings {
+    height: calc(100vh - 78px);
+    height: calc(100dvh - 78px);
+    min-height: 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    background-image: none !important;
+    background-color: #fff8fb;
+  }
+
+  #scene-sub-fillings .filling-panel {
+    top: 68px;
+    right: 6px;
+    bottom: 8px;
+    left: 6px;
+    width: auto;
+    max-height: none;
+    justify-content: flex-start;
+    gap: 10px;
+    padding: 14px 12px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+    touch-action: pan-y;
+  }
+
+  #scene-sub-fillings .filling-categories {
+    flex: 0 0 auto;
+    overflow: visible;
+  }
+
+  #scene-sub-fillings .filling-options-list {
+    grid-template-columns: 1fr;
+  }
+
+  #scene-sub-fillings .filling-option {
+    min-height: 44px;
+    padding: 10px;
+    font-size: 0.95rem;
+  }
+
   .game-stage-container {
     padding-top: 65px;
     padding-bottom: 10px;
