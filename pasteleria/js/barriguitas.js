@@ -154,11 +154,11 @@ class BarriguitasApp {
 
     // Galería Inicial (Página 5)
     this.defaultGallery = [
-      { id: 1, title: 'Pastel Granja Mágica 3D', cat: 'infantiles', img: 'assets/images/JUEGO INICIO/Tipo de pasteles/Tipo de decoracion/deco1_transparent.png' },
-      { id: 2, title: 'Torta Rayas y Flores', cat: 'adultos', img: 'assets/images/JUEGO INICIO/Tipo de pasteles/Tipo de decoracion/deco2_transparent.png' },
-      { id: 3, title: 'Pastel Quince Años Degradé', cat: 'quinces', img: 'assets/images/JUEGO INICIO/Tipo de pasteles/Tipo de decoracion/deco3_transparent.png' },
-      { id: 4, title: 'Torta Nupcial 3 Pisos Encaje', cat: 'bodas', img: 'assets/images/JUEGO INICIO/Tipo de pasteles/Tipo de decoracion/deco4_transparent.png' },
-      { id: 5, title: 'Box Degustación x12', cat: 'adultos', img: 'assets/images/JUEGO INICIO/Box/caja_15_trans_final.png' }
+      { id: 1, title: 'Pastel Granja Mágica 3D', cat: 'infantiles', img: 'assets/images/JUEGO INICIO/Tipo de pasteles/Tipo de decoracion/deco1_transparent.webp' },
+      { id: 2, title: 'Torta Rayas y Flores', cat: 'adultos', img: 'assets/images/JUEGO INICIO/Tipo de pasteles/Tipo de decoracion/deco2_transparent.webp' },
+      { id: 3, title: 'Pastel Quince Años Degradé', cat: 'quinces', img: 'assets/images/JUEGO INICIO/Tipo de pasteles/Tipo de decoracion/deco3_transparent.webp' },
+      { id: 4, title: 'Torta Nupcial 3 Pisos Encaje', cat: 'bodas', img: 'assets/images/JUEGO INICIO/Tipo de pasteles/Tipo de decoracion/deco4_transparent.webp' },
+      { id: 5, title: 'Box Degustación x12', cat: 'adultos', img: 'assets/images/JUEGO INICIO/Box/caja_15_trans_final.webp' }
     ];
     const savedGallery = localStorage.getItem('barriguitas_gallery_v2');
     this.gallery = savedGallery ? JSON.parse(savedGallery) : this.defaultGallery;
@@ -971,7 +971,7 @@ class BarriguitasApp {
 
     track.innerHTML = currentItems.map(item => `
       <div class="gallery-cake-card">
-        <img src="${item.img}" alt="${item.title}">
+        <img loading="lazy" src="${item.img}" alt="${item.title}">
         <div class="gallery-card-title">${item.title}</div>
         <span class="gallery-card-cat-badge">${item.cat}</span>
       </div>
@@ -1166,6 +1166,7 @@ class BarriguitasApp {
         image.className = 'promo-card-image';
         image.src = promo.img;
         image.alt = `Imagen de ${promo.title}`;
+        image.loading = 'lazy';
         card.append(image);
       }
 

@@ -566,27 +566,27 @@ html, body {
    ========================================================================== */
 
 /* PC (Default / Horizontal) */
-#scene-01 { background-image: url('../assets/backgrounds/pc/bg_01.jpg'); }
+#scene-01 { background-image: url('../assets/backgrounds/pc/bg_01.webp'); }
 #scene-02, #scene-sub-cakes, #scene-sub-tartas, #scene-sub-cookies, #scene-sub-box {
-  background-image: url('../assets/backgrounds/pc/bg_02.jpg');
+  background-image: url('../assets/backgrounds/pc/bg_02.webp');
 }
-#scene-sub-fillings, #scene-sub-decor { background-image: url('../assets/backgrounds/pc/bg_03.jpg'); }
-#scene-sub-delivery { background-image: url('../assets/backgrounds/pc/bg_04.jpg'); }
-#scene-05-gallery { background-image: url('../assets/backgrounds/pc/bg_05.jpg'); }
-#scene-06-reviews { background-image: url('../assets/backgrounds/pc/bg_06.jpg'); }
-#scene-07-promos { background-image: url('../assets/backgrounds/pc/bg_07.jpg'); }
+#scene-sub-fillings, #scene-sub-decor { background-image: url('../assets/backgrounds/pc/bg_03.webp'); }
+#scene-sub-delivery { background-image: url('../assets/backgrounds/pc/bg_04.webp'); }
+#scene-05-gallery { background-image: url('../assets/backgrounds/pc/bg_05.webp'); }
+#scene-06-reviews { background-image: url('../assets/backgrounds/pc/bg_06.webp'); }
+#scene-07-promos { background-image: url('../assets/backgrounds/pc/bg_07.webp'); }
 
 /* MÓVIL (Pantallas verticales <= 768px o en portrait) */
 @media (max-width: 768px), (orientation: portrait) {
-  #scene-01 { background-image: url('../assets/backgrounds/mobile/bg_01.jpg'); }
+  #scene-01 { background-image: url('../assets/backgrounds/mobile/bg_01.webp'); }
   #scene-02, #scene-sub-cakes, #scene-sub-tartas, #scene-sub-cookies, #scene-sub-box {
-    background-image: url('../assets/backgrounds/mobile/bg_02.jpg');
+    background-image: url('../assets/backgrounds/mobile/bg_02.webp');
   }
-  #scene-sub-fillings, #scene-sub-decor { background-image: url('../assets/backgrounds/mobile/bg_03.jpg'); }
-  #scene-sub-delivery { background-image: url('../assets/backgrounds/mobile/bg_04.jpg'); }
-  #scene-05-gallery { background-image: url('../assets/backgrounds/mobile/bg_05.jpg'); }
-  #scene-06-reviews { background-image: url('../assets/backgrounds/mobile/bg_06.jpg'); }
-  #scene-07-promos { background-image: url('../assets/backgrounds/mobile/bg_07.jpg'); }
+  #scene-sub-fillings, #scene-sub-decor { background-image: url('../assets/backgrounds/mobile/bg_03.webp'); }
+  #scene-sub-delivery { background-image: url('../assets/backgrounds/mobile/bg_04.webp'); }
+  #scene-05-gallery { background-image: url('../assets/backgrounds/mobile/bg_05.webp'); }
+  #scene-06-reviews { background-image: url('../assets/backgrounds/mobile/bg_06.webp'); }
+  #scene-07-promos { background-image: url('../assets/backgrounds/mobile/bg_07.webp'); }
 }
 
 /* ==========================================================================

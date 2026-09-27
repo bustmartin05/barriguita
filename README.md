@@ -57,6 +57,7 @@ La aplicación ya no conecta la base de datos desde el navegador ni muestra SQL 
 - Las promociones almacenan su imagen opcional en `image_url`, gestionable desde el panel. El ajuste `delivery` de `barriguitas_store_settings` controla si el cliente puede elegir envío a domicilio.
 - Las reseñas se insertan en el DOM como texto, no como HTML, para evitar XSS persistente. Vercel fuerza HTTPS en los dominios del proyecto y `vercel.json` añade HSTS y encabezados básicos de seguridad.
 - Vercel sirve `404.html` como página personalizada cuando una URL no existe. El favicon y el icono para dispositivos móviles usan la imagen de marca de la torta de chocolate.
+- La tienda incluye verificación de Google Search Console en `google07a18cdd3d23fd4a.html` y Google Tag Manager (`GTM-M49NS8N9`). Sus metadatos canónicos y sociales apuntan al dominio de producción `barriguita.vercel.app`.
 - Las credenciales del SDK Admin solo se configuran en el servidor mediante las variables de `.env.example`; nunca se deben subir al repositorio.
 - Publica `firestore.rules` para impedir accesos directos al proyecto; la API usa el SDK Admin y no queda limitada por esas reglas.
 - El despliegue debe soportar funciones Node (por ejemplo, Vercel). GitHub Pages por sí solo solo sirve archivos estáticos y no puede ejecutar `/api`.
