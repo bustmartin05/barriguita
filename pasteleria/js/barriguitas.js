@@ -227,6 +227,12 @@ class BarriguitasApp {
 
   // 2. Navegación entre Escenas & URLs Únicas / Hash
   goToScene(sceneId, updateHash = true) {
+    if (sceneId === 'scene-sub-fillings') {
+      document.querySelectorAll('#filling-categories .filling-category').forEach(category => {
+        category.open = false;
+      });
+    }
+
     document.querySelectorAll('.scene-frame').forEach(f => f.classList.remove('active'));
     const target = document.getElementById(sceneId);
     if (target) {
@@ -892,6 +898,41 @@ class BarriguitasApp {
   initGalleryCarousel() {
     this.renderGalleryCarousel(this.currentGalleryFilter);
 
+    const galleryTrack = document.getElementById('gallery-carousel-track');
+    const lightbox = document.getElementById('gallery-lightbox');
+    const closeLightboxButton = document.getElementById('gallery-lightbox-close');
+    if (galleryTrack) {
+      galleryTrack.addEventListener('click', event => {
+        const image = event.target instanceof Element
+          ? event.target.closest('.gallery-cake-card img')
+          : null;
+        if (image) this.openGalleryImage(image);
+      });
+      galleryTrack.addEventListener('keydown', event => {
+        if (event.key !== 'Enter' && event.key !== ' ') return;
+        const image = event.target instanceof Element
+          ? event.target.closest('.gallery-cake-card img')
+          : null;
+        if (!image) return;
+        event.preventDefault();
+        this.openGalleryImage(image);
+      });
+    }
+
+    if (closeLightboxButton) {
+      closeLightboxButton.addEventListener('click', () => this.closeGalleryImage());
+    }
+    if (lightbox) {
+      lightbox.addEventListener('click', event => {
+        if (event.target === lightbox) this.closeGalleryImage();
+      });
+    }
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && lightbox && !lightbox.hidden) {
+        this.closeGalleryImage();
+      }
+    });
+
     const btnPrev = document.getElementById('btn-gallery-prev');
     const btnNext = document.getElementById('btn-gallery-next');
 
@@ -922,6 +963,34 @@ class BarriguitasApp {
     window.addEventListener('resize', () => {
       this.renderGalleryCarousel(this.currentGalleryFilter);
     });
+  }
+
+  openGalleryImage(image) {
+    const lightbox = document.getElementById('gallery-lightbox');
+    const enlargedImage = document.getElementById('gallery-lightbox-image');
+    const caption = document.getElementById('gallery-lightbox-caption');
+    const closeButton = document.getElementById('gallery-lightbox-close');
+    if (!lightbox || !enlargedImage || !caption || !closeButton) return;
+
+    enlargedImage.src = image.currentSrc || image.src;
+    enlargedImage.alt = image.alt;
+    caption.textContent = image.alt;
+    this.galleryImageTrigger = image;
+    lightbox.hidden = false;
+    document.body.classList.add('gallery-lightbox-open');
+    closeButton.focus();
+  }
+
+  closeGalleryImage() {
+    const lightbox = document.getElementById('gallery-lightbox');
+    const enlargedImage = document.getElementById('gallery-lightbox-image');
+    if (!lightbox || lightbox.hidden) return;
+
+    lightbox.hidden = true;
+    if (enlargedImage) enlargedImage.removeAttribute('src');
+    document.body.classList.remove('gallery-lightbox-open');
+    if (this.galleryImageTrigger?.isConnected) this.galleryImageTrigger.focus();
+    this.galleryImageTrigger = null;
   }
 
   prevGallerySlide() {
@@ -971,7 +1040,7 @@ class BarriguitasApp {
 
     track.innerHTML = currentItems.map(item => `
       <div class="gallery-cake-card">
-        <img loading="lazy" src="${item.img}" alt="${item.title}">
+        <img loading="lazy" src="${item.img}" alt="${item.title}" role="button" tabindex="0" aria-label="Ampliar imagen: ${item.title}">
         <div class="gallery-card-title">${item.title}</div>
         <span class="gallery-card-cat-badge">${item.cat}</span>
       </div>
@@ -1644,7 +1713,9 @@ class BarriguitasApp {
       velocityY = 0;
 
       const activeScene = document.querySelector('.scene-frame.active');
-      isDraggingBackground = activeScene?.id !== 'scene-sub-fillings'
+      const isMobileViewport = window.matchMedia('(max-width: 768px), (orientation: portrait)').matches;
+      isDraggingBackground = !isMobileViewport
+        && activeScene?.id !== 'scene-sub-fillings'
         && Boolean(getActiveScrollable())
         && !isInteractiveTarget(e.target);
     }, { passive: true });
@@ -1698,6 +1769,7 @@ class BarriguitasApp {
 
     // Desplazamiento con rueda de mouse en PC cuando el cursor está sobre el fondo
     window.addEventListener('wheel', (e) => {
+      if (window.matchMedia('(max-width: 768px), (orientation: portrait)').matches) return;
       const scrollable = getActiveScrollable();
       if (scrollable && !isInteractiveTarget(e.target)) {
         e.preventDefault();
