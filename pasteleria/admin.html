@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#fff5f8">
   <title>Panel de Administración - Pastelería Barriguitas</title>
   
   <!-- Tipografías de Google Fonts -->
@@ -14,7 +15,8 @@
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
   
   <!-- Favicon: Nene de carga con globos -->
-  <link rel="icon" type="image/png" href="assets/images/nene-volando-globos.png">
+  <link rel="icon" type="image/webp" href="assets/images/nene-torta-choco-trans.webp">
+  <link rel="apple-touch-icon" href="assets/images/nene-torta-choco-trans.webp">
   
   <style>
     :root {
@@ -1518,11 +1520,11 @@
 
         // 3. Galería
         const defaultGallery = [
-          { id: 1, title: 'Pastel Granja Mágica 3D', cat: 'infantiles', img: 'assets/images/JUEGO INICIO/Tipo de pasteles/Tipo de decoracion/deco1_transparent.png' },
-          { id: 2, title: 'Torta Rayas y Flores', cat: 'adultos', img: 'assets/images/JUEGO INICIO/Tipo de pasteles/Tipo de decoracion/deco2_transparent.png' },
-          { id: 3, title: 'Pastel Quince Años Degradé', cat: 'quinces', img: 'assets/images/JUEGO INICIO/Tipo de pasteles/Tipo de decoracion/deco3_transparent.png' },
-          { id: 4, title: 'Torta Nupcial 3 Pisos Encaje', cat: 'bodas', img: 'assets/images/JUEGO INICIO/Tipo de pasteles/Tipo de decoracion/deco4_transparent.png' },
-          { id: 5, title: 'Box Degustación x12', cat: 'adultos', img: 'assets/images/JUEGO INICIO/Box/caja_15_trans_final.png' }
+          { id: 1, title: 'Pastel Granja Mágica 3D', cat: 'infantiles', img: 'assets/images/JUEGO INICIO/Tipo de pasteles/Tipo de decoracion/deco1_transparent.webp' },
+          { id: 2, title: 'Torta Rayas y Flores', cat: 'adultos', img: 'assets/images/JUEGO INICIO/Tipo de pasteles/Tipo de decoracion/deco2_transparent.webp' },
+          { id: 3, title: 'Pastel Quince Años Degradé', cat: 'quinces', img: 'assets/images/JUEGO INICIO/Tipo de pasteles/Tipo de decoracion/deco3_transparent.webp' },
+          { id: 4, title: 'Torta Nupcial 3 Pisos Encaje', cat: 'bodas', img: 'assets/images/JUEGO INICIO/Tipo de pasteles/Tipo de decoracion/deco4_transparent.webp' },
+          { id: 5, title: 'Box Degustación x12', cat: 'adultos', img: 'assets/images/JUEGO INICIO/Box/caja_15_trans_final.webp' }
         ];
         const savedGallery = localStorage.getItem('barriguitas_gallery_v2');
         this.gallery = savedGallery ? JSON.parse(savedGallery) : defaultGallery;
@@ -2247,6 +2249,7 @@
             preview.src = promo.img;
             preview.alt = `Imagen de ${promo.title}`;
             preview.className = 'promo-admin-image';
+            preview.loading = 'lazy';
             row.append(preview);
           }
 
@@ -2355,7 +2358,7 @@
         container.innerHTML = this.gallery.map(g => `
           <div class="manage-item-row">
             <div style="display: flex; align-items: center; gap: 12px;">
-              <img src="${g.img}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px; border: 2px solid #e2e8f0;">
+              <img loading="lazy" src="${g.img}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px; border: 2px solid #e2e8f0;">
               <div>
                 <strong style="font-size: 0.95rem;">${g.title}</strong>
                 <span style="font-size: 0.8rem; color: #0284c7; display: block; text-transform: uppercase;">${g.cat}</span>

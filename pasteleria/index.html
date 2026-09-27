@@ -3,7 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#fff5f8">
+  <meta name="description" content="Pastelería Barriguitas en Mendoza: pasteles personalizados, tartas y dulces artesanales. Armá tu pedido y coordiná tu celebración con nosotros.">
+  <meta name="robots" content="index,follow">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="es_AR">
+  <meta property="og:site_name" content="Pastelería Barriguitas">
+  <meta property="og:title" content="Pastelería Barriguitas | Pasteles personalizados en Mendoza">
+  <meta property="og:description" content="Pasteles personalizados, tartas y dulces artesanales para tus momentos especiales. Armá tu pedido online.">
+  <meta property="og:url" content="https://barriguita.vercel.app/pasteleria/">
+  <meta property="og:image" content="https://barriguita.vercel.app/pasteleria/assets/images/nene-torta-choco-trans.webp">
+  <meta property="og:image:alt" content="El nene de Barriguitas con su torta de chocolate">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://barriguita.vercel.app/pasteleria/">
   <title>Pastelería Barriguitas 🎂 - Momentos Dulces & Pasteles Soñados</title>
+
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-M49NS8N9');</script>
+  <!-- End Google Tag Manager -->
   
   <!-- Tipografías de Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,16 +37,21 @@
   <script src="js/firebase-api.js"></script>
   
   <!-- Favicon: Nene de carga con globos -->
-  <link rel="icon" type="image/png" href="assets/images/nene-volando-globos.png">
+  <link rel="icon" type="image/webp" href="assets/images/nene-torta-choco-trans.webp">
+  <link rel="apple-touch-icon" href="assets/images/nene-torta-choco-trans.webp">
   
   <!-- Estilos de Escenas y Minijuego V2 -->
   <link rel="stylesheet" href="css/barriguitas.css">
 </head>
 <body>
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M49NS8N9"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
 
   <!-- PANTALLA DE CARGA (SPLASH SCREEN CON EL NENE Y GLOBOS) -->
   <div id="splash-screen" class="splash-screen">
-    <img src="assets/images/nene-volando-globos.png" alt="Mascota Barriguitas con globos" class="splash-mascot-img">
+    <img src="assets/images/nene-volando-globos.webp" alt="Mascota Barriguitas con globos" class="splash-mascot-img">
     <h1 class="splash-title">Pastelería Barriguitas</h1>
     <p class="splash-subtitle">Cargando el taller de dulces sueños...</p>
     <div class="splash-loader-bar">
@@ -79,7 +105,7 @@
   <aside id="mobile-drawer-menu" class="mobile-drawer-panel">
     <div class="drawer-header-row">
       <div class="drawer-brand-title">
-        <img src="assets/images/nene-volando-globos.png" alt="Barriguitas" class="drawer-logo-icon">
+        <img loading="lazy" src="assets/images/nene-volando-globos.webp" alt="Barriguitas" class="drawer-logo-icon">
         <span>Barriguitas</span>
       </div>
       <button id="btn-close-mobile-menu" class="drawer-close-btn" aria-label="Cerrar Menú">&times;</button>
@@ -121,7 +147,7 @@
 
   <!-- BOTÓN FLOTANTE DE WHATSAPP -->
   <a href="https://wa.me/5492612571131?text=Hola%20Pasteler%C3%ADa%20Barriguitas%2C%20quisiera%20hacer%20una%20consulta" target="_blank" rel="noopener" id="floating-whatsapp-btn" class="floating-whatsapp-btn" title="Contactar por WhatsApp (+54 9 2612 57-1131)">
-    <svg width="32" height="32" viewBox="0 0 24 24" fill="white"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.699c.971.53 1.871.815 2.796.815 3.183 0 5.768-2.586 5.768-5.766.001-3.181-2.584-5.766-5.768-5.766zm6.819 5.767c0 3.766-3.056 6.822-6.819 6.822-.99 0-1.956-.215-2.834-.634l-3.957 1.037 1.056-3.861c-.512-1.002-.782-2.128-.782-3.364 0-3.766 3.056-6.822 6.819-6.822 3.763.001 6.817 3.057 6.817 6.822z"/></svg>
+    <img src="assets/images/whatsapp.webp" alt="" width="52" height="52">
     <span class="floating-wa-bubble">¿Dudas? ¡Escríbenos!</span>
   </a>
 
@@ -153,7 +179,7 @@
       <div class="counter-table-stage">
         <!-- 1. Pasteles -->
         <div class="item-card-png btn-main-product" data-category="pastel">
-          <img src="assets/images/JUEGO INICIO/cake_transparent.png" alt="Pasteles Personalizados" class="item-png-img">
+          <img loading="lazy" src="assets/images/JUEGO INICIO/cake_transparent.webp" alt="Pasteles Personalizados" class="item-png-img">
           <div class="item-btn-pill">
             <div class="item-pill-title">Pasteles</div>
             <div class="item-pill-price">Elegir Pastel</div>
@@ -162,7 +188,7 @@
 
         <!-- 2. Tartas -->
         <div class="item-card-png btn-main-product" data-category="tarta">
-          <img src="assets/images/JUEGO INICIO/tart_transparent.png" alt="Tartas Artesanales" class="item-png-img">
+          <img loading="lazy" src="assets/images/JUEGO INICIO/tart_transparent.webp" alt="Tartas Artesanales" class="item-png-img">
           <div class="item-btn-pill">
             <div class="item-pill-title">Tartas</div>
             <div class="item-pill-price">Elegir Tartas</div>
@@ -171,7 +197,7 @@
 
         <!-- 3. Galletas y Dulces -->
         <div class="item-card-png btn-main-product" data-category="cookies">
-          <img src="assets/images/JUEGO INICIO/cookies_transparent.png" alt="Galletas y Bocaditos" class="item-png-img">
+          <img loading="lazy" src="assets/images/JUEGO INICIO/cookies_transparent.webp" alt="Galletas y Bocaditos" class="item-png-img">
           <div class="item-btn-pill">
             <div class="item-pill-title">Galletas y Dulces</div>
             <div class="item-pill-price">Elegir Bocaditos</div>
@@ -180,7 +206,7 @@
 
         <!-- 4. Boxes -->
         <div class="item-card-png btn-main-product" data-category="box">
-          <img src="assets/images/JUEGO INICIO/giftbox_transparent.png" alt="Boxes Dulces" class="item-png-img">
+          <img loading="lazy" src="assets/images/JUEGO INICIO/giftbox_transparent.webp" alt="Boxes Dulces" class="item-png-img">
           <div class="item-btn-pill">
             <div class="item-pill-title">Boxes Dulces</div>
             <div class="item-pill-price">Elegir Box</div>
@@ -200,7 +226,7 @@
       <div class="counter-table-stage">
         <!-- 1.5 kg -->
         <div class="item-card-png btn-cake-size-item" data-size="1_5kg">
-          <img src="assets/images/JUEGO INICIO/Tipo de pasteles/pastel1_transparent.png" alt="Pastel 1.5 kg" class="item-png-img">
+          <img loading="lazy" src="assets/images/JUEGO INICIO/Tipo de pasteles/pastel1_transparent.webp" alt="Pastel 1.5 kg" class="item-png-img">
           <div class="item-btn-pill">
             <div class="item-pill-title">1.5 kg (1 Piso)</div>
             <div class="item-pill-portions">Rinde aprox. 9–12 personas</div>
@@ -210,7 +236,7 @@
 
         <!-- 2.5 kg -->
         <div class="item-card-png btn-cake-size-item" data-size="2_5kg">
-          <img src="assets/images/JUEGO INICIO/Tipo de pasteles/pastel2_transparent.png" alt="Pastel 2.5 kg" class="item-png-img">
+          <img loading="lazy" src="assets/images/JUEGO INICIO/Tipo de pasteles/pastel2_transparent.webp" alt="Pastel 2.5 kg" class="item-png-img">
           <div class="item-btn-pill">
             <div class="item-pill-title">2.5 kg (1 Piso Alto)</div>
             <div class="item-pill-portions">Rinde aprox. 15–20 personas</div>
@@ -220,7 +246,7 @@
 
         <!-- 3.5 kg -->
         <div class="item-card-png btn-cake-size-item" data-size="3_5kg">
-          <img src="assets/images/JUEGO INICIO/Tipo de pasteles/pastel3_transparent.png" alt="Pastel 3.5 kg" class="item-png-img">
+          <img loading="lazy" src="assets/images/JUEGO INICIO/Tipo de pasteles/pastel3_transparent.webp" alt="Pastel 3.5 kg" class="item-png-img">
           <div class="item-btn-pill">
             <div class="item-pill-title">3.5 kg (2 pisos a elección)</div>
             <div class="item-pill-portions">Rinde aprox. 21–28 personas</div>
@@ -230,7 +256,7 @@
 
         <!-- 4.0 kg -->
         <div class="item-card-png btn-cake-size-item" data-size="4_0kg">
-          <img src="assets/images/JUEGO INICIO/Tipo de pasteles/pastel4_transparent.png" alt="Pastel 4.0 kg" class="item-png-img">
+          <img loading="lazy" src="assets/images/JUEGO INICIO/Tipo de pasteles/pastel4_transparent.webp" alt="Pastel 4.0 kg" class="item-png-img">
           <div class="item-btn-pill">
             <div class="item-pill-title">4.0 kg (2 pisos a elección)</div>
             <div class="item-pill-portions">Rinde aprox. 24–32 personas</div>
@@ -287,7 +313,7 @@
             <label class="decor-field-label" for="decor-photo-uploader">Subí una foto de inspiración o referencia (opcional):</label>
             <div class="decor-upload-wrapper">
               <input type="file" id="decor-photo-uploader" accept="image/*" class="decor-file-btn">
-              <img id="decor-preview-photo" class="decor-thumb-preview" alt="Vista previa de la referencia">
+              <img loading="lazy" id="decor-preview-photo" class="decor-thumb-preview" alt="Vista previa de la referencia">
             </div>
           </div>
 
@@ -307,7 +333,7 @@
 
       <div class="counter-table-stage">
         <div class="item-card-png btn-tart-item" data-tart="Lemon Pie">
-          <img src="assets/images/JUEGO INICIO/Tartas/lemon_pie_trans.png" alt="Lemon Pie" class="item-png-img">
+          <img loading="lazy" src="assets/images/JUEGO INICIO/Tartas/lemon_pie_trans.webp" alt="Lemon Pie" class="item-png-img">
           <div class="item-btn-pill">
             <div class="item-pill-title">Lemon Pie</div>
             <div class="item-pill-price" id="price-tart-lemon">$15.000</div>
@@ -315,7 +341,7 @@
         </div>
 
         <div class="item-card-png btn-tart-item" data-tart="Coco con Dulce de Leche">
-          <img src="assets/images/JUEGO INICIO/Tartas/coco_trans.png" alt="Coco con Dulce de Leche" class="item-png-img">
+          <img loading="lazy" src="assets/images/JUEGO INICIO/Tartas/coco_trans.webp" alt="Coco con Dulce de Leche" class="item-png-img">
           <div class="item-btn-pill">
             <div class="item-pill-title">Coco con DDL</div>
             <div class="item-pill-price" id="price-tart-coco">$14.500</div>
@@ -323,7 +349,7 @@
         </div>
 
         <div class="item-card-png btn-tart-item" data-tart="Cheesecake">
-          <img src="assets/images/JUEGO INICIO/Tartas/cheesecake_trans.png" alt="Cheesecake" class="item-png-img">
+          <img loading="lazy" src="assets/images/JUEGO INICIO/Tartas/cheesecake_trans.webp" alt="Cheesecake" class="item-png-img">
           <div class="item-btn-pill">
             <div class="item-pill-title">Cheesecake</div>
             <div class="item-pill-price" id="price-tart-cheese">$16.500</div>
@@ -331,7 +357,7 @@
         </div>
 
         <div class="item-card-png btn-tart-item" data-tart="Brownie con Dulce de Leche">
-          <img src="assets/images/JUEGO INICIO/Tartas/brownie_trans.png" alt="Brownie con DDL" class="item-png-img">
+          <img loading="lazy" src="assets/images/JUEGO INICIO/Tartas/brownie_trans.webp" alt="Brownie con DDL" class="item-png-img">
           <div class="item-btn-pill">
             <div class="item-pill-title">Brownie con DDL</div>
             <div class="item-pill-price" id="price-tart-brownie">$15.500</div>
@@ -339,7 +365,7 @@
         </div>
 
         <div class="item-card-png btn-tart-item" data-tart="Rogel">
-          <img src="assets/images/JUEGO INICIO/Tartas/rogel_trans.png" alt="Rogel" class="item-png-img">
+          <img loading="lazy" src="assets/images/JUEGO INICIO/Tartas/rogel_trans.webp" alt="Rogel" class="item-png-img">
           <div class="item-btn-pill">
             <div class="item-pill-title">Rogel</div>
             <div class="item-pill-price" id="price-tart-rogel">$16.000</div>
@@ -358,7 +384,7 @@
       <div class="counter-table-stage">
 
         <div class="item-card-png btn-cookie-item" data-item="Cake Pops">
-          <img src="assets/images/JUEGO INICIO/Galletas y dulces/cakepops_trans_v2.png" alt="Cake Pops" class="item-png-img">
+          <img loading="lazy" src="assets/images/JUEGO INICIO/Galletas y dulces/cakepops_trans_v2.webp" alt="Cake Pops" class="item-png-img">
           <div class="item-btn-pill">
             <div class="item-pill-title">Cake Pops (x12)</div>
             <div class="item-pill-price" id="price-cookie-cakepops">$12.000</div>
@@ -366,7 +392,7 @@
         </div>
 
         <div class="item-card-png btn-cookie-item" data-item="Galletas Animadas (x12)">
-          <img src="assets/images/JUEGO INICIO/Galletas y dulces/galletasgranja_trans_v2.png" alt="Galletas Animadas" class="item-png-img">
+          <img loading="lazy" src="assets/images/JUEGO INICIO/Galletas y dulces/galletasgranja_trans_v2.webp" alt="Galletas Animadas" class="item-png-img">
           <div class="item-btn-pill">
             <div class="item-pill-title">Galletas Animadas (x12)</div>
             <div class="item-pill-price" id="price-cookie-granja">$13.500</div>
@@ -374,7 +400,7 @@
         </div>
 
         <div class="item-card-png btn-cookie-item" data-item="Cupcakes (x6)">
-          <img src="assets/images/JUEGO INICIO/Galletas y dulces/cupcakesdeco_trans_v2.png" alt="Cupcakes Decorados" class="item-png-img">
+          <img loading="lazy" src="assets/images/JUEGO INICIO/Galletas y dulces/cupcakesdeco_trans_v2.webp" alt="Cupcakes Decorados" class="item-png-img">
           <div class="item-btn-pill">
             <div class="item-pill-title">Cupcakes (x6)</div>
             <div class="item-pill-price" id="price-cookie-cupcakes">$12.500</div>
@@ -382,7 +408,7 @@
         </div>
 
         <div class="item-card-png btn-cookie-item" data-item="Paletas Dulces (x10)">
-          <img src="assets/images/JUEGO INICIO/Galletas y dulces/paletasdeco_trans_v2.png" alt="Paletas Decoradas" class="item-png-img">
+          <img loading="lazy" src="assets/images/JUEGO INICIO/Galletas y dulces/paletasdeco_trans_v2.webp" alt="Paletas Decoradas" class="item-png-img">
           <div class="item-btn-pill">
             <div class="item-pill-title">Paletas Dulces (x10)</div>
             <div class="item-pill-price" id="price-cookie-paletas">$14.000</div>
@@ -399,7 +425,7 @@
       <div class="scene-header-banner">Box Degustación x12 Mini Tartas</div>
 
       <div class="box-presentation-card">
-        <img src="assets/images/JUEGO INICIO/Box/caja_15_trans_final.png" alt="Caja Degustación" class="box-presentation-img">
+        <img loading="lazy" src="assets/images/JUEGO INICIO/Box/caja_15_trans_final.webp" alt="Caja Degustación" class="box-presentation-img">
         <p id="box-scene-desc" class="box-presentation-desc">
           Incluye degustación de 12 mini tartas artesanales variadas (Lemon pie, Coco con DDL, Cheesecake, Brownie y Rogel) en caja de madera especial.
         </p>
@@ -427,7 +453,7 @@
         <div class="delivery-choice-cards-row">
           <!-- Moto: Envío a Domicilio -->
           <div id="card-choice-moto" class="delivery-choice-card selected">
-            <img src="assets/images/JUEGO INICIO/final/moto_transparent.png" alt="Envío en Moto" class="delivery-choice-img">
+            <img loading="lazy" src="assets/images/JUEGO INICIO/final/moto_transparent.webp" alt="Envío en Moto" class="delivery-choice-img">
             <div class="delivery-choice-meta">
               <div class="delivery-choice-name">Envío a domicilio 🛵</div>
               <div class="delivery-choice-desc">Directo a tu domicilio o salón</div>
@@ -437,7 +463,7 @@
 
           <!-- Casa: Retiro en la Pastelería -->
           <div id="card-choice-casa" class="delivery-choice-card">
-            <img src="assets/images/JUEGO INICIO/final/casita_transparent_v2.png" alt="Retiro en Casa" class="delivery-choice-img">
+            <img loading="lazy" src="assets/images/JUEGO INICIO/final/casita_transparent_v2.webp" alt="Retiro en Casa" class="delivery-choice-img">
             <div class="delivery-choice-meta">
               <div class="delivery-choice-name">Retirar en nuestra casita de chocolate 🏡</div>
               <div class="delivery-choice-desc">Te esperamos para retirar tu pedido</div>
